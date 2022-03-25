@@ -35,3 +35,6 @@ user --> userChat
 user --> rateProcess
 
 @enduml
+
+
+![NP11QlGm38NtFeMNcKKkCFpypD1rOQ3C0JIE8APEP2IvfT3Bb2vwa5oiyOZWINVMznxFUZg90ckPafFNE6TWc3m49NxHZuGUtb5eGdSy3rESZnx4GtsvurNAyiMHxgm8ikjokQKOW2-eXqgxJA87rzsAL6hgyhDyayc2m65S3O5cPKh0QoXmD7cZLq5UFOoPMFzO35g2bAJ0pv31j3ro](https://user-images.githubusercontent.com/66074743/160213148-67148485-b3e6-4049-9b69-a7b31eadacb7.png)
