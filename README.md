@@ -12,3 +12,6 @@ GetPet é um aplicativo para conectar doadores/vendedores de Pets com adotantes/
 
 # <i>Documentação</i>:
 ![useCase](https://user-images.githubusercontent.com/66074743/161164681-84499024-4e3e-45a3-b8e7-3188900c7048.png)
+
+
+![DER](https://user-images.githubusercontent.com/66074743/161169264-92769ab2-ca2d-423f-bd46-ecdffc3666ca.png)
