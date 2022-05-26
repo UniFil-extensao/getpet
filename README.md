@@ -1,4 +1,5 @@
 # <i>Grupo</i>: <b>GetPet</b>
+![getpet-removebg-preview](https://user-images.githubusercontent.com/66074743/170592167-fdaf4e60-fc53-4d9e-84e4-584a58c8b0e8.png)
 
 # <i>Integrantes</i>:
 * Wesley Kasteller Carlesso
