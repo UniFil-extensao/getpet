@@ -1,0 +1,17 @@
+//Module Public API
+export { 
+  createOptions, 
+  alertError 
+};
+
+
+function createOptions(method, body) {
+  return {
+    method,
+    credentials: 'include',
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  };
+}
