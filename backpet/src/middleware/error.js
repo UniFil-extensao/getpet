@@ -1,6 +1,6 @@
 const { CustomError } = require('../utils/errors');
 
-const errorHandler = (error, req, res) => {
+const errorHandler = (error, req, res, next) => {
   const { status, errors, shouldLog } =
     error instanceof CustomError
       ? error
