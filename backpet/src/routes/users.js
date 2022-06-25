@@ -2,7 +2,7 @@ const router = require('express').Router();
 // const authHandler = require('../middleware/auth');
 const usersController = require('../controllers/users');
 
-router.post('', usersController.create);
+router.post("/", usersController.create);
 
 if (process.env.NODE_ENV !== 'production') {
   router.get('/', usersController.getAll);
