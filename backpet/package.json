@@ -20,6 +20,7 @@
     "eslint-config-prettier": "^8.5.0",
     "husky": "^8.0.1",
     "jest": "^28.1.1",
+    "lint-staged": "^13.0.3",
     "nodemon": "^2.0.18",
     "prettier": "^2.7.1",
     "supertest": "^6.2.3"
@@ -31,15 +32,11 @@
     "migrate:run": "env-cmd -f ./config/.env knex migrate:latest --knexfile config/knexfile.js",
     "seed:make": "env-cmd -f config/.env knex seed:make --knexfile config/knexfile.js",
     "seed:run": "env-cmd -f config/.env knex seed:run --knexfile config/knexfile.js",
-    "updatedb": "npm run migrate:run && npm run seed:run"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "updatedb": "npm run migrate:run && npm run seed:run",
+    "prepare": "cd .. && npx husky install backpet/.husky"
   },
   "lint-staged": {
-    "*": "prettier --write"
+    "*.{js,ts,json,html}": "prettier --write"
   },
   "repository": {
     "type": "git",
