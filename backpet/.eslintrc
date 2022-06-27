@@ -41,7 +41,7 @@
         "no-unreachable-loop": "error",
         "no-use-before-define": "error",
         "curly" : [
-            "error",
+            "warn",
             "multi-or-nest",
             "consistent"
         ]

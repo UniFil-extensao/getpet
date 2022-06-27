@@ -9,6 +9,11 @@
                 ]
             }
         ],
+        "curly" : [
+            "error",
+            "multi-or-nest",
+            "consistent"
+        ],
         "prefer-const": "error",
         "no-unused-vars": "error",
         "no-constant-binary-expression": "error",
