@@ -1,8 +1,5 @@
 //Module Public API
-export { 
-  createOptions, 
-  alertError 
-};
+export { createOptions };
 
 
 function createOptions(method, body) {
