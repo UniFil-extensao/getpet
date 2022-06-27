@@ -10,7 +10,6 @@ const environment = (({
   DB_PORT,
   DB_USER,
   DB_PASSWORD,
-  DB_ROOT_PASSWORD,
 }) => ({
   NODE_ENV,
   JWT_SECRET,
@@ -22,7 +21,6 @@ const environment = (({
   DB_PORT,
   DB_USER,
   DB_PASSWORD,
-  DB_ROOT_PASSWORD,
 }))(process.env);
 
 module.exports = {

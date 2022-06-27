@@ -38,7 +38,8 @@
     "prepare": "cd .. && npx husky install backpet/.husky"
   },
   "lint-staged": {
-    "*.{js,ts,json,html}": "prettier --write"
+    "*.{js,ts}": "eslint --fix -c .pre-commit.eslintrc",
+    "*.{json,html}": "prettier --write"
   },
   "repository": {
     "type": "git",
@@ -49,5 +50,5 @@
   "bugs": {
     "url": "https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet/issues"
   },
-  "homepage": "https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet#readme"
+  "homepage": "https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet"
 }
