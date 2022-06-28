@@ -6,6 +6,9 @@ exports.seed = async function (knex) {
   // Deletes ALL existing entries
   await knex('users').del();
 
+  // reset autoincrement
+  await knex.raw('ALTER TABLE users AUTO_INCREMENT=4');
+
   // Inserts seed entries
   return knex('users').insert([
     {
