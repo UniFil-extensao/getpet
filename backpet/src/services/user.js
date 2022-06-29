@@ -5,7 +5,7 @@ const {
   ForbiddenError,
 } = require('../utils/errors');
 const User = require('../models/user');
-// const authenticator = require('./auth');
+const authenticator = require('./auth');
 
 const validations = {
   username: (username, onFail) => {
@@ -56,6 +56,11 @@ const validations = {
     if (validator.isIn(uf, ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'])) return uf;
     return onFail('UF inválida');
   },
+  active: (active, onFail) => {
+    if (['S', 'N', 'B'].includes(active.trim())) return active;
+    if (typeof active !== 'boolean') return onFail('Status Inválido');
+    return active ? 'S' : 'N';
+  },
   // TODO: validar imagem
   // eslint-disable-next-line no-unused-vars
   profilePic: (profilePic, onFail) => {
@@ -87,7 +92,7 @@ const create = async data => {
 
   try {
     const user = await User.create(data);
-    return user;
+    return authenticator.authenticate(user);
   } catch (err) {
     if (err.sqlMessage.includes("for key 'users_email_unique'"))
       throw new InputValidationError({ email: 'Email já cadastrado' }, 400);
@@ -116,7 +121,7 @@ const getById = async id => {
   return user;
 };
 
-const update = async (user, data) => {
+const update = async (userOptions, data) => {
   if (!Object.keys(data).length) {
     throw new InputValidationError(
       'Não foi passado nenhum dado para atualizar',
@@ -140,17 +145,12 @@ const update = async (user, data) => {
   if (Object.entries(errors).length)
     throw new InputValidationError(errors, 400);
 
-  if (data.active || data.active === false) {
-    data.active === 'B' && !user.admin
-      ? (errors.perms = 'Você não tem permissão para fazer isso')
-      : (data.active = data.active ? 'S' : 'N');
-  }
-
   if (Object.entries(errors).length) throw new ForbiddenError(errors, 403);
 
   Object.keys(data).forEach(async field => {
-    if (field === 'active' || field === 'password') return;
-    data[field] = field !== 'profilePic' ? data[field].trim() : data[field];
+    if (field !== 'active')
+      data[field] = field !== 'profilePic' ? data[field].trim() : data[field];
+    if (field === 'password') return;
     data[field] = await validations[field](
       data[field],
       msg => (errors[field] = msg)
@@ -161,8 +161,16 @@ const update = async (user, data) => {
   if (Object.entries(errors).length)
     throw new InputValidationError(errors, 422);
 
-  const updatedUser = await User.update(user.id, data);
-  if (!user) throw new NotFoundError({ user: 'Usuário não encontrado' }, true);
+  if (data.active === 'B' && !userOptions.admin) {
+    throw new ForbiddenError(
+      { perms: 'Você não tem permissão para fazer isso' },
+      403
+    );
+  }
+
+  const updatedUser = await User.update(userOptions.id, data);
+  if (!updatedUser)
+    throw new NotFoundError({ user: 'Usuário não encontrado' }, true);
   return updatedUser;
 };
 
