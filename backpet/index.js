@@ -1,6 +1,16 @@
 const app = require('./app');
-const { PORT } = require('./config/general.config');
+const {
+  NODE_ENV,
+  PORT,
+  USE_SSL,
+  DISABLE_AUTH,
+} = require('./config/general.config');
 
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  // eslint-disable-next-line no-console
+  console.log(
+    `Server running at`,
+    `${USE_SSL ? 'https' : 'http'}://localhost:${PORT}`,
+    `in ${NODE_ENV} mode${DISABLE_AUTH ? ' with no authentication' : ''}`
+  );
 });
