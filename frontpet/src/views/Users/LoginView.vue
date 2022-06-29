@@ -1,6 +1,7 @@
-  <style>
-  @import "../../styles/Users/styles.css";
-  </style>
+<script src="../../scripts/Users/login"></script>
+<style>
+@import "../../styles/Users/styles.css";
+</style>
 <template>
     <form>
         <div class="container-fluid">
@@ -8,20 +9,20 @@
                 <img src="../../assets/images/icon_getpet.png" alt="">
             </div>
             <div class="row form-floating">
-                <input name="email" type="text" id="floatingInput" required class="form-control" placeholder="Email">
-                <label for="floatingInput" class="input-label">E-mail</label>
+                <input name="Username" v-model="user" type="text" id="floatingInput" required class="form-control" placeholder="Usuário">
+                <label for="floatingInput" class="input-label">Usuário</label>
             </div>
             <div class="row form-floating mt-3">
-                <input id="floatingPassword" name="password" type="password" required class="form-control"
+                <input id="floatingPassword" v-model="pass" name="password" type="password" required class="form-control"
                     placeholder="Senha">
                 <label for="floatingPassword" class="input-label">Senha</label>
             </div>
             <div class="row justify-content-evenly mt-3">
                 <div class="col-4">
-                    <a href="/signup" class="btn btn-outline-success" type="submit">Cadastrar</a>
+                    <a href="" class="btn btn-outline-success" type="submit">Cadastrar</a>
                 </div>
                 <div class="col-4">
-                    <button class="btn btn-success" type="submit">Entrar</button>
+                    <button class="btn btn-success" :keyup.enter="login(user, pass)" type="submit">Entrar</button>
                 </div>
             </div>
         </div>
