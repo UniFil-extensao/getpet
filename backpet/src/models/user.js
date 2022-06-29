@@ -1,13 +1,13 @@
 const bcrypt = require('bcryptjs');
 const knex = require('../services/db');
-const { PASSWORD_SALT } = require('../../config/general.config');
+const { PASSWD_SALT } = require('../../config/general.config');
 
 const schema = async () => {
   return await knex.table('users').columnInfo();
 };
 
-const hashPassword = async password => {
-  return await bcrypt.hash(password, +PASSWORD_SALT);
+const hashPassword = password => {
+  return bcrypt.hashSync(password, PASSWD_SALT);
 };
 
 const getById = async (id, conn = knex) => {
@@ -42,10 +42,14 @@ const getAll = async () => {
   return users;
 };
 
-const getByCredentials = async (username, password) => {
-  const [user] = await knex('users').where('username', username);
+const findByCredentials = async (username, password) => {
+  const [user] = await knex('users').where({
+    username,
+    active: 'S',
+  });
   if (!user) return;
   const correctPassword = await bcrypt.compare(password, user.password);
+  delete user.password;
   if (correctPassword) return user;
 };
 
@@ -72,7 +76,7 @@ module.exports = {
   create,
   getAll,
   getById,
-  getByCredentials,
+  findByCredentials,
   update,
   remove,
 };

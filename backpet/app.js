@@ -1,4 +1,5 @@
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 
@@ -8,11 +9,12 @@ const userRoutes = require('./src/routes/users');
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(helmet());
 app.use(
   cors({
     credentials: true,
-    origin: true,
+    origin: true, //'http://localhost:3000, http://localhost:8000',
   })
 );
 

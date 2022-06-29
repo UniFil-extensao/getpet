@@ -1,8 +1,8 @@
 // extrai as variáveis relacionadas ao sistema como um objeto
-const environment = (({
+const env = (({
   NODE_ENV,
   JWT_SECRET,
-  PASSWORD_SALT,
+  PASSWD_SALT,
   PORT,
   DB_DRIVER,
   DB_NAME,
@@ -13,7 +13,7 @@ const environment = (({
 }) => ({
   NODE_ENV,
   JWT_SECRET,
-  PASSWORD_SALT,
+  PASSWD_SALT,
   PORT,
   DB_DRIVER,
   DB_NAME,
@@ -23,6 +23,11 @@ const environment = (({
   DB_PASSWORD,
 }))(process.env);
 
+const DISABLE_AUTH = env.NODE_ENV !== 'production' && false;
+const USE_SSL = env.NODE_ENV === 'production' && false;
+
 module.exports = {
-  ...environment,
+  ...env,
+  DISABLE_AUTH,
+  USE_SSL,
 };

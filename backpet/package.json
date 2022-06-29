@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express": "^4.18.1",
     "helmet": "^5.1.0",
@@ -35,6 +36,7 @@
     "seed:make": "env-cmd -f config/.env knex seed:make --knexfile config/knexfile.js",
     "seed:run": "env-cmd -f config/.env knex seed:run --knexfile config/knexfile.js",
     "updatedb": "npm run migrate:run && npm run seed:run",
+    "salt:new": "env-cmd -f config/.env node config/salt.js",
     "prepare": "cd .. && npx husky install backpet/.husky"
   },
   "lint-staged": {

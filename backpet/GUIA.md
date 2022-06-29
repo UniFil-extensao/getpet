@@ -113,7 +113,8 @@ Abaixo estão os scripts disponíveis e suas descrições:
 | `migrate:run`  | -          | Roda todas as migrações do banco de dados.                                                                                              |
 | `seed:make`    | \<nome>    | Cria um novo arquivo de seed. Utilizado para agilizar a criação de registros em tabelas para testes e desenvolvimento.                  |
 | `seed:run`     | -          | Roda todos os seeds do banco de dados. <br>\*_**Cuidado**: Seeds apagam todos registros atuais do banco, para então inserir os padrões_ |
-| `updatedb`     | -          | Roda todas as migrações e seeds.<br>Atalho para `migrate:run && seed:run`                                                               |
+| `updatedb`     | -          | Roda todas as migrações e seeds.<br>Atalho para `migrate:run` e `seed:run`                                                              |
+| `salt:new`     | -          | Gera um novo salt para fazer o hashing das senhas                                                                                       |
 
 ## Estrutura do Código<span id="structure"></span>
 

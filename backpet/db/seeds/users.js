@@ -1,3 +1,6 @@
+const { PASSWD_SALT } = require('../../config/general.config');
+const password = require('bcryptjs').hashSync('123456', PASSWD_SALT);
+
 /**
  * @param { import("knex").Knex } knex
  * @returns { Promise<void> }
@@ -6,7 +9,7 @@ exports.seed = async function (knex) {
   // Deletes ALL existing entries
   await knex('users').del();
 
-  // reset autoincrement
+  // Reset auto-increment
   await knex.raw('ALTER TABLE users AUTO_INCREMENT=4');
 
   // Inserts seed entries
@@ -14,17 +17,18 @@ exports.seed = async function (knex) {
     {
       id: 1,
       username: 'jaozin',
-      password: '1234',
+      password,
       city: 'Londrina',
       uf: 'PR',
       cpf: '12345678901',
       phone: '12345678901',
       email: 'jao@email.com',
+      admin: 'S',
     },
     {
       id: 2,
       username: 'mariazinha',
-      password: '1234',
+      password,
       city: 'Maringá',
       uf: 'PR',
       cpf: '10987654321',
@@ -34,7 +38,7 @@ exports.seed = async function (knex) {
     {
       id: 3,
       username: 'josezinha',
-      password: '1234',
+      password,
       city: 'São Paulo',
       uf: 'SP',
       cpf: '20987654321',
