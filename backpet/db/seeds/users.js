@@ -21,7 +21,7 @@ exports.seed = async function (knex) {
       city: 'Londrina',
       uf: 'PR',
       cpf: '12345678901',
-      phone: '12345678901',
+      phone: '83981778452',
       email: 'jao@email.com',
       admin: 'S',
     },
@@ -32,7 +32,7 @@ exports.seed = async function (knex) {
       city: 'Maringá',
       uf: 'PR',
       cpf: '10987654321',
-      phone: '10987654321',
+      phone: '18993289050',
       email: 'maria@maria.com.br',
     },
     {
@@ -42,7 +42,7 @@ exports.seed = async function (knex) {
       city: 'São Paulo',
       uf: 'SP',
       cpf: '20987654321',
-      phone: '20987654321',
+      phone: '54986546571',
       email: 'josezinha@gmail.com',
     },
   ]);

@@ -30,7 +30,8 @@
   },
   "scripts": {
     "dev": "env-cmd -f ./config/.env nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "env-cmd -f ./config/.env jest",
+    "testing": "env-cmd -f ./config/.env jest --watch",
     "migrate:make": "env-cmd -f config/.env knex migrate:make --knexfile config/knexfile.js",
     "migrate:run": "env-cmd -f ./config/.env knex migrate:latest --knexfile config/knexfile.js",
     "seed:make": "env-cmd -f config/.env knex seed:make --knexfile config/knexfile.js",

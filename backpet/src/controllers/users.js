@@ -31,7 +31,7 @@ const create = async (req, res, next) => {
 
     const { user, token } = await userService.create(insertData);
     res.cookie(...authCookie(token));
-    res.json(user);
+    res.status(201).json(user);
   } catch (err) {
     next(err);
   }
@@ -48,7 +48,17 @@ const getAll = async (req, res, next) => {
 
 const getById = async (req, res, next) => {
   try {
+    const token = req.cookies?.token;
+    if (token) req.user = await authService.validateToken(token);
+
     const user = await userService.getById(req.params.id);
+    delete user.admin;
+    delete user.active;
+    if (!req.user || req.user.id !== user.id) {
+      delete user.cpf;
+      delete user.email;
+    }
+
     res.json(user);
   } catch (err) {
     next(err);

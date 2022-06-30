@@ -6,14 +6,14 @@ const errorHandler = (error, req, res, next) => {
     error instanceof CustomError
       ? error
       : {
-          status: 500,
+          status: error.status ?? 500,
           errors: {
             internal: 'Erro interno, contate um administrador',
             ...(process.env.NODE_ENV !== 'production' && {
               message: error.message,
             }),
           },
-          shouldLog: true,
+          shouldLog: !error.status && true,
         };
 
   shouldLog && console.error(error);

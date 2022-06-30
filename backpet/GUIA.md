@@ -109,6 +109,7 @@ Abaixo estão os scripts disponíveis e suas descrições:
 | -------------- | :--------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
 | `dev`          | -          | Roda o servidor de desenvolvimento. <br>A porta em que o servidor roda pode ser configurada no arquivo `.env`                           |
 | `test`         | -          | Roda todos os testes do projeto.                                                                                                        |
+| `testing`      | -          | Roda os testes em modo _watch_. Útil para debugar e corrigir falhas                                                                     |
 | `migrate:make` | \<nome>    | Cria um novo arquivo de migração. Utilizado quando for criar ou modificar uma tabela, trigger etc.                                      |
 | `migrate:run`  | -          | Roda todas as migrações do banco de dados.                                                                                              |
 | `seed:make`    | \<nome>    | Cria um novo arquivo de seed. Utilizado para agilizar a criação de registros em tabelas para testes e desenvolvimento.                  |

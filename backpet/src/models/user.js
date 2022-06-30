@@ -24,6 +24,9 @@ const create = async data => {
     return await getById(id, trx);
   });
 
+  delete user.active;
+  delete user.admin;
+
   return user;
 };
 
@@ -48,9 +51,15 @@ const findByCredentials = async (username, password) => {
     active: 'S',
   });
   if (!user) return;
+
   const correctPassword = await bcrypt.compare(password, user.password);
+  if (!correctPassword) return;
+
   delete user.password;
-  if (correctPassword) return user;
+  delete user.active;
+  delete user.admin;
+
+  return user;
 };
 
 const update = async (id, data) => {

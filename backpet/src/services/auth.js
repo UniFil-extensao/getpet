@@ -1,15 +1,16 @@
 const jwt = require('jsonwebtoken');
 const { InputValidationError, ForbiddenError } = require('../utils/errors');
+const trim = require('../utils/trim');
 const { JWT_SECRET } = require('../../config/general.config');
 const User = require('../models/user');
 
 const validateCredentials = async function (credentials) {
   const errors = {};
 
-  const username = credentials.username?.trim();
+  const username = trim(credentials.username);
   if (!username) errors.username = 'Deve ser fornecido o nome de usuário';
 
-  const password = credentials.password?.trim();
+  const password = trim(credentials.password);
   if (!password) errors.password = 'Deve ser fornecida a senha';
 
   if (Object.keys(errors).length) throw new InputValidationError(errors, 400);

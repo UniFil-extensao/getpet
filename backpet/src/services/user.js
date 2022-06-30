@@ -3,13 +3,14 @@ const {
   InputValidationError,
   NotFoundError,
   ForbiddenError,
+  InvalidDataHandler,
 } = require('../utils/errors');
+const trim = require('../utils/trim');
 const User = require('../models/user');
 const authenticator = require('./auth');
 
 const validations = {
   username: (username, onFail) => {
-    username = validator.whitelist(username, '[a-zA-Z0-9_]');
     if (
       validator.isLength(username, { min: 3, max: 15 }) &&
       validator.isAlphanumeric(username)
@@ -32,7 +33,7 @@ const validations = {
     return onFail('O email informado é inválido');
   },
   phone: (phone, onFail) => {
-    phone = validator.whitelist(phone, '[0-9]');
+    phone = validator.whitelist(phone, '0123456789');
     if (
       validator.isMobilePhone(phone, 'pt-BR') &&
       validator.isLength(phone, { min: 10, max: 11 })
@@ -41,9 +42,10 @@ const validations = {
     return onFail('O telefone informado é inválido');
   },
   cpf: (cpf, onFail) => {
-    cpf = validator.whitelist(cpf, '[0-9]');
-    if (validator.matches(cpf, /^\d{11}$/)) return cpf;
-    return onFail('CPF inválido');
+    if (!validator.matches(cpf, /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/))
+      return onFail('CPF inválido');
+    cpf = validator.whitelist(cpf, '0123456789');
+    return cpf;
   },
   city: (city, onFail) => {
     city = validator.whitelist(city.toLowerCase(), '[a-zA-Z ]');
@@ -57,7 +59,7 @@ const validations = {
     return onFail('UF inválida');
   },
   active: (active, onFail) => {
-    if (['S', 'N', 'B'].includes(active.trim())) return active;
+    if (['S', 'N', 'B'].includes(trim(active))) return active;
     if (typeof active !== 'boolean') return onFail('Status Inválido');
     return active ? 'S' : 'N';
   },
@@ -74,7 +76,7 @@ const create = async data => {
   const errors = {};
 
   requiredFields.forEach(field => {
-    data[field] = data[field]?.trim();
+    data[field] = trim(data[field]);
     if (!data[field]) errors[field] = `${field} é obrigatório`;
   });
 
@@ -94,18 +96,7 @@ const create = async data => {
     const user = await User.create(data);
     return authenticator.authenticate(user);
   } catch (err) {
-    if (err.sqlMessage.includes("for key 'users_email_unique'"))
-      throw new InputValidationError({ email: 'Email já cadastrado' }, 400);
-    if (err.sqlMessage.includes("for key 'users_phone_unique'"))
-      throw new InputValidationError({ phone: 'Telefone já cadastrado' }, 400);
-    if (err.sqlMessage.includes("for key 'users_cpf_unique'"))
-      throw new InputValidationError({ cpf: 'CPF já cadastrado' }, 400);
-    if (err.sqlMessage.includes("for key 'users_username_unique'")) {
-      throw new InputValidationError(
-        { username: 'Nome de usuário já cadastrado' },
-        400
-      );
-    }
+    if (err.sqlMessage) InvalidDataHandler(err);
     throw err;
   }
 };
@@ -124,7 +115,7 @@ const getById = async id => {
 const update = async (userOptions, data) => {
   if (!Object.keys(data).length) {
     throw new InputValidationError(
-      'Não foi passado nenhum dado para atualizar',
+      { data: 'Não foi passado nenhum dado para atualizar' },
       400
     );
   }
@@ -149,7 +140,9 @@ const update = async (userOptions, data) => {
 
   Object.keys(data).forEach(async field => {
     if (field !== 'active')
-      data[field] = field !== 'profilePic' ? data[field].trim() : data[field];
+      data[field] = field !== 'profilePic' ? trim(data[field]) : data[field];
+    if (!data[field] && data[field] !== false)
+      return (errors[field] = 'Valor inválido');
     if (field === 'password') return;
     data[field] = await validations[field](
       data[field],
@@ -168,10 +161,17 @@ const update = async (userOptions, data) => {
     );
   }
 
-  const updatedUser = await User.update(userOptions.id, data);
-  if (!updatedUser)
-    throw new NotFoundError({ user: 'Usuário não encontrado' }, true);
-  return updatedUser;
+  try {
+    const updatedUser =
+      Number.isFinite(userOptions.id) &&
+      (await User.update(userOptions.id, data));
+    if (!updatedUser)
+      throw new NotFoundError({ user: 'Usuário não encontrado' });
+    return updatedUser;
+  } catch (err) {
+    if (err.sqlMessage) InvalidDataHandler(err);
+    throw err;
+  }
 };
 
 const remove = async id => {
