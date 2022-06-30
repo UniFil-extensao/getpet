@@ -214,10 +214,15 @@ Fonte: https://www.reddit.com/r/learnprogramming/comments/sj6oyi/comment/hvdrxix
 
 - [Documentação do JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
 - [Documentação do NodeJS](https://nodejs.org/pt-br/docs/)
+- [Documentação da Express](https://expressjs.com/pt-br/4x/api.html)
 - [Documentação do MariaDB](https://mariadb.com/kb/pt/documentation/)
 - [Documentação do Knex](http://knexjs.org/guide/)
 - [Documentação do Jest](https://jestjs.io/pt-BR/docs/getting-started)
 - [Documentação do Validator](https://www.npmjs.com/package/validator)
+
+### Ferramentas úteis
+
+- [Gerador de Celulares Válidos](https://geradornv.com.br/gerador-celular/)
 
 ### Tutoriais
 
