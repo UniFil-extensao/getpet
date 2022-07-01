@@ -3,20 +3,18 @@ import { createOptions } from '../../utils/http';
 
 export default {
   created: async function () {
-    this.user = await fetch(`${this.server}/users/${this.userId}`, createOptions('GET'))
-    console.log(this.user)
+    this.user = await fetch(`${this.server}/users/${this.userId}`, createOptions('GET'));
     this.user = await this.user.json();
+    console.log(this.user);
   },
   methods:{
-    getUser: function(){
-      console.log(this.user)
-    }
   },
   data: function () {
     return {
       server: `http://localhost:${import.meta.env.VITE_PORT}`,
       userId: this.$route.params.id,
-      user: {}
+      user: {},
+      loggedUser: {}
     }
   },
 
