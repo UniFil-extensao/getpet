@@ -1,11 +1,9 @@
-  <style>
+<style>
   @import "../../styles/Users/styles.css";
-  </style>
-
-  <script src="../../scripts/Users/signup.js"></script>
+</style>
+<script src="../../scripts/Users/signup.js"></script>
 
 <template>
-
   <body>
     <form>
       <div class="container-fluid">

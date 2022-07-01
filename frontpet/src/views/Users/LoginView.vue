@@ -26,3 +26,13 @@
         </div>
     </div>
 </template>
+
+
+<style scoped>
+.container-fluid {
+    font-family: 'Poppins', sans-serif !important;
+    display: grid !important;
+    place-content: center !important;
+    height: 100vh;
+}
+</style>
