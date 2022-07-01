@@ -11,14 +11,6 @@
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #212534;
-    display: grid;
-    place-content: center;
-    height: 100vh;
-}
-
 /* ======================== */
 /* Everything here is pretty straight forward so I don't think I have to explain.*/
 .button {
