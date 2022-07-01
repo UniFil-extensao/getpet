@@ -370,7 +370,7 @@ describe('testes de atualização de usuário', () => {
       const { token } = authenticate({ id: 2 });
 
       const response = await request(app)
-        .put('/users/2')
+        .patch('/users/2')
         .set({
           cookie: `token=${token}; HttpOnly; SameSite=Strict`,
         })
@@ -403,7 +403,7 @@ describe('testes de atualização de usuário', () => {
       const { token } = authenticate({ id: 1 });
 
       const response = await request(app)
-        .put(`/users/${id}`)
+        .patch(`/users/${id}`)
         .set({
           cookie: `token=${token}; HttpOnly; SameSite=Strict`,
         })
@@ -421,7 +421,7 @@ describe('testes de atualização de usuário', () => {
     const { token } = authenticate({ id: 1 });
 
     const response = await request(app)
-      .put('/users/2')
+      .patch('/users/2')
       .set({
         cookie: `token=${token}; HttpOnly; SameSite=Strict`,
       })
@@ -437,7 +437,7 @@ describe('testes de atualização de usuário', () => {
     const { token } = authenticate({ id: 2 });
 
     const response = await request(app)
-      .put('/users/2')
+      .patch('/users/2')
       .set({
         cookie: `token=${token}; HttpOnly; SameSite=Strict`,
       })
@@ -465,7 +465,7 @@ describe('testes de atualização de usuário', () => {
       const { token } = authenticate({ id: 2 });
 
       const response = await request(app)
-        .put('/users/2')
+        .patch('/users/2')
         .set({
           cookie: `token=${token}; HttpOnly; SameSite=Strict`,
         })
@@ -479,7 +479,7 @@ describe('testes de atualização de usuário', () => {
   );
 
   test('deve retornar erro ao tentar atualizar um usuário sem estar logado', async () => {
-    const response = await request(app).put('/users/2');
+    const response = await request(app).patch('/users/2');
 
     expect(response.status).toBe(401);
     expect(response.body).toBeDefined();
@@ -497,7 +497,7 @@ describe('testes de atualização de usuário', () => {
       const { token } = authenticate({ id: 2 });
 
       const response = await request(app)
-        .put(`/users/${id}`)
+        .patch(`/users/${id}`)
         .set({
           cookie: `token=${token}; HttpOnly; SameSite=Strict`,
         })
@@ -516,7 +516,7 @@ describe('testes de atualização de usuário', () => {
       const { token } = authenticate({ id: 2 });
 
       const response = await request(app)
-        .put(`/users/${id}`)
+        .patch(`/users/${id}`)
         .set({
           cookie: `token=${token}; HttpOnly; SameSite=Strict`,
         })
@@ -534,7 +534,7 @@ describe('testes de atualização de usuário', () => {
     async id => {
       const { token } = authenticate({ id: 1 });
       const response = await request(app)
-        .put(`/users/${id}`)
+        .patch(`/users/${id}`)
         .send({
           username: 'flaminga',
         })
@@ -584,7 +584,7 @@ describe('testes de atualização de usuário', () => {
       const { token } = authenticate({ id: 2 });
 
       const response = await request(app)
-        .put('/users/2')
+        .patch('/users/2')
         .set({
           cookie: `token=${token}; HttpOnly; SameSite=Strict`,
         })
@@ -628,7 +628,7 @@ describe('testes de atualização de usuário', () => {
       const { token } = authenticate({ id });
 
       const response = await request(app)
-        .put(`/users/2`)
+        .patch(`/users/2`)
         .set({
           cookie: `token=${token}; HttpOnly; SameSite=Strict`,
         })

@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 router.get('/:id', usersController.getById);
 
-router.put('/:id', authHandler, usersController.update);
+router.patch('/:id', authHandler, usersController.update);
 
 router.post('/login', usersController.login);
 
