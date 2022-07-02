@@ -1,16 +1,19 @@
 const { CustomError } = require('../utils/errors');
 
-const errorHandler = (error, req, res) => {
+// eslint-disable-next-line no-unused-vars
+const errorHandler = (error, req, res, next) => {
   const { status, errors, shouldLog } =
     error instanceof CustomError
       ? error
       : {
-          status: 500,
+          status: error.status ?? 500,
           errors: {
             internal: 'Erro interno, contate um administrador',
-            message: error.message,
+            ...(process.env.NODE_ENV !== 'production' && {
+              message: error.message,
+            }),
           },
-          shouldLog: true,
+          shouldLog: !error.status && true,
         };
 
   shouldLog && console.error(error);

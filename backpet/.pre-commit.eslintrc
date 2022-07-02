@@ -1,0 +1,22 @@
+{
+    "rules": {
+        "no-console": [
+            "error",
+            {
+                "allow": [
+                    "warn",
+                    "error"
+                ]
+            }
+        ],
+        "curly" : [
+            "error",
+            "multi-or-nest",
+            "consistent"
+        ],
+        "prefer-const": "error",
+        "no-unused-vars": "error",
+        "no-constant-binary-expression": "error",
+        "no-duplicate-imports": "error"
+    }
+}

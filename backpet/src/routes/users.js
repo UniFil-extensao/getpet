@@ -1,8 +1,8 @@
 const router = require('express').Router();
-// const authHandler = require('../middleware/auth');
+const authHandler = require('../middleware/auth');
 const usersController = require('../controllers/users');
 
-router.post('', usersController.create);
+router.post('/', usersController.create);
 
 if (process.env.NODE_ENV !== 'production') {
   router.get('/', usersController.getAll);
@@ -11,7 +11,10 @@ if (process.env.NODE_ENV !== 'production') {
 
 router.get('/:id', usersController.getById);
 
-// TODO: requer autenticação
-router.put('/:id', usersController.update);
+router.patch('/:id', authHandler, usersController.update);
+
+router.post('/login', usersController.login);
+
+router.post('/logout', authHandler, usersController.logout);
 
 module.exports = router;
