@@ -5,41 +5,42 @@ const {
   ForbiddenError,
   InvalidDataHandler,
 } = require('../utils/errors');
-const trim = require('../utils/trim');
+const { trim } = require('../utils/strings');
 const User = require('../models/user');
 const authenticator = require('./auth');
 
 const validations = {
+  id: (id, onFail) =>
+    Number.isInteger(id) && id > 0 ? id : onFail('ID inválido'),
+
   username: (username, onFail) => {
-    if (
-      validator.isLength(username, { min: 3, max: 15 }) &&
+    const options = { min: 3, max: 15 };
+    return validator.isLength(username, options) &&
       validator.isAlphanumeric(username)
-    )
-      return username;
-    return onFail(
-      'O nome de usuário deve ter entre 3 e 15 caracteres alfanuméricos'
-    );
+      ? username
+      : onFail(
+          'O nome de usuário deve ter entre 3 e 15 caracteres alfanuméricos'
+        );
   },
-  password: async (password, onFail) => {
+  password: (password, onFail) => {
     const options = { min: 6 };
-    if (validator.isLength(password, options))
-      return User.hashPassword(password);
-    return await onFail(`A senha deve ter no mínimo ${options.min} caractéres`);
+    return validator.isLength(password, options)
+      ? User.hashPassword(password)
+      : onFail(`A senha deve ter no mínimo ${options.min} caractéres`);
   },
   email: (email, onFail) => {
     // eslint-disable-next-line camelcase
     email = validator.normalizeEmail(email, { all_lowercase: false });
-    if (validator.isEmail(email)) return email;
-    return onFail('O email informado é inválido');
+    return validator.isEmail(email)
+      ? email
+      : onFail('O email informado é inválido');
   },
   phone: (phone, onFail) => {
     phone = validator.whitelist(phone, '0123456789');
-    if (
-      validator.isMobilePhone(phone, 'pt-BR') &&
+    return validator.isMobilePhone(phone, 'pt-BR') &&
       validator.isLength(phone, { min: 10, max: 11 })
-    )
-      return phone;
-    return onFail('O telefone informado é inválido');
+      ? phone
+      : onFail('O telefone informado é inválido');
   },
   cpf: (cpf, onFail) => {
     if (!validator.matches(cpf, /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/))
@@ -49,14 +50,17 @@ const validations = {
   },
   city: (city, onFail) => {
     city = validator.whitelist(city.toLowerCase(), '[a-zA-Z ]');
-    if (validator.isLength(city, { min: 3 })) return city;
-    return onFail('Cidade inválida');
+    const options = { min: 3 };
+    return validator.isLength(city, options) ? city : onFail('Cidade inválida');
   },
   uf: (uf, onFail) => {
     uf = validator.whitelist(uf.toUpperCase(), '[A-Z]');
     // prettier-ignore
-    if (validator.isIn(uf, ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'])) return uf;
-    return onFail('UF inválida');
+    return (validator.isIn(uf, [
+      'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
+      'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
+      'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+    ])) ? uf : onFail('UF inválida');
   },
   active: (active, onFail) => {
     if (['S', 'N', 'B'].includes(trim(active))) return active;
@@ -107,12 +111,26 @@ const getAll = async () => {
 };
 
 const getById = async id => {
+  validations.id(id, msg => {
+    throw new InputValidationError({ id: msg }, 404);
+  });
   const user = await User.getById(id);
   if (!user) throw new NotFoundError({ user: 'Usuário não encontrado' });
   return user;
 };
 
-const update = async (userOptions, data) => {
+const update = async (author, data) => {
+  if (!authenticator.isAuthorized(author, data)) {
+    throw new ForbiddenError({
+      accessDenied: 'Você não tem permissão para fazer isso.',
+    });
+  }
+
+  const id = validations.id(data.id, msg => {
+    throw new InputValidationError({ id: msg }, 404);
+  });
+  delete data.id;
+
   if (!Object.keys(data).length) {
     throw new InputValidationError(
       { data: 'Não foi passado nenhum dado para atualizar' },
@@ -120,41 +138,35 @@ const update = async (userOptions, data) => {
     );
   }
 
-  const errors = {};
-
   if (data.address) {
     if (!data.address.city || !data.address.uf) {
-      errors.address = 'Devem ser informados a cidade e o estado';
-    } else {
-      data.city = data.address.city;
-      data.uf = data.address.uf;
-
-      delete data.address;
+      throw new InputValidationError(
+        { address: 'Devem ser informados a cidade e o estado' },
+        400
+      );
     }
+    data.city = data.address.city;
+    data.uf = data.address.uf;
+
+    delete data.address;
   }
 
-  if (Object.entries(errors).length)
-    throw new InputValidationError(errors, 400);
-
-  if (Object.entries(errors).length) throw new ForbiddenError(errors, 403);
-
-  Object.keys(data).forEach(async field => {
+  const errors = {};
+  Object.keys(data).forEach(field => {
     if (field !== 'active')
       data[field] = field !== 'profilePic' ? trim(data[field]) : data[field];
     if (!data[field] && data[field] !== false)
+      // eslint-disable-next-line array-callback-return
       return (errors[field] = 'Valor inválido');
     if (field === 'password') return;
-    data[field] = await validations[field](
-      data[field],
-      msg => (errors[field] = msg)
-    );
+    data[field] = validations[field](data[field], msg => (errors[field] = msg));
   });
   if (data.password) data.password = await validations.password(data.password);
 
   if (Object.entries(errors).length)
     throw new InputValidationError(errors, 422);
 
-  if (data.active === 'B' && !userOptions.admin) {
+  if (data.active === 'B' && !author.admin) {
     throw new ForbiddenError(
       { perms: 'Você não tem permissão para fazer isso' },
       403
@@ -162,9 +174,7 @@ const update = async (userOptions, data) => {
   }
 
   try {
-    const updatedUser =
-      Number.isFinite(userOptions.id) &&
-      (await User.update(userOptions.id, data));
+    const updatedUser = await User.update(id, data);
     if (!updatedUser)
       throw new NotFoundError({ user: 'Usuário não encontrado' });
     return updatedUser;
