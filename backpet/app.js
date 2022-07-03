@@ -5,6 +5,7 @@ const helmet = require('helmet');
 
 const errorHandler = require('./src/middleware/error');
 const userRoutes = require('./src/routes/users');
+const adoptionRoutes = require('./src/routes/adoptions');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use(
 );
 
 app.use('/users', userRoutes);
+app.use('/adoptions', adoptionRoutes);
 
 // REM: remover no futuro
 app.get('/', (req, res) => {
