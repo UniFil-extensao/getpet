@@ -7,7 +7,7 @@ const {
 } = require('../utils/errors');
 const { trim } = require('../utils/strings');
 const User = require('../models/user');
-const authenticator = require('./auth');
+const authService = require('./auth');
 
 const validations = {
   id: (id, onFail) =>
@@ -88,17 +88,15 @@ const create = async data => {
     throw new InputValidationError(errors, 400);
 
   requiredFields.forEach(field => {
-    if (field === 'password') return;
     data[field] = validations[field](data[field], msg => (errors[field] = msg));
   });
-  data.password = await validations.password(data.password);
 
   if (Object.entries(errors).length)
     throw new InputValidationError(errors, 422);
 
   try {
     const user = await User.create(data);
-    return authenticator.authenticate(user);
+    return authService.authenticate(user);
   } catch (err) {
     if (err.sqlMessage) InvalidDataHandler(err);
     throw err;
@@ -120,7 +118,7 @@ const getById = async id => {
 };
 
 const update = async (author, data) => {
-  if (!authenticator.isAuthorized(author, data)) {
+  if (!authService.isAuthorized(author, data)) {
     throw new ForbiddenError({
       accessDenied: 'Você não tem permissão para fazer isso.',
     });
@@ -158,10 +156,8 @@ const update = async (author, data) => {
     if (!data[field] && data[field] !== false)
       // eslint-disable-next-line array-callback-return
       return (errors[field] = 'Valor inválido');
-    if (field === 'password') return;
     data[field] = validations[field](data[field], msg => (errors[field] = msg));
   });
-  if (data.password) data.password = await validations.password(data.password);
 
   if (Object.entries(errors).length)
     throw new InputValidationError(errors, 422);

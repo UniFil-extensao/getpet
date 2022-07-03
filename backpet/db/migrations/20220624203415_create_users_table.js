@@ -12,8 +12,8 @@ exports.up = function (knex) {
     table.string('cpf', 11).unique().notNullable();
     table.string('phone', 11).unique().notNullable();
     table.string('email', 255).unique().notNullable();
-    table.double('adopter_score', 2, 0).unsigned().nullable();
-    table.double('donor_score', 2, 0).unsigned().nullable();
+    table.double('adopter_score', 2, 1).unsigned().nullable();
+    table.double('donor_score', 2, 1).unsigned().nullable();
     table.string('profile_pic_path', 255).nullable();
     table.enum('admin', ['S', 'N']).defaultTo('N');
     table.enum('active', ['S', 'N', 'B']).defaultTo('S');

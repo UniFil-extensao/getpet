@@ -32,12 +32,12 @@ exports.up = function (knex) {
       .unsigned()
       .nullable()
       .comment('Idade do pet em meses.'); //
-    table.string('pet_species', 20).nullable();
-    table.string('pet_breed', 15).nullable();
-    table.string('pet_color', 15).nullable();
+    table.enum('pet_species', ['cachorro', 'gato']).nullable();
+    table.string('pet_breed', 40).nullable();
+    table.string('pet_color', 20).nullable();
     table.string('thumbnail_path', 255).nullable();
-    table.double('adopter_score', 2, 0).unsigned().nullable();
-    table.double('donor_score', 2, 0).unsigned().nullable();
+    table.double('adopter_score', 2, 1).unsigned().nullable();
+    table.double('donor_score', 2, 1).unsigned().nullable();
   });
 };
 

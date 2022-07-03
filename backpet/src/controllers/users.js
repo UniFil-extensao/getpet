@@ -1,5 +1,6 @@
 const userService = require('../services/user');
 const authService = require('../services/auth');
+const { filterData } = require('../services/data');
 const { USE_SSL } = require('../../config/general.config');
 
 const authCookie = token => [
@@ -24,9 +25,7 @@ const create = async (req, res, next) => {
       'uf',
     ];
 
-    const data = Object.entries(req.body)
-      .filter(([field]) => allowedFields.includes(field))
-      .reduce((acc, [field, value]) => ({ ...acc, [field]: value }), {});
+    const data = filterData(allowedFields, req.body);
 
     const { user, token } = await userService.create(data);
     res.cookie(...authCookie(token));
@@ -77,9 +76,7 @@ const update = async (req, res, next) => {
       'active',
     ];
 
-    const data = Object.entries(req.body)
-      .filter(([field]) => allowedUpdates.includes(field))
-      .reduce((acc, [field, value]) => ({ ...acc, [field]: value }), {});
+    const data = filterData(allowedUpdates, req.body);
 
     data.id = +req.params.id;
     const user = await userService.update(req.user, data);
