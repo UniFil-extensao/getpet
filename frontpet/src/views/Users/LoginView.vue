@@ -4,7 +4,7 @@
 </style>
 <template>
     <div class="container-fluid">
-        <div class="row">
+        <div class="row mt-5">
             <img src="../../assets/images/icon_getpet.png" alt="">
         </div>
         <div class="row form-floating">
@@ -18,7 +18,7 @@
         </div>
         <div class="row justify-content-evenly mt-3">
             <div class="col-4">
-                <a href="" class="btn btn-outline-success" type="submit">Cadastrar</a>
+                <a href="/signup" class="btn btn-outline-success" type="submit">Cadastrar</a>
             </div>
             <div class="col-4">
                 <button class="btn btn-success" @click="login(user, pass)" type="submit">Entrar</button>
