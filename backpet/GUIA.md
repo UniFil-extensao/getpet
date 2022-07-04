@@ -35,9 +35,9 @@ Ao baixar o projeto pela primeira vez, será necessário criar o banco de dados 
 
    Utilize como base o arquivo .env.example. Esse aruivo **_NÃO DEVE_** ser commitado.
 
-   Para desenvolvimento, uma simples cópia do arquivo `.env.example`, renomeada para `.env` é suficiente.
+   Para desenvolvimento, uma simples _cópia_ do arquivo `.env.example`, renomeada para `.env` é suficiente.
 
-1. Certifique-se que o MariaDB está instalado e acessível no %PATH%.
+1. Certifique-se que o MariaDB está instalado e, caso estiver usando Windows, acessível no `%PATH%`.
 
 1. Crie os bancos de dados e o usuário da aplicação:
 
@@ -53,11 +53,19 @@ Ao baixar o projeto pela primeira vez, será necessário criar o banco de dados 
    sudo mariadb -u root -p < config/startdb.sql
    ```
 
-   Agora os bancos de desenvolvimento, `getpet_dev`, e teste, `getpet_test`, estão disponíveis, além do usuário `getpet`.
+   Agora os bancos de desenvolvimento, `getpet_dev`, e teste, `getpet_test`, estão disponíveis; além do usuário `getpet`.
 
    Caso deseje mudar a senha do usuário:
 
-   1. Entre no Banco de Dados (para _Windows_ não tem o `sudo`)
+   1. Entre no Banco de Dados
+
+      Windows:
+
+      ```batch
+      mariadb -u root -p
+      ```
+
+      Linux:
 
       ```bash
       sudo mariadb -u root -p
@@ -101,11 +109,13 @@ Abaixo estão os scripts disponíveis e suas descrições:
 | -------------- | :--------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
 | `dev`          | -          | Roda o servidor de desenvolvimento. <br>A porta em que o servidor roda pode ser configurada no arquivo `.env`                           |
 | `test`         | -          | Roda todos os testes do projeto.                                                                                                        |
+| `testing`      | -          | Roda os testes em modo _watch_. Útil para debugar e corrigir falhas                                                                     |
 | `migrate:make` | \<nome>    | Cria um novo arquivo de migração. Utilizado quando for criar ou modificar uma tabela, trigger etc.                                      |
 | `migrate:run`  | -          | Roda todas as migrações do banco de dados.                                                                                              |
 | `seed:make`    | \<nome>    | Cria um novo arquivo de seed. Utilizado para agilizar a criação de registros em tabelas para testes e desenvolvimento.                  |
 | `seed:run`     | -          | Roda todos os seeds do banco de dados. <br>\*_**Cuidado**: Seeds apagam todos registros atuais do banco, para então inserir os padrões_ |
-| `updatedb`     | -          | Roda todas as migrações e seeds.<br>Atalho para `migrate:run && seed:run`                                                               |
+| `updatedb`     | -          | Roda todas as migrações e seeds.<br>Atalho para `migrate:run` e `seed:run`                                                              |
+| `salt:new`     | -          | Gera um novo salt para fazer o hashing das senhas                                                                                       |
 
 ## Estrutura do Código<span id="structure"></span>
 
@@ -152,6 +162,20 @@ index.js
 
 ## Rotas<span id="routes"></span>
 
+### Disponíveis
+
+#### Usuários
+
+| Método | Path         | Autorização | Disponibilidade |                                   Documentação                                   | Função                                |
+| :----: | ------------ | :---------: | :-------------: | :------------------------------------------------------------------------------: | ------------------------------------- |
+|  GET   | `/users`     |      -      | Desenvolvimento |                                        -                                         | Lista todos os usuários.              |
+|  POST  | `/users`     |      -      |      Final      | [#15](https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet/issues/15) | Cria um novo usuário.                 |
+|  GET   | `/users/:id` |      -      |      Final      | [#16](https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet/issues/16) | Lista dados de um usuário específico. |
+|  PUT   | `/users/:id` |    Login    |      Final      | [#17](https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet/issues/17) | Atualiza um usuário.                  |
+| DELETE | `/users/:id` |      -      | Desenvolvimento |                                        -                                         | Apaga um usuário.                     |
+
+### Previstas
+
 As rotas previstas para a API podem ser conferidas nas <a href="https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet/issues">Issues do projeto</a>.
 
 ## Testes<span id="tests"></span>
@@ -189,11 +213,16 @@ Fonte: https://www.reddit.com/r/learnprogramming/comments/sj6oyi/comment/hvdrxix
 ### Documentação
 
 - [Documentação do JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
-- [Documentação do NodeJS](https://nodejs.org/en/docs/)
-- [Documentação do MariaDB](https://mariadb.com/kb/en/library/mariadb-documentation/)
+- [Documentação do NodeJS](https://nodejs.org/pt-br/docs/)
+- [Documentação da Express](https://expressjs.com/pt-br/4x/api.html)
+- [Documentação do MariaDB](https://mariadb.com/kb/pt/documentation/)
 - [Documentação do Knex](http://knexjs.org/guide/)
-- [Documentação do Jest](https://jestjs.io/docs/)
+- [Documentação do Jest](https://jestjs.io/pt-BR/docs/getting-started)
 - [Documentação do Validator](https://www.npmjs.com/package/validator)
+
+### Ferramentas úteis
+
+- [Gerador de Celulares Válidos](https://geradornv.com.br/gerador-celular/)
 
 ### Tutoriais
 

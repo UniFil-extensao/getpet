@@ -23,6 +23,32 @@
                 ]
             }
         ],
-        "no-unused-vars": 1
+        "camelcase": [
+            "error",
+            {
+                "ignoreImports": true
+            }
+        ],
+        "prefer-const": "warn",
+        "no-unused-vars": "warn",
+        "array-callback-return": [
+            "error",
+            {
+                "allowImplicit": true,
+                "checkForEach": true
+            }
+        ],
+        "no-await-in-loop": "error",
+        "no-constant-binary-expression": "warn",
+        "no-duplicate-imports": "warn",
+        "no-self-compare": "error",
+        "no-unmodified-loop-condition": "error",
+        "no-unreachable-loop": "error",
+        "no-use-before-define": "error",
+        "curly" : [
+            "warn",
+            "multi-or-nest",
+            "consistent"
+        ]
     }
 }

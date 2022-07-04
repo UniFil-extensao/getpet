@@ -1,51 +1,104 @@
 const validator = require('validator');
-const { InputValidationError, NotFoundError } = require('../utils/errors');
+const {
+  InputValidationError,
+  NotFoundError,
+  ForbiddenError,
+  InvalidDataHandler,
+} = require('../utils/errors');
+const trim = require('../utils/trim');
 const User = require('../models/user');
 const authenticator = require('./auth');
 
+const validations = {
+  username: (username, onFail) => {
+    if (
+      validator.isLength(username, { min: 3, max: 15 }) &&
+      validator.isAlphanumeric(username)
+    )
+      return username;
+    return onFail(
+      'O nome de usuário deve ter entre 3 e 15 caracteres alfanuméricos'
+    );
+  },
+  password: async (password, onFail) => {
+    const options = { min: 6 };
+    if (validator.isLength(password, options))
+      return User.hashPassword(password);
+    return await onFail(`A senha deve ter no mínimo ${options.min} caractéres`);
+  },
+  email: (email, onFail) => {
+    // eslint-disable-next-line camelcase
+    email = validator.normalizeEmail(email, { all_lowercase: false });
+    if (validator.isEmail(email)) return email;
+    return onFail('O email informado é inválido');
+  },
+  phone: (phone, onFail) => {
+    phone = validator.whitelist(phone, '0123456789');
+    if (
+      validator.isMobilePhone(phone, 'pt-BR') &&
+      validator.isLength(phone, { min: 10, max: 11 })
+    )
+      return phone;
+    return onFail('O telefone informado é inválido');
+  },
+  cpf: (cpf, onFail) => {
+    if (!validator.matches(cpf, /^\d{3}\.?\d{3}\.?\d{3}-?\d{2}$/))
+      return onFail('CPF inválido');
+    cpf = validator.whitelist(cpf, '0123456789');
+    return cpf;
+  },
+  city: (city, onFail) => {
+    city = validator.whitelist(city.toLowerCase(), '[a-zA-Z ]');
+    if (validator.isLength(city, { min: 3 })) return city;
+    return onFail('Cidade inválida');
+  },
+  uf: (uf, onFail) => {
+    uf = validator.whitelist(uf.toUpperCase(), '[A-Z]');
+    // prettier-ignore
+    if (validator.isIn(uf, ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'])) return uf;
+    return onFail('UF inválida');
+  },
+  active: (active, onFail) => {
+    if (['S', 'N', 'B'].includes(trim(active))) return active;
+    if (typeof active !== 'boolean') return onFail('Status Inválido');
+    return active ? 'S' : 'N';
+  },
+  // TODO: validar imagem
+  // eslint-disable-next-line no-unused-vars
+  profilePic: (profilePic, onFail) => {
+    return profilePic;
+  },
+};
+
 const create = async data => {
-  // TODO: filtrar campos válidos de `data` (garantir que não existem campos inesperados ou proibidos)
-  const { username, password, email, phone, cpf, city, uf } = data;
+  // prettier-ignore
+  const requiredFields = ['username', 'password', 'email', 'phone', 'cpf', 'city', 'uf'];
   const errors = {};
 
-  // validar que campos obrigatórios estão todos presentes
-  !username && (errors.username = 'O campo username é obrigatório');
-  !password && (errors.password = 'O campo senha é obrigatório');
-  !email && (errors.email = 'O campo email é obrigatório');
-  !phone && (errors.phone = 'O campo telefone é obrigatório');
-  !cpf && (errors.cpf = 'O campo CPF é obrigatório');
-  !city && (errors.city = 'O campo cidade é obrigatório');
-  !uf && (errors.uf = 'O campo UF é obrigatório');
+  requiredFields.forEach(field => {
+    data[field] = trim(data[field]);
+    if (!data[field]) errors[field] = `${field} é obrigatório`;
+  });
 
   if (Object.entries(errors).length)
     throw new InputValidationError(errors, 400);
 
-  // verificar que os dados são válidos
-  // prettier-ignore
-  const validUFs = ['AC','AL','AP','AM','BA','CE','DF','ES','GO','MA','MT','MS','MG','PA','PB','PR','PE','PI','RJ','RN','RS','RO','RR','SC','SP','SE','TO'];
-  (!validator.isLength(username, { min: 3, max: 15 }) ||
-    !validator.isAlphanumeric(username)) &&
-    (errors.username =
-      'O campo username deve ter entre 3 e 15 caracteres alfanuméricos');
-  !validator.isEmail(email) && (errors.email = 'Email inválido');
-  !validator.isMobilePhone(phone, 'pt-BR') &&
-    (errors.phone = 'Telefone inválido');
-  (!validator.isLength(uf, { min: 2, max: 2 }) || !validUFs.includes(uf)) &&
-    (errors.uf = 'UF inválida');
-  // TODO: validar que cidade existe
-  // TODO: validar CPF
-  // REM: validação temporária para garantir que cabe no banco.
-  !validator.matches(cpf, /^\d{3}\.?\d{3}\.?\d{3}\-?\d{2}$/) &&
-    (errors.cpf = 'CPF inválido');
+  requiredFields.forEach(field => {
+    if (field === 'password') return;
+    data[field] = validations[field](data[field], msg => (errors[field] = msg));
+  });
+  data.password = await validations.password(data.password);
 
   if (Object.entries(errors).length)
     throw new InputValidationError(errors, 422);
 
-  // TODO: normalizar os dados (remover espaços em branco, etc)
-
-  // Dados já devem estar no formato correto ao chegar aqui
-  const user = await User.create(data);
-  return user;
+  try {
+    const user = await User.create(data);
+    return authenticator.authenticate(user);
+  } catch (err) {
+    if (err.sqlMessage) InvalidDataHandler(err);
+    throw err;
+  }
 };
 
 const getAll = async () => {
@@ -55,15 +108,75 @@ const getAll = async () => {
 
 const getById = async id => {
   const user = await User.getById(id);
-  if (!user) throw new NotFoundError('Usuário não encontrado');
+  if (!user) throw new NotFoundError({ user: 'Usuário não encontrado' });
   return user;
 };
 
-const update = async (id, data) => {};
+const update = async (userOptions, data) => {
+  if (!Object.keys(data).length) {
+    throw new InputValidationError(
+      { data: 'Não foi passado nenhum dado para atualizar' },
+      400
+    );
+  }
+
+  const errors = {};
+
+  if (data.address) {
+    if (!data.address.city || !data.address.uf) {
+      errors.address = 'Devem ser informados a cidade e o estado';
+    } else {
+      data.city = data.address.city;
+      data.uf = data.address.uf;
+
+      delete data.address;
+    }
+  }
+
+  if (Object.entries(errors).length)
+    throw new InputValidationError(errors, 400);
+
+  if (Object.entries(errors).length) throw new ForbiddenError(errors, 403);
+
+  Object.keys(data).forEach(async field => {
+    if (field !== 'active')
+      data[field] = field !== 'profilePic' ? trim(data[field]) : data[field];
+    if (!data[field] && data[field] !== false)
+      return (errors[field] = 'Valor inválido');
+    if (field === 'password') return;
+    data[field] = await validations[field](
+      data[field],
+      msg => (errors[field] = msg)
+    );
+  });
+  if (data.password) data.password = await validations.password(data.password);
+
+  if (Object.entries(errors).length)
+    throw new InputValidationError(errors, 422);
+
+  if (data.active === 'B' && !userOptions.admin) {
+    throw new ForbiddenError(
+      { perms: 'Você não tem permissão para fazer isso' },
+      403
+    );
+  }
+
+  try {
+    const updatedUser =
+      Number.isFinite(userOptions.id) &&
+      (await User.update(userOptions.id, data));
+    if (!updatedUser)
+      throw new NotFoundError({ user: 'Usuário não encontrado' });
+    return updatedUser;
+  } catch (err) {
+    if (err.sqlMessage) InvalidDataHandler(err);
+    throw err;
+  }
+};
 
 const remove = async id => {
   const user = await User.remove(+id);
-  if (!user) throw new NotFoundError('Usuário não encontrado');
+  if (!user) throw new NotFoundError({ user: 'Usuário não encontrado' });
   return user;
 };
 
