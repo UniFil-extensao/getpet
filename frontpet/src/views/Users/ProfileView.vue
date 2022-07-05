@@ -1,70 +1,5 @@
 <script src="../../scripts/Users/profile.js"></script>
 <template>
-<<<<<<< HEAD
-<HeaderView/>
-<div class="divisor-linha"></div>
-<div class="container">
-  <div class="row mb-2 ms-5">
-    <div class="col-md-4">
-      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-        <div class="col p-4 d-flex flex-column position-static">
-          <h3 class="d-inline-block mb-3 text-success">{{ user.username }} <img src="../../assets/icons/svg/pencil.svg"></h3>
-          <h3 class="mb-0 text-success">{{ user.city }} - {{ user.uf }} <img src="../../assets/icons/svg/pencil.svg"></h3>
-        </div>
-        <div class="rounded-circle col-4 d-none d-lg-block" style="border: 1px solid; margin-right: 15px;">
-          {{ user.profile_pic_path }}
-        </div>
-      </div>
-      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-        <div class="col p-4 d-flex flex-column position-static">
-          <h4 class="d-inline-block mb-3 text-success">user.qtd_adotados <span style="float: right;"><img class="mb-1" src="../../assets/icons/svg/star.svg"> {{ user.adopter_score }}</span></h4>
-          <h4 class="mb-0 text-success">user.qtd_doados  <span style="float: right;"><img class="mb-1" src="../../assets/icons/svg/star.svg"> {{ user.donor_score }} </span></h4>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-        <div class="col p-4 d-flex flex-column position-static">
-          <strong class="d-inline-block mb-3 text-success">Dados do usuário:</strong>
-          <span>
-            <p style="float:left" class="mb-4 text-success">Nome:</p>
-            <p style="float:right" class="mb-1 text-secondary">{{ user.username }}</p>
-          </span>
-          <span>
-            <p style="float:left" class="mb-4 text-success">Email:</p>
-            <p style="float:right" class="mb-1 text-secondary">{{ user.email }}</p>
-          </span>
-          <span>
-            <p style="float:left" class="mb-4 text-success">Telefone:</p>
-            <p style="float:right" class="mb-1 text-secondary">{{ user.phone }}</p>
-          </span>
-          <span>
-            <p style="float:left" class="mb-4 text-success">Senha:</p>
-            <button style="float:right" @click = "getUser()" type="button" class="btn btn-outline-success">Alterar senha</button>
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row mb-2 ms-5">
-    <div class="col-md-6 mb-4">
-      <div role="button" class="row mb-2 border rounded shadow-sm mb-3">
-        <h4 class="col-10 flex-md-row m-2 d-inline-block text-success">Já doou</h4>
-        <span class="col-1 fs-2 text-success">></span>
-      </div>
-      <div role="button" class="row border rounded shadow-sm mb-3">
-        <h4 class="col-10 m-2 d-inline-block text-success">Já adotou</h4>
-        <span class="col-1 fs-2 text-success">></span>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <!-- v-if pets disponibilizados -->
-      <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-        <div class="col p-4 d-flex flex-column position-static">
-          <div class="row">
-            <h4 class="text-success col-6 me-2 mb-2"> Disponibilizando: </h4>
-            <button type="button" class="col-4 ms-3 mb-3 btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Anunciar Pet</button>
-=======
   <HeaderView/>
   <div class="divisor-linha"></div>
   <div class="container">
@@ -73,16 +8,15 @@
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
             <h3 class="d-inline-block mb-3 text-success">{{ user.username }} 
-            <button v-if="user.id == userId" type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalUser">
+            <button type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalUser">
               <img src="../../assets/icons/svg/pencil.svg">
             </button>
             </h3>
             <h3 class="mb-0 text-success">{{ user.city }} - {{ user.uf }}
-              <button v-if="user.id == userId" type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalCity">
+              <button type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalCity">
                 <img src="../../assets/icons/svg/pencil.svg">
               </button>
             </h3>
->>>>>>> 31435e5d84a56db070822e10d40bc1c19d814f82
           </div>
         </div>
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
@@ -92,7 +26,7 @@
           </div>
         </div>
       </div>
-      <div v-if="loggedUser" class="col-md-6">
+      <div class="col-md-6">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
             <strong class="d-inline-block mb-3 text-success">Dados do usuário:</strong>
@@ -191,7 +125,7 @@
           <div class="col p-4 d-flex flex-column position-static">
             <div class="row">
               <h4 class="text-success col-6 me-2 mb-2"> Disponibilizando: </h4>
-              <button type="button" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
+              <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
             </div>
             <!-- v-for pets disponibilizados -->
             <div class="border rounded shadow-sm mb-3">
@@ -226,19 +160,21 @@
 <div class="modal fade" id="modalUser" tabindex="-1" aria-labelledby="modalLabelUser" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title" id="modalLabelUser">Alterar usuário</h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div>
-          <input placeholder="Usuário:" type="text" class="form-control" v-model="updateUser.username">
+      <form @submit.prevent="update()">
+        <div class="modal-header">
+          <h3 class="modal-title" id="modalLabelUser">Alterar usuário</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" @click="update()" data-bs-dismiss="modal" class="btn btn-success">Salvar</button>
-      </div>
+        <div class="modal-body">
+          <div>
+            <input placeholder="Usuário:" type="text" class="form-control" v-model="updateUser.username">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" data-bs-dismiss="modal" class="btn btn-success">Salvar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -247,27 +183,29 @@
 <div class="modal fade" id="modalCity" tabindex="-1" aria-labelledby="modalLabelCity" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title" id="modalLabelCity">Alterar Cidade - UF</h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row justify-content-space-between mt-3">
-          <div class="col">
-            <input name="cidade" v-model="updateUser.city" type="text" required class="form-control" placeholder="Cidade">
-          </div>
-          <div class="col-4">
-            <select v-model="updateUser.uf" required class="form-control" name="uf" placeholder="Estado">
-              <option value="">UF</option>
-              <option v-for="UF in ufs" :value="UF"> {{ UF }} </option>
-            </select>
+      <form @submit.prevent="update()">
+        <div class="modal-header">
+          <h3 class="modal-title" id="modalLabelCity">Alterar Cidade - UF</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row justify-content-space-between mt-3">
+            <div class="col">
+              <input name="cidade" v-model="updateUser.city" type="text" required class="form-control" placeholder="Cidade">
+            </div>
+            <div class="col-4">
+              <select v-model="updateUser.uf" required class="form-control" name="uf" placeholder="Estado">
+                <option value="">UF</option>
+                <option v-for="UF in ufs" :value="UF"> {{ UF }} </option>
+              </select>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" @click="update(true)" data-bs-dismiss="modal" class="btn btn-success">Salvar</button>
-      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" data-bs-dismiss="modal" class="btn btn-success">Salvar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -276,28 +214,30 @@
 <div class="modal fade" id="modalPassword" tabindex="-1" aria-labelledby="modalLabelPassword" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title" id="modalLabelPassword">Alterar senha</h3>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row justify-content-space-between mt-3">
-          <div class="col">
-            <input name="password" v-model="updateUser.pass" type="password" required class="form-control" placeholder="Nova senha">
-          </div>
-          <div class="col">
-            <input name="password" v-model="passConfirm" type="password" required class="form-control" placeholder="Confirmar senha">
+      <form @submit.prevent="update()">
+
+        <div class="modal-header">
+          <h3 class="modal-title" id="modalLabelPassword">Alterar senha</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row justify-content-space-between mt-3">
+            <div class="col">
+              <input name="password" v-model="updateUser.pass" type="password" required class="form-control" placeholder="Nova senha">
+            </div>
+            <div class="col">
+              <input name="password" v-model="passConfirm" type="password" required class="form-control" placeholder="Confirmar senha">
+            </div>
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" @click="update()" data-bs-dismiss="modal" class="btn btn-success">Salvar</button>
-      </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" data-bs-dismiss="modal" class="btn btn-success">Salvar</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
-
 
 <!-- Modal Anunciar Pet-->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -358,13 +298,13 @@
         <div class="col-md-6 mb-3">
           <label for="country">Foto de Perfil (128px X 128px)</label>
           <div>
-            <button type="button" class="btn btn-primary">Escolher...</button>
+            <button type="button" class="btn btn-success">Escolher...</button>
           </div>
         </div>
         <div class="col-md-6 mb-3">
           <label for="country">Fotos adicionais</label>
           <div>
-            <button type="button" class="btn btn-primary">Escolher...</button>
+            <button type="button" class="btn btn-success">Escolher...</button>
           </div>
         </div>
       </div>
@@ -377,7 +317,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-success">Salvar</button>
       </div>
     </div>
@@ -389,16 +329,15 @@
 </template>
 
 <style scoped>
+  ul {
+    width: 100%;
+  }
+  .divisor-linha {
+    height: 3rem;
+    border-width: 1px 0;
+  }
 
-ul {
-  width: 100%;
-}
-.divisor-linha {
-  height: 3rem;
-  border-width: 1px 0;
-}
-
-.row {
-  margin-left: 0;
-}
+  .row {
+    margin-left: 0;
+  }
 </style>
