@@ -338,7 +338,7 @@ describe('testes de seleção de usuário', () => {
   );
 });
 
-// PUT /users/:id
+// PATCH /users/:id
 describe('testes de atualização de usuário', () => {
   /* 200 - OK */
   test.each([
@@ -381,6 +381,8 @@ describe('testes de atualização de usuário', () => {
 
       expect(response.body.id).toBe(2);
       expect(response.body.password).toBeUndefined();
+      expect(response.body.admin).toBeUndefined();
+      expect(response.body.active).toBeUndefined();
     },
     10000
   );
@@ -542,7 +544,7 @@ describe('testes de atualização de usuário', () => {
           cookie: `token=${token}; HttpOnly; SameSite=Strict`,
         });
 
-      expect(response.status).toBe(404);
+      expect([400, 404]).toContain(response.status);
       expect(response.body).toBeDefined();
       expect(response.body.errors).toBeDefined();
     },

@@ -5,7 +5,7 @@ const errorHandler = require('./error');
 const auth = async function (req, res, next) {
   if (DISABLE_AUTH) {
     req.user = {
-      id: req.params.id,
+      id: req.params.id, // TODO: alterar quando implementar rotas de adoção
       admin: true,
     };
     return next();

@@ -62,11 +62,15 @@ const findByCredentials = async (username, password) => {
   return user;
 };
 
-const update = async (id, data) => {
-  const user = await knex.transaction(async trx => {
+const update = async (id, data, conn) => {
+  const updateTransaction = async trx => {
     await trx('users').update(data).where('id', id);
     return await getById(id, trx);
-  });
+  };
+
+  const user = !conn
+    ? await knex.transaction(updateTransaction)
+    : await updateTransaction(conn);
 
   return user;
 };

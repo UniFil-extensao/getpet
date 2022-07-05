@@ -50,5 +50,10 @@
             "multi-or-nest",
             "consistent"
         ]
-    }
+    },
+    "ignorePatterns": [
+        "node_modules/",
+        "dist/",
+        "db/seeds/"
+    ]
 }

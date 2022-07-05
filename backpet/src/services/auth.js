@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { InputValidationError, ForbiddenError } = require('../utils/errors');
-const trim = require('../utils/trim');
+const { trim } = require('../utils/strings');
 const { JWT_SECRET } = require('../../config/general.config');
 const User = require('../models/user');
 
@@ -48,8 +48,13 @@ const login = async function (credentials) {
   return authenticate(user);
 };
 
+const isAuthorized = (author, target) => {
+  return author.admin || author.id === target.id;
+};
+
 module.exports = {
   login,
   validateToken,
   authenticate,
+  isAuthorized,
 };
