@@ -13,7 +13,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="dalmata" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
-                                Dalmata
+                                Dalmataaaa
                             </label>
                         </div>
                         <div class="form-check">
