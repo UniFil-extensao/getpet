@@ -5,6 +5,7 @@ export default {
   created: async function () {
     this.user = await fetch(`${this.server}/users/${this.userId}`, createOptions('GET'));
     this.user = await this.user.json();
+
   },
   methods:{
     update: async function(){
@@ -18,6 +19,9 @@ export default {
 
       if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
       else this.user = data;
+    },
+    insertAdoption: async function(){
+      console.log('xqdl');
     }
   },
   data: function () {
