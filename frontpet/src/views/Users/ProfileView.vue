@@ -298,13 +298,19 @@
         <div class="col-md-6 mb-3">
           <label for="country">Foto de Perfil (128px X 128px)</label>
           <div>
-            <button type="button" class="btn btn-success">Escolher...</button>
+            <label for="file-upload" class="custom-file-upload btn btn-success">
+            Escolher...
+            </label>
+            <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
           </div>
         </div>
         <div class="col-md-6 mb-3">
           <label for="country">Fotos adicionais</label>
           <div>
-            <button type="button" class="btn btn-success">Escolher...</button>
+            <label for="file-upload" class="custom-file-upload btn btn-success">
+            Escolher...
+            </label>
+            <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
           </div>
         </div>
       </div>
@@ -339,5 +345,16 @@
 
   .row {
     margin-left: 0;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  .custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
   }
 </style>
