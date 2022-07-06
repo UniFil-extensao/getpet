@@ -25,8 +25,22 @@ const create = async (req, res, next) => {
 
 const list = async (req, res, next) => {
   try {
-    // TODO: filtrar os query params
-    const options = req.query;
+    const allowedFields = [
+      'search',
+      'page',
+      'noLimit',
+      'orderBy',
+      'orderDir',
+      'species',
+      'breeds',
+      'minAge',
+      'maxAge',
+      'colors',
+      'sizes',
+      'oldOwnerId',
+      'newOwnerId',
+    ];
+    const options = filterData(allowedFields, req.query);
 
     const adoptions = await adoptionsService.list(options);
     res.json(adoptions);
