@@ -60,3 +60,42 @@
     align-items: center;
     align-content: center;
 }
+
+#btnDrop {
+    background: none; 
+    border: none;
+    color: black;
+}
+
+#btnDrop:hover {
+    background: fixed;
+    background-color: white;
+    color: black;
+    border: none;
+}
+
+#btnDrop:focus {
+    background: fixed;
+    background-color: white;
+    color: black;
+    border: none;
+    margin: 0;
+    box-shadow: none;
+}
+
+#cabecalho {
+    min-width: 600px;
+}
+
+#btnIcones1 {
+    border-color: transparent !important; margin-right: 0%;
+    height: 35px;
+    width: 40px;
+    margin-right: 10px;
+}
+
+#btnIcones2 {
+    border-color: transparent !important; margin-right: 35%;
+    height: 35px;
+    width: 40px;
+}
