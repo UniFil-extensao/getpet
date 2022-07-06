@@ -20,7 +20,7 @@
           <label class="input-label">Confirme seu E-mail</label>
         </div>
         <div class="row form-floating mt-3">
-          <input v-model="inputUser.cpf" name="cpf" type="text" required class="form-control" placeholder="CPF">
+          <input v-model="inputUser.cpf" maxlength="11" name="cpf" type="text" required class="form-control" placeholder="CPF">
           <label class="input-label">CPF</label>
         </div>
         <div class="row form-floating mt-3">
