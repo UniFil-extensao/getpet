@@ -8,12 +8,12 @@
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
             <h3 class="d-inline-block mb-3 text-success">{{ user.username }} 
-            <button type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalUser">
+            <button v-if="loggedUser.id == user.id" type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalUser">
               <img src="../../assets/icons/svg/pencil.svg">
             </button>
             </h3>
             <h3 class="mb-0 text-success">{{ user.city }} - {{ user.uf }}
-              <button type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalCity">
+              <button v-if="loggedUser.id == user.id" type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalCity">
                 <img src="../../assets/icons/svg/pencil.svg">
               </button>
             </h3>
@@ -26,7 +26,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div v-if="loggedUser.id == user.id" class="col-md-6">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
             <strong class="d-inline-block mb-3 text-success">Dados do usuário:</strong>
@@ -298,13 +298,19 @@
         <div class="col-md-6 mb-3">
           <label for="country">Foto de Perfil (128px X 128px)</label>
           <div>
-            <button type="button" class="btn btn-success">Escolher...</button>
+            <label for="file-upload" class="custom-file-upload btn btn-success">
+            Escolher...
+            </label>
+            <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
           </div>
         </div>
         <div class="col-md-6 mb-3">
           <label for="country">Fotos adicionais</label>
           <div>
-            <button type="button" class="btn btn-success">Escolher...</button>
+            <label for="file-upload" class="custom-file-upload btn btn-success">
+            Escolher...
+            </label>
+            <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
           </div>
         </div>
       </div>
@@ -339,5 +345,16 @@
 
   .row {
     margin-left: 0;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  .custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
   }
 </style>
