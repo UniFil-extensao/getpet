@@ -5,7 +5,9 @@ export default {
   created: async function () {
     this.user = await fetch(`${this.server}/users/${this.userId}`, createOptions('GET'));
     this.user = await this.user.json();
-
+    this.updateUser.city = this.user.city;
+    this.updateUser.uf = this.user.uf;
+    this.loggedUser = JSON.parse(localStorage.user);
   },
   methods:{
     update: async function(){
@@ -19,9 +21,6 @@ export default {
 
       if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
       else this.user = data;
-    },
-    insertAdoption: async function(){
-      console.log('xqdl');
     }
   },
   data: function () {
@@ -29,6 +28,7 @@ export default {
       server: `http://localhost:${import.meta.env.VITE_PORT}`,
       userId: this.$route.params.id,
       user: {},
+      loggedUser: {},
       updateUser: {
         username: '',
         city: '',

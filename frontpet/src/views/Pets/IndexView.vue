@@ -1,4 +1,4 @@
-<script src="../../scripts/Users/profile.js"></script>
+<script src="../../scripts/Pets/indexPet.js"></script>
 <template>
     <HeaderView />
     <div class="divisor-linha"></div>
@@ -31,10 +31,11 @@
                         <div class="divisor-linha"></div>
                         <h4>Idade:</h4>
                         <div>
-                            <input type="range" class="form-range" id="customRange1">
-                            <label for="customRange1" class="form-label">De: 5 meses</label>
+                            <input min="0" max="10" v-model="selM" type="range" class="form-range" id="customRange1">
+                            <label for="customRange1" class="form-label">De: {{ months[selM] }}</label>
                             <br>
-                            <label for="customRange1" class="form-label">Até: 7 anos</label>
+                            <input min="0" max="10" v-model="selY" type="range" class="form-range" id="customRange1">
+                            <label for="customRange1" class="form-label">Até: {{ years[selY] }}</label>
                         </div>
                         <div class="divisor-linha"></div>
                         <h4>Cor:</h4>
@@ -81,7 +82,7 @@
                         <div class="input-group">
                             <input type="search" class="form-control rounded" placeholder="Pesquisar..."
                                 aria-label="Search" aria-describedby="search-addon" />
-                            <button type="button" class="btn btn-outline-primary">Pesquisar</button>
+                            <button type="button" class="btn btn-outline-success">Pesquisar</button>
                         </div>
                     </div>
                 </div>
@@ -115,13 +116,13 @@
                     <div class="divisor-linha"></div>
                     <ul class="pagination justify-content-center">
                         <li class="page-item disabled">
-                            <a class="page-link">Anterior</a>
+                            <a class="btn btn-outline-success page-link">Anterior</a>
                         </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#">1</a></li>
+                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#">2</a></li>
+                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#">3</a></li>
                         <li class="page-item">
-                            <a class="page-link" href="#">Próximo</a>
+                            <a class="btn btn-success page-link-success" href="#">Próximo</a>
                         </li>
                     </ul>
                 </div>
@@ -138,5 +139,18 @@ ul {
 .divisor-linha {
     height: 3rem;
     border-width: 1px 0;
+}
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    input[type='range']::-webkit-slider-thumb {
+      background: #4CAF50;
+    }
+}
+
+input:checked{
+    border: 1px solid #4CAF50;
+    background-color: #4CAF50;
+}
+.transp {
+    border-color: transparent !important;
 }
 </style>

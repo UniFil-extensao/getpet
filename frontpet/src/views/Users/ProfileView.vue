@@ -8,12 +8,12 @@
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
             <h3 class="d-inline-block mb-3 text-success">{{ user.username }} 
-            <button type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalUser">
+            <button v-if="loggedUser.id == user.id" type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalUser">
               <img src="../../assets/icons/svg/pencil.svg">
             </button>
             </h3>
             <h3 class="mb-0 text-success">{{ user.city }} - {{ user.uf }}
-              <button type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalCity">
+              <button v-if="loggedUser.id == user.id" type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalCity">
                 <img src="../../assets/icons/svg/pencil.svg">
               </button>
             </h3>
@@ -26,7 +26,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div v-if="loggedUser.id == user.id" class="col-md-6">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
             <strong class="d-inline-block mb-3 text-success">Dados do usuário:</strong>
@@ -242,87 +242,91 @@
 <!-- Modal Anunciar Pet-->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <form @submit.prevent="insertAdoption()">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title text-success" id="staticBackdropLabel">Cadastrar Pet para adoção</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title text-success" id="staticBackdropLabel">Cadastrar Pet para adoção</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
 
-          <div class="row">
-            <div class="col-md-4 mb-3">
-              <input type="text" class="form-control" id="zip" placeholder="Nome do animal" required="">
-            </div>
-            <div class="col-md-2 mb-3">
-              <input type="text" class="form-control" id="zip" placeholder="Idade" required="">
-            </div>
-            <div class="col-md-3 mb-3">
-              <select class="form-select" id="state" required="">
-                  <option value="meses">Meses</option>
-                  <option value="anos">Anos</option>
-              </select>
-            </div>
-            <div class="col-md-3 mb-3">
-              <select class="form-select" id="country" required="">
-                  <option value="">Tamanho</option>
-                  <option>80cm</option>
-              </select>
-            </div>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <input type="text" class="form-control" id="zip" placeholder="Nome do animal" required="">
           </div>
-
-          <div class="row">
-            <div class="col-md-3 mb-3">
-              <select class="form-select" id="country" required="">
-                  <option value="">Especie</option>
-                  <option>Cachorro</option>
-              </select>
-            </div>
-            <div class="col-md-3 mb-3">
-              <select class="form-select" id="state" required="">
-                  <option value="">Cor</option>
-                  <option>Bege</option>
-              </select>
-            </div>
-            <div class="col-md-3 mb-3">
-              <select class="form-select" id="country" required="">
-                  <option value="">Raça</option>
-                  <option>Golden</option>
-              </select>
-            </div>
-            <div class="col-md-3 mb-3">
-              <input type="text" class="form-control" id="zip" placeholder="Outra Raça" required="">
-            </div>
+          <div class="col-md-2 mb-3">
+            <input type="text" class="form-control" id="zip" placeholder="Idade" required="">
           </div>
-
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label for="country">Foto de Perfil (128px X 128px)</label>
-              <div>
-                <button type="button" class="btn btn-success">Escolher...</button>
-              </div>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label for="country">Fotos adicionais</label>
-              <div>
-                <button type="button" class="btn btn-success">Escolher...</button>
-              </div>
-            </div>
+          <div class="col-md-3 mb-3">
+            <select class="form-select" id="state" required="">
+                <option value="">Meses</option>
+                <option>6 meses</option>
+            </select>
           </div>
-
-          <div class="row">
-            <div class="col-md-12 mb-3">
-              <label>Adicione uma descrição:</label>
-              <textarea class="form-control" type="text" id="message-text" required placeholder="Descrição do Anúncio"></textarea>
-            </div>
+          <div class="col-md-3 mb-3">
+            <select class="form-select" id="country" required="">
+                <option value="">Tamanho</option>
+                <option>80cm</option>
+            </select>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success">Salvar</button>
+
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <select class="form-select" id="country" required="">
+                <option value="">Especie</option>
+                <option>Cachorro</option>
+            </select>
+          </div>
+          <div class="col-md-3 mb-3">
+            <select class="form-select" id="state" required="">
+                <option value="">Cor</option>
+                <option>Bege</option>
+            </select>
+          </div>
+          <div class="col-md-3 mb-3">
+            <select class="form-select" id="country" required="">
+                <option value="">Raça</option>
+                <option>Golden</option>
+            </select>
+          </div>
+          <div class="col-md-3 mb-3">
+            <input type="text" class="form-control" id="zip" placeholder="Outra Raça" required="">
+          </div>
+        </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="country">Foto de Perfil (128px X 128px)</label>
+          <div>
+            <label for="file-upload" class="custom-file-upload btn btn-success">
+            Escolher...
+            </label>
+            <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
+          </div>
+        </div>
+        <div class="col-md-6 mb-3">
+          <label for="country">Fotos adicionais</label>
+          <div>
+            <label for="file-upload" class="custom-file-upload btn btn-success">
+            Escolher...
+            </label>
+            <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
+          </div>
         </div>
       </div>
-    </form>
+
+        <div class="row">
+          <div class="col-md-12 mb-3">
+            <label>Adicione uma descrição:</label>
+            <textarea class="form-control" id="message-text" placeholder="Descrição do Anúncio"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-success">Salvar</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -341,5 +345,16 @@
 
   .row {
     margin-left: 0;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  .custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
   }
 </style>
