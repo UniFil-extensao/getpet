@@ -44,16 +44,58 @@ const create = async data => {
   return adoption;
 };
 
-// eslint-disable-next-line no-unused-vars
 const list = async options => {
-  // TODO: implementar
-  // filtros, pesquisa, paginação
+  const adjustQuery = queryBuilder => {
+    if (options.search) {
+      queryBuilder
+        .where('pet_name', 'like', `%${options.search}%`)
+        .orWhere('desc', 'like', `%${options.search}%`);
+    }
+
+    if (options.old_owner_id)
+      queryBuilder.where('old_owner_id', options.old_owner_id);
+    if (options.new_owner_id)
+      queryBuilder.where('new_owner_id', options.new_owner_id);
+
+    if (options.minAge) queryBuilder.where('pet_age', '>=', options.minAge);
+    if (options.maxAge) queryBuilder.where('pet_age', '<=', options.maxAge);
+
+    if (options.species)
+      queryBuilder.where('pet_species', 'like', `%${options.species}%`);
+
+    if (options.breeds) queryBuilder.whereIn('pet_breed', options.breeds);
+
+    if (options.colors) queryBuilder.whereIn('pet_color', options.colors);
+    if (options.sizes) queryBuilder.whereIn('pet_size', options.sizes);
+  };
+
+  const results = await knex.transaction(async trx => {
+    const adoptionsQry = trx('adoptions')
+      .select('*')
+      .limit(options.limit)
+      .offset(options.offset)
+      .orderBy([options.sort])
+      .modify(adjustQuery);
+
+    const pagesQry = trx('adoptions')
+      .modify(adjustQuery)
+      .count('* as total_records')
+      .then(([res]) => Math.ceil(res.total_records / options.limit));
+
+    const [adoptions, total_pages] = await Promise.all([
+      adoptionsQry,
+      pagesQry,
+    ]);
+
+    return { adoptions, total_pages };
+  });
+
+  return results;
 };
 
 const update = async (options, data) => {
   if (data.new_owner_id) {
     data.status = 'F';
-    // eslint-disable-next-line camelcase
     data.closed_at = new Date();
   }
   return await knex.transaction(async trx => {
@@ -98,10 +140,11 @@ const update = async (options, data) => {
 };
 
 const deleteById = async id => {
-  await knex.transaction(async trx => {
+  const deletedRows = await knex.transaction(async trx => {
     await trx('adoptions').delete().where('id', id);
   });
 
+  if (deletedRows === 0) throw new Error('Adoção não encontrada');
   return id;
 };
 
