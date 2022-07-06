@@ -1,6 +1,6 @@
 const userService = require('../services/user');
 const authService = require('../services/auth');
-const { ForbiddenError } = require('../utils/errors');
+const { filterData } = require('../services/data');
 const { USE_SSL } = require('../../config/general.config');
 
 const authCookie = token => [
@@ -25,11 +25,9 @@ const create = async (req, res, next) => {
       'uf',
     ];
 
-    const insertData = Object.entries(req.body)
-      .filter(([field]) => allowedFields.includes(field))
-      .reduce((acc, [field, value]) => ({ ...acc, [field]: value }), {});
+    const data = filterData(allowedFields, req.body);
 
-    const { user, token } = await userService.create(insertData);
+    const { user, token } = await userService.create(data);
     res.cookie(...authCookie(token));
     res.status(201).json(user);
   } catch (err) {
@@ -51,10 +49,10 @@ const getById = async (req, res, next) => {
     const token = req.cookies?.token;
     if (token) req.user = await authService.validateToken(token);
 
-    const user = await userService.getById(req.params.id);
+    const user = await userService.getById(+req.params.id);
     delete user.admin;
     delete user.active;
-    if (!req.user || req.user.id !== user.id) {
+    if (!req.user || !authService.isAuthorized(req.user, user)) {
       delete user.cpf;
       delete user.email;
     }
@@ -66,14 +64,8 @@ const getById = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
+  // TODO: instalar multer e implementar upload de imagens
   try {
-    req.params.id = +req.params.id;
-    if (!req.user.admin && req.user.id !== req.params.id) {
-      throw new ForbiddenError({
-        accessDenied: 'Você não tem permissão para fazer isso.',
-      });
-    }
-
     const allowedUpdates = [
       'username',
       'password',
@@ -84,15 +76,13 @@ const update = async (req, res, next) => {
       'active',
     ];
 
-    const updateData = Object.entries(req.body)
-      .filter(([field]) => allowedUpdates.includes(field))
-      .reduce((acc, [field, value]) => ({ ...acc, [field]: value }), {});
+    const data = filterData(allowedUpdates, req.body);
 
-    // TODO: instalar multer e implementar upload de imagens
+    data.id = +req.params.id;
+    const user = await userService.update(req.user, data);
 
-    // passar o id do usuário a ser alterado (quando for admin params.id !== user.id)
-    req.user.id = req.params.id;
-    const user = await userService.update(req.user, updateData);
+    delete user.admin;
+    delete user.active;
     res.json(user);
   } catch (err) {
     next(err);

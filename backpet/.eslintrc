@@ -23,12 +23,6 @@
                 ]
             }
         ],
-        "camelcase": [
-            "error",
-            {
-                "ignoreImports": true
-            }
-        ],
         "prefer-const": "warn",
         "no-unused-vars": "warn",
         "array-callback-return": [
@@ -50,5 +44,10 @@
             "multi-or-nest",
             "consistent"
         ]
-    }
+    },
+    "ignorePatterns": [
+        "node_modules/",
+        "dist/",
+        "db/seeds/"
+    ]
 }

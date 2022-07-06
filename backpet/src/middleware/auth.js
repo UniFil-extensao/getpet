@@ -5,7 +5,7 @@ const errorHandler = require('./error');
 const auth = async function (req, res, next) {
   if (DISABLE_AUTH) {
     req.user = {
-      id: req.params.id,
+      id: 1,
       admin: true,
     };
     return next();
