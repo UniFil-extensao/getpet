@@ -32,8 +32,8 @@ const getByOwner = async (id, type = { old: true, new: true }, conn = knex) => {
 
 const create = async data => {
   const adoption = await knex.transaction(async trx => {
-    const imgs = data.files?.img;
-    const pfp = data.files?.pfp[0];
+    const imgs = data.files?.imgs;
+    const [pfp] = data.files?.pfp || [];
     delete data.files;
 
     const [id] = await trx('adoptions').insert(data);

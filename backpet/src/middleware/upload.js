@@ -30,10 +30,10 @@ const bodyParser = (req, res, next) => {
   next();
 };
 
-const validateUpload = function (pfp = false, img = false) {
+const validateUpload = function (pfp = false, imgs = false) {
   const fields = [];
   pfp && fields.push({ name: 'pfp', maxCount: 1 });
-  img && fields.push({ name: 'img', maxCount: MAX_PET_PICS });
+  imgs && fields.push({ name: 'imgs', maxCount: MAX_PET_PICS });
 
   return [uploadValidator.fields(fields), bodyParser];
 };
