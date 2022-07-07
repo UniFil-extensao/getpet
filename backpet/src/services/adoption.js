@@ -121,6 +121,7 @@ const list = async options => {
   options.page = +options.page || 1;
   options.orderBy = options.orderBy?.trim().toLowerCase();
   options.species = options.species?.trim().toLowerCase();
+  options.status = options.status?.trim().toLowerCase();
   options.breeds = splitOpts(options.breeds);
   options.colors = splitOpts(options.colors);
   options.sizes = splitOpts(options.sizes);
@@ -128,6 +129,7 @@ const list = async options => {
   options.maxAge = +options.maxAge >= 0 ? +options.maxAge : 0;
   options.newOwnerId = +options.newOwnerId >= 0 ? +options.newOwnerId : 0;
   options.oldOwnerId = +options.oldOwnerId >= 0 ? +options.oldOwnerId : 0;
+  options.nullDonorScore = options.nullDonorScore === 'true';
 
   if (options.search) filters.search = options.search;
 
@@ -149,6 +151,8 @@ const list = async options => {
   }
 
   if (options.species) filters.species = options.species;
+  if (options.status && ['a', 'f'].includes(options.status))
+    filters.status = options.status;
   if (options.breeds) filters.breeds = options.breeds;
   if (options.colors) filters.color = options.colors;
   if (options.size) filters.sizes = options.sizes;
@@ -156,6 +160,7 @@ const list = async options => {
   if (options.maxAge) filters.max_age = options.maxAge;
   if (options.newOwnerId) filters.new_owner_id = options.newOwnerId;
   if (options.oldOwnerId) filters.old_owner_id = options.oldOwnerId;
+  if (options.nullDonorScore) filters.donor_score = null;
 
   return await Adoption.list(filters);
 };
@@ -206,6 +211,12 @@ const update = async (author, data, openOnly = true) => {
     );
   }
 
+  if (data.new_owner_id && data.new_owner_id === ownerId) {
+    throw new InputValidationError(
+      { new_owner_id: 'O novo dono não pode ser o mesmo que o antigo' },
+      422
+    );
+  }
   data = adoptionValidator.validate(data);
 
   const adoption = await Adoption.update(options, data);

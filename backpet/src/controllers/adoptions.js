@@ -39,6 +39,8 @@ const list = async (req, res, next) => {
       'sizes',
       'oldOwnerId',
       'newOwnerId',
+      'status',
+      'nullDonorScore',
     ];
     const options = filterData(allowedFields, req.query);
 

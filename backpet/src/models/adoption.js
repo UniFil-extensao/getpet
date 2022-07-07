@@ -82,14 +82,18 @@ const list = async options => {
 
     if (options.old_owner_id)
       queryBuilder.where('old_owner_id', options.old_owner_id);
+
     if (options.new_owner_id)
       queryBuilder.where('new_owner_id', options.new_owner_id);
 
     if (options.minAge) queryBuilder.where('pet_age', '>=', options.minAge);
     if (options.maxAge) queryBuilder.where('pet_age', '<=', options.maxAge);
+    if (options.donor_score !== undefined)
+      queryBuilder.where('donor_score', options.donor_score);
 
     if (options.species)
       queryBuilder.where('pet_species', 'like', `%${options.species}%`);
+    if (options.status) queryBuilder.where('status', '=', `${options.status}`);
 
     if (options.breeds) queryBuilder.whereIn('pet_breed', options.breeds);
 
