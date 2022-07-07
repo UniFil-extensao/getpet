@@ -1,5 +1,6 @@
 import { createOptions } from '../../utils/http';
 import HeaderView from '../../views/Users/HeaderView.vue';
+import MenuView from '../../views/Users/MenuView.vue';
 
 
 export default {
@@ -11,5 +12,5 @@ export default {
       years: ['1 ano', '2 anos', '3 anos', '4 anos', '5 anos', '6 anos', '7 anos', '8 anos', '9 anos', '10 anos', 'Mais de 10 anos'],
     }
   },
-  components: { HeaderView }
+  components: { HeaderView, MenuView }
 } 

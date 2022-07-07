@@ -1,6 +1,7 @@
 <script src="../../scripts/Pets/indexPet.js"></script>
 <template>
     <HeaderView />
+    <MenuView />
     <div class="divisor-linha"></div>
     <div class="container">
         <div class="row mb-2 ms-5">
@@ -118,9 +119,9 @@
                         <li class="page-item disabled">
                             <a class="btn btn-outline-success page-link">Anterior</a>
                         </li>
-                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#">1</a></li>
-                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#">2</a></li>
-                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#">3</a></li>
+                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#" id="btnProx">1</a></li>
+                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#" id="btnProx">2</a></li>
+                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#" id="btnProx">3</a></li>
                         <li class="page-item">
                             <a class="btn btn-success page-link-success" href="#">Próximo</a>
                         </li>
