@@ -38,13 +38,25 @@ export default {
       if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
       else this.user = data;
     },
-    removePet: async function(petId){
-      if(confirm(`Deseja realmente remover o pet ${this.availablePets[petId-1].pet_name}?`)){
-        var res = await fetch(`${this.server}/adoptions/${petId}`, createOptions('DELETE')),
+    removePet: async function(target){
+      if(confirm(`Deseja realmente remover o pet ${target.pet_name}?`)){
+        var res = await fetch(`${this.server}/adoptions/${target.id}`, createOptions('DELETE')),
             data = await res.json();
         if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
-        else delete this.availablePets[petId-1];
+        else for(let pet in this.availablePets) if(target.id === this.availablePets[pet].id) delete this.availablePets[pet];  
       }
+    },
+    petInsert: async function(){
+      if(this.petAge == 'Anos') this.insertPet.petAge = this.insertPet.petAge * 12;
+      
+      var res = await fetch(`${this.server}/adoptions/`, createOptions('POST', this.insertPet)),
+          data = await res.json();
+          
+      if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
+      else this.$router.go();
+    },
+    petProfile: function(target){
+      this.$router.push(`/adoptions/${target.id}`);
     }
   },
   data: function () {
@@ -62,6 +74,22 @@ export default {
         uf: '',
         pass: ''
       },
+      insertPet: {
+        petName: '',
+        petAge: '',
+        petSize: '',
+        petSpecies: '',
+        petColor: '',
+        petBreed: '',
+        desc: ''
+      },
+      species: ['Cachorro', 'Gato', 'Ave', 'Réptil','Outro'],
+      breedDog: [ 'Spitz_Alemão', 'Bulldog_Francês', 'Shih_Tzu', 'Pug', 'Rottweiler', 'Golden_Retriever', 'Pastor_Alemão', 'Border_Collie', 'SDR', 'Outro'],
+      breedCat: [ 'Persa', 'Siamese', 'Ragdoll', 'Siamês', 'Sphynx', 'SDR', 'Outro'],
+      breedBird: [ 'Canário', 'Pássaro', 'SDR', 'Outro'],
+      breedReptile: [ 'Tartaruga', 'Lagarto', 'Outro'],
+      colors: ['Branco', 'Preto', 'Marrom', 'Cinza', 'Pardo', 'Vermelho', 'Amarelo', 'Verde', 'Azul', 'Outro'],
+      petAge: '',
       ufs: ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'],
       passConfirm: ''
     }

@@ -32,7 +32,7 @@ exports.up = function (knex) {
       .unsigned()
       .nullable()
       .comment('Idade do pet em meses.'); //
-    table.enum('pet_species', ['cachorro', 'gato']).nullable();
+    table.enum('pet_species', ['cachorro', 'gato', 'réptil', 'ave', 'outro']).nullable();
     table.string('pet_breed', 40).nullable();
     table.string('pet_color', 20).nullable();
     table.string('thumbnail_path', 255).nullable();

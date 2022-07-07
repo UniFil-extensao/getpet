@@ -95,19 +95,19 @@
           <div v-if="Object.keys(availablePets).length" class="col p-4 d-flex flex-column position-static">
             <div class="row">
               <h4 class="text-success col-6 me-2 mb-2"> Disponibilizando: </h4>
-              <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
+              <button v-if="loggedUser.id == user.id" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
             </div>
             <div v-for="pet in availablePets" class="border rounded shadow-sm mb-3">
               <div class="row m-2">
                 <p v-if="pet.pet_name" class="col-5 text-secondary"> {{ pet.pet_name }} </p>
-                <p v-if="pet.pet_age" class="col-4 me-4 text-secondary"> {{ pet.pet_age }} Meses </p>
-                <button v-on:click="removePet(pet.id)" style="border-color: transparent !important;" class="col-2 mt-3 btn btn-outline-danger">
+                <p v-if="pet.pet_age" class="col-4 me-4 text-secondary"> {{ pet.pet_age < 12 ? pet.pet_age.toFixed() + ' Meses' : (pet.pet_age / 12).toFixed() + ' Anos'  }} </p>
+                <button v-if="loggedUser.id == user.id" v-on:click="removePet(pet)" style="border-color: transparent !important;" class="col-2 mt-3 btn btn-outline-danger">
                   <img src="../../assets/icons/svg/trash.svg">
                 </button>
               </div>
               <div class="row m-2">
-                <p v-if="pet.pet_species" class="col-5 text-secondary"> {{ pet.pet_species }} </p>
-                <a role="button" class="col-4 link-success"> Ver perfil </a>
+                <p v-if="pet.pet_species || pet.pet_breed" class="col-5 text-secondary"> {{ pet.pet_species }} - {{ pet.pet_breed }} </p>
+                <a role="button" v-on:click="petProfile(pet)" class="col-4 link-success"> Ver perfil </a>
               </div>
             </div>
           </div>
@@ -161,7 +161,7 @@
             </div>
             <div class="col-4">
               <select v-model="updateUser.uf" required class="form-control" name="uf" placeholder="Estado">
-                <option value="">UF</option>
+                <option disabled hidden value="">UF</option>
                 <option v-for="UF in ufs" :value="UF"> {{ UF }} </option>
               </select>
             </div>
@@ -213,85 +213,90 @@
         <h5 class="modal-title text-success" id="staticBackdropLabel">Cadastrar Pet para adoção</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <form @submit.prevent="petInsert()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-4 mb-3">
+              <input v-model="insertPet.petName" type="text" class="form-control" id="zip" placeholder="Nome do animal" required="">
+            </div>
+            <div class="col-md-2 mb-3">
+              <input v-model="insertPet.petAge" type="number" class="form-control" id="zip" placeholder="Idade" required="">
+            </div>
+            <div class="col-md-3 mb-3">
+              <select v-model="petAge" class="form-select" id="state" required="">
+                  <option value="" disabled hidden>Meses</option>
+                  <option value="Meses">Meses</option>
+                  <option value="Anos">Anos</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <select v-model="insertPet.petSize" class="form-select" id="country" required="">
+                  <option hidden disabled value="">Tamanho</option>
+                  <option value="S">Pequeno</option>
+                  <option value="M">Médio</option>
+                  <option value="L">Grande</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-3 mb-3">
+              <select v-model="insertPet.petSpecies" class="form-select" id="country" required="">
+                  <option hidden disabled value="">Especie</option>
+                  <option v-for="specie in species">{{ specie }}</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <select v-model="insertPet.petColor" class="form-select" id="state" required="">
+                  <option hidden disabled value="">Cor</option>
+                  <option v-for="color in colors">{{ color }}</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">              
+              <select v-model="insertPet.petBreed" class="form-select" id="country" required="">
+                  <option hidden disabled value="">Raça</option>
+                  <option v-if="insertPet.petSpecies == 'Cachorro'" v-for="dog in breedDog">{{ dog }}</option>
+                  <option v-else-if="insertPet.petSpecies == 'Gato'" v-for="cat in breedCat">{{ cat }}</option>
+                  <option v-else-if="insertPet.petSpecies == 'Ave'" v-for="bird in breedBird">{{ bird }}</option>
+                  <option v-else-if="insertPet.petSpecies == 'Réptil'" v-for="reptile in breedReptile">{{ reptile }}</option>
+                  <option v-else-if="insertPet.petSpecies == 'Outro'">SDR</option>
+              </select>
+            </div>  
+          </div>
 
         <div class="row">
-          <div class="col-md-4 mb-3">
-            <input type="text" class="form-control" id="zip" placeholder="Nome do animal" required="">
+          <div class="col-md-6 mb-3">
+            <label for="country">Foto de Perfil (128px X 128px)</label>
+            <div>
+              <label for="file-upload" class="custom-file-upload btn btn-success">
+              Escolher...
+              </label>
+              <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
+            </div>
           </div>
-          <div class="col-md-2 mb-3">
-            <input type="text" class="form-control" id="zip" placeholder="Idade" required="">
-          </div>
-          <div class="col-md-3 mb-3">
-            <select class="form-select" id="state" required="">
-                <option value="">Meses</option>
-                <option>6 meses</option>
-            </select>
-          </div>
-          <div class="col-md-3 mb-3">
-            <select class="form-select" id="country" required="">
-                <option value="">Tamanho</option>
-                <option>80cm</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-3 mb-3">
-            <select class="form-select" id="country" required="">
-                <option value="">Especie</option>
-                <option>Cachorro</option>
-            </select>
-          </div>
-          <div class="col-md-3 mb-3">
-            <select class="form-select" id="state" required="">
-                <option value="">Cor</option>
-                <option>Bege</option>
-            </select>
-          </div>
-          <div class="col-md-3 mb-3">
-            <select class="form-select" id="country" required="">
-                <option value="">Raça</option>
-                <option>Golden</option>
-            </select>
-          </div>
-          <div class="col-md-3 mb-3">
-            <input type="text" class="form-control" id="zip" placeholder="Outra Raça" required="">
+          <div class="col-md-6 mb-3">
+            <label for="country">Fotos adicionais</label>
+            <div>
+              <label for="file-upload" class="custom-file-upload btn btn-success">
+              Escolher...
+              </label>
+              <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
+            </div>
           </div>
         </div>
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="country">Foto de Perfil (128px X 128px)</label>
-          <div>
-            <label for="file-upload" class="custom-file-upload btn btn-success">
-            Escolher...
-            </label>
-            <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
+          <div class="row">
+            <div class="col-md-12 mb-3">
+              <label>Adicione uma descrição:</label>
+              <textarea v-model="insertPet.desc" class="form-control" id="message-text" placeholder="Descrição do Anúncio"></textarea>
+            </div>
           </div>
         </div>
-        <div class="col-md-6 mb-3">
-          <label for="country">Fotos adicionais</label>
-          <div>
-            <label for="file-upload" class="custom-file-upload btn btn-success">
-            Escolher...
-            </label>
-            <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
-          </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Salvar</button>
         </div>
-      </div>
-
-        <div class="row">
-          <div class="col-md-12 mb-3">
-            <label>Adicione uma descrição:</label>
-            <textarea class="form-control" id="message-text" placeholder="Descrição do Anúncio"></textarea>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-success">Salvar</button>
-      </div>
+      </form>
     </div>
   </div>
 </div>
