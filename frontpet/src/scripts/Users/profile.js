@@ -84,7 +84,7 @@ export default {
         desc: ''
       },
       species: ['Cachorro', 'Gato', 'Ave', 'Réptil','Outro'],
-      breedDog: [ 'Spitz_Alemão', 'Bulldog_Francês', 'Shih_Tzu', 'Pug', 'Rottweiler', 'Golden_Retriever', 'Pastor_Alemão', 'Border_Collie', 'SDR', 'Outro'],
+      breedDog: [ 'Spitz Alemão', 'Bulldog Francês', 'Shih Tzu', 'Pug', 'Rottweiler', 'Golden Retriever', 'Pastor Alemão', 'Border Collie', 'SDR', 'Outro'],
       breedCat: [ 'Persa', 'Siamese', 'Ragdoll', 'Siamês', 'Sphynx', 'SDR', 'Outro'],
       breedBird: [ 'Canário', 'Pássaro', 'SDR', 'Outro'],
       breedReptile: [ 'Tartaruga', 'Lagarto', 'Outro'],

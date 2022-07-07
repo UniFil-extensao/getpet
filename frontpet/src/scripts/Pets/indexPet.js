@@ -12,6 +12,9 @@ export default {
       var res = await fetch(`${this.server}/adoptions/`, createOptions('GET'));
       this.pets = await res.json();
       this.pets = this.pets.adoptions;
+    },
+    petProfile: function(target){
+      this.$router.push(`/adoptions/${target.id}`);
     }
   },
   data: function(){
@@ -27,7 +30,7 @@ export default {
       checkedColors: [],
       checkedBreeds: [],
       checkedSizes: [],
-      breedDog: [ 'Spitz_Alemão', 'Bulldog_Francês', 'Shih_Tzu', 'Pug', 'Rottweiler', 'Golden_Retriever', 'Pastor_Alemão', 'Border_Collie', 'Cachorro SDR', 'Outras raças de cachorro'],
+      breedDog: [ 'Spitz Alemão', 'Bulldog Francês', 'Shih Tzu', 'Pug', 'Rottweiler', 'Golden Retriever', 'Pastor Alemão', 'Border Collie', 'SDR', 'Outro'],
       breedCat: [ 'Persa', 'Siamese', 'Ragdoll', 'Siamês', 'Sphynx', 'Gato SDR', 'Outras raças de gato'],
       breedBird: [ 'Canário', 'Pássaro', 'Ave SDR', 'Outras raças de ave'],
       breedReptile: [ 'Tartaruga', 'Lagarto', 'Outros tipos de répteis'],
