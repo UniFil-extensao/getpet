@@ -23,12 +23,6 @@
                 ]
             }
         ],
-        "camelcase": [
-            "error",
-            {
-                "ignoreImports": true
-            }
-        ],
         "prefer-const": "warn",
         "no-unused-vars": "warn",
         "array-callback-return": [
