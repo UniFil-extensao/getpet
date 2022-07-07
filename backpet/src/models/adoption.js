@@ -1,4 +1,5 @@
 const knex = require('../services/db');
+const imgService = require('../services/image');
 const User = require('./user');
 
 const schema = async () => {
@@ -6,13 +7,7 @@ const schema = async () => {
 };
 
 const getById = async (id, conn = knex) => {
-  // TODO: criar e utilizar view retornando os usernames dos donos
   const [adoption] = await conn('adoptions').select('*').where('id', id);
-
-  Object.keys(adoption).forEach(key => {
-    adoption[key] === null && delete adoption[key];
-  });
-
   return adoption;
 };
 
@@ -21,7 +16,7 @@ const getOwnerId = async id => {
     .select('old_owner_id')
     .where('id', id);
 
-  return ownerId.old_owner_id;
+  return ownerId?.old_owner_id;
 };
 
 const getByOwner = async (id, type = { old: true, new: true }, conn = knex) => {
@@ -37,7 +32,40 @@ const getByOwner = async (id, type = { old: true, new: true }, conn = knex) => {
 
 const create = async data => {
   const adoption = await knex.transaction(async trx => {
+    const imgs = data.files?.imgs;
+    const [pfp] = data.files?.pfp || [];
+    delete data.files;
+
     const [id] = await trx('adoptions').insert(data);
+
+    const queries = [];
+    if (pfp) {
+      const pfpPath = `adoptions/${id}/profile_picture${
+        pfp.mimetype === 'image/png' ? '.png' : '.jpg'
+      }`;
+      queries.push(
+        trx('adoptions')
+          .update('thumbnail_path', imgService.saveToDisk(pfp.buffer, pfpPath))
+          .where('id', id)
+      );
+    }
+
+    if (imgs) {
+      queries.push(
+        ...imgs.map(async (img, index) => {
+          const imgPath = `adoptions/${id}/${index + 1}${
+            img.mimetype === 'image/png' ? '.png' : '.jpg'
+          }`;
+          return trx('adoption_pics').insert({
+            adoption_id: id,
+            path: imgService.saveToDisk(img.buffer, imgPath),
+          });
+        })
+      );
+    }
+
+    if (queries) await Promise.all(queries);
+
     return await getById(id, trx);
   });
 
@@ -54,17 +82,21 @@ const list = async options => {
 
     if (options.old_owner_id)
       queryBuilder.where('old_owner_id', options.old_owner_id);
+
     if (options.new_owner_id)
       queryBuilder.where('new_owner_id', options.new_owner_id);
 
     if (options.minAge) queryBuilder.where('pet_age', '>=', options.minAge);
     if (options.maxAge) queryBuilder.where('pet_age', '<=', options.maxAge);
+    if (options.donor_score !== undefined)
+      queryBuilder.where('donor_score', options.donor_score);
 
     if (options.species)
       queryBuilder.where('pet_species', 'like', `%${options.species}%`);
 
     if (options.breeds) queryBuilder.whereIn('pet_breed', options.breeds);
 
+    if (options.status) queryBuilder.whereIn('status', options.status);
     if (options.colors) queryBuilder.whereIn('pet_color', options.colors);
     if (options.sizes) queryBuilder.whereIn('pet_size', options.sizes);
   };
@@ -99,6 +131,17 @@ const update = async (options, data) => {
     data.closed_at = new Date();
   }
   return await knex.transaction(async trx => {
+    const [pfp] = data.files?.pfp || [];
+    delete data.files;
+
+    if (pfp) {
+      const pfpPath = `adoptions/${options.id}/profile_picture${
+        pfp.mimetype === 'image/png' ? '.png' : '.jpg'
+      }`;
+
+      data.thumbnail_path = imgService.saveToDisk(pfp.buffer, pfpPath);
+    }
+
     const updatedRows = await trx('adoptions').update(data).where(options);
     if (updatedRows === 0) throw new Error('Adoção não encontrada');
 
@@ -135,13 +178,18 @@ const update = async (options, data) => {
       })
     );
 
+    if (data.status === 'F')
+      imgService.deleteAllFrom(`uploads/adoptions/${options.id}`, false);
+
     return adoption;
   });
 };
 
 const deleteById = async id => {
   const deletedRows = await knex.transaction(async trx => {
-    await trx('adoptions').delete().where('id', id);
+    await trx('adoptions').where('id', id).del();
+
+    imgService.deleteAllFrom(`uploads/adoptions/${id}`, true);
   });
 
   if (deletedRows === 0) throw new Error('Adoção não encontrada');

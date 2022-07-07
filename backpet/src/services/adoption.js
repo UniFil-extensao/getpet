@@ -8,6 +8,7 @@ const {
 const { DataValidator, validateId } = require('./data');
 const userService = require('./user');
 const Adoption = require('../models/adoption');
+const AdoptionPic = require('../models/adoption_pic');
 
 // REFAC: organizar melhor essas validations
 const validations = {
@@ -70,11 +71,6 @@ const validations = {
       : onFail('Cor do animal inválida', true);
   },
   newOwnerId: validateId,
-  // TODO: validate image
-  // eslint-disable-next-line no-unused-vars
-  thumbnail: (thumbnail, onFail) => {
-    return thumbnail;
-  },
   adopterScore: (adopterScore, onFail) => {
     if (!Number.isFinite(adopterScore))
       return onFail('Pontuação do adotante é obrigatória', false);
@@ -89,6 +85,7 @@ const validations = {
       ? donorScore
       : onFail('Pontuação inválida', true);
   },
+  files: files => files,
 };
 const adoptionValidator = new DataValidator(validations);
 
@@ -97,7 +94,6 @@ const create = async (author, data) => {
 
   data = adoptionValidator.validate(data, requiredFields);
 
-  // eslint-disable-next-line camelcase
   data.old_owner_id = author.id;
 
   const adoption = await Adoption.create(data);
@@ -112,6 +108,7 @@ const list = async options => {
     },
     limit: 50,
     offset: 0,
+    status: 'A',
   };
 
   const splitOpts = field => {
@@ -124,7 +121,8 @@ const list = async options => {
   options.search = options.search?.trim();
   options.page = +options.page || 1;
   options.orderBy = options.orderBy?.trim().toLowerCase();
-  options.species = options.species.trim().toLowerCase();
+  options.species = options.species?.trim().toLowerCase();
+  options.status = splitOpts(options.status);
   options.breeds = splitOpts(options.breeds);
   options.colors = splitOpts(options.colors);
   options.sizes = splitOpts(options.sizes);
@@ -132,8 +130,8 @@ const list = async options => {
   options.maxAge = +options.maxAge >= 0 ? +options.maxAge : 0;
   options.newOwnerId = +options.newOwnerId >= 0 ? +options.newOwnerId : 0;
   options.oldOwnerId = +options.oldOwnerId >= 0 ? +options.oldOwnerId : 0;
+  options.nullDonorScore = options.nullDonorScore === 'true';
 
-  // validar options
   if (options.search) filters.search = options.search;
 
   if (!options.noLimit) {
@@ -154,6 +152,7 @@ const list = async options => {
   }
 
   if (options.species) filters.species = options.species;
+  if (options.status) filters.status = options.status;
   if (options.breeds) filters.breeds = options.breeds;
   if (options.colors) filters.color = options.colors;
   if (options.size) filters.sizes = options.sizes;
@@ -161,19 +160,31 @@ const list = async options => {
   if (options.maxAge) filters.max_age = options.maxAge;
   if (options.newOwnerId) filters.new_owner_id = options.newOwnerId;
   if (options.oldOwnerId) filters.old_owner_id = options.oldOwnerId;
+  if (options.nullDonorScore) filters.donor_score = null;
 
   return await Adoption.list(filters);
 };
 
-const getById = async id => {
+const getById = async (id, openOnly = true) => {
   id = validations.id(id, msg => {
     throw new InputValidationError({ id: msg }, 404);
   });
 
   const adoption = await Adoption.getById(id);
-  if (!adoption)
-    throw new NotFoundError({ adoption: 'Usuário não encontrado' });
+  if (!adoption || (openOnly && adoption.status !== 'A'))
+    throw new NotFoundError({ adoption: 'Adoção não encontrada' });
   return adoption;
+};
+
+const getPictures = async id => {
+  id = validations.id(id, msg => {
+    throw new InputValidationError({ id: msg }, 404);
+  });
+
+  await getById(id, false);
+
+  const pictures = await AdoptionPic.getPicturesFrom(id);
+  return pictures;
 };
 
 const update = async (author, data, openOnly = true) => {
@@ -186,12 +197,12 @@ const update = async (author, data, openOnly = true) => {
   delete data.id;
 
   const ownerId = await Adoption.getOwnerId(options.id);
+  if (!ownerId) throw new NotFoundError({ adoption: 'Adoção não encontrada' });
   if (!author.admin && ownerId !== author.id) {
     throw new ForbiddenError({
       accessDenied: 'Você não tem permissão para fazer isso',
     });
   }
-  // eslint-disable-next-line camelcase
   options.old_owner_id = ownerId;
 
   if (!Object.keys(data).length) {
@@ -201,19 +212,16 @@ const update = async (author, data, openOnly = true) => {
     );
   }
 
-  data = adoptionValidator.validate(data);
-  // TODO: implementar update e insert de imagens
-  try {
-    const adoption = await Adoption.update(options, data);
-    return adoption;
-  } catch (error) {
-    if (error.message === 'Adoção não encontrada') {
-      throw new NotFoundError({
-        adoption: 'Adoção não encontrada',
-      });
-    }
-    throw error;
+  if (data.new_owner_id && data.new_owner_id === ownerId) {
+    throw new InputValidationError(
+      { new_owner_id: 'O novo dono não pode ser o mesmo que o antigo' },
+      422
+    );
   }
+  data = adoptionValidator.validate(data);
+
+  const adoption = await Adoption.update(options, data);
+  return adoption;
 };
 
 const close = async (author, data) => {
@@ -226,36 +234,28 @@ const close = async (author, data) => {
   return update(author, data, false);
 };
 
-// eslint-disable-next-line no-unused-vars
 const deleteById = async (author, id) => {
   id = validations.id(id, msg => {
     throw new InputValidationError({ id: msg }, 404);
   });
 
   const ownerId = await Adoption.getOwnerId(id);
+  if (!ownerId) throw new NotFoundError({ adoption: 'Adoção não encontrada' });
   if (!author.admin && ownerId !== author.id) {
     throw new ForbiddenError({
       accessDenied: 'Você não tem permissão para fazer isso',
     });
   }
 
-  try {
-    const adoptionId = await Adoption.deleteById(id);
-    return adoptionId;
-  } catch (error) {
-    if (error.message === 'Adoção não encontrada') {
-      throw new NotFoundError({
-        adoption: 'Adoção não encontrada',
-      });
-    }
-    throw error;
-  }
+  const adoptionId = await Adoption.deleteById(id);
+  return adoptionId;
 };
 
 module.exports = {
   create,
   list,
   getById,
+  getPictures,
   update,
   close,
   deleteById,
