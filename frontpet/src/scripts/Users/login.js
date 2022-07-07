@@ -20,7 +20,7 @@ export default {
       this.$router.push('/login');
     },
     profile: function() {
-      if(Object.keys(this.loggedUser).length) this.$router.push({ path: `/users/1`}).then(() => this.$router.go());
+      if(Object.keys(this.loggedUser).length) this.$router.push({ path: `/users/${this.loggedUser.id}`}).then(() => this.$router.go());
       else this.$router.push('/login');
     },
     home: function() {

@@ -26,7 +26,7 @@
             <div class="col-md-8 mt-5">
                 <div class="row d-flex justify-content-center">
                     <div class="col-md-auto mb-4">
-                        <button type="button" class="btn btn-outline-success">
+                        <button type="button" class="btn btn-outline-success" disabled>
                             Enviar Mensagem
                             <img src="../../assets/icons/svg/chat.svg" width="15" height="15"/>
                         </button>
@@ -44,7 +44,7 @@
                         </button>
                     </div>
                     <div class="col-md-auto mb-4">
-                        <button type="button" class="btn btn-danger">
+                        <button type="button" class="btn btn-danger" disabled>
                             Reportar Anúncio
                             <img src="../../assets/icons/svg/warning.svg" width="15" height="15"/>
                         </button>
@@ -100,6 +100,11 @@
         border-radius: 50%;
         width: 95px;
         height: 95px;
+    }
+
+    button:disabled {
+        cursor: not-allowed;
+        pointer-events: all !important;
     }
 
 </style>
