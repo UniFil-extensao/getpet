@@ -21,8 +21,8 @@
         </div>
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
-            <h4 class="d-inline-block mb-3 text-success">user.qtd_adotados <span style="float: right;"><img class="mb-1" src="../../assets/icons/svg/star.svg"> {{ user.adopter_score }}</span></h4>
-            <h4 class="mb-0 text-success">user.qtd_doados  <span style="float: right;"><img class="mb-1" src="../../assets/icons/svg/star.svg"> {{ user.donor_score }} </span></h4>
+            <h4 class="d-inline-block mb-3 text-success"> {{ Object.keys(adoptedPets).length }} Adotados<span style="float: right;"><img class="mb-1" src="../../assets/icons/svg/star.svg"> {{ user.adopter_score }}</span></h4>
+            <h4 class="mb-0 text-success"> {{ Object.keys(donatedPets).length }} Doados  <span style="float: right;"><img class="mb-1" src="../../assets/icons/svg/star.svg"> {{ user.donor_score }} </span></h4>
           </div>
         </div>
       </div>
@@ -49,108 +49,74 @@
           </div>
         </div>
       </div>
+      <div v-else>
+        <div class="col-md-6">
+          <div>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#modalReport" class="btn me-5 btn-outline-danger">Denunciar usuário</button>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#modalChat" class="btn btn-outline-success">Chat com o usuário</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="row mb-2 ms-5">
-      <div class="col-md-6 mb-4">
+      <div v-if="Object.keys(donatedPets).length" class="col-md-6 mb-4">
         <div class="dropdown">
           <a class="btn border rounded shadow-sm btn-outline-success mb-2" style="width:100%" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
             <h4 class="mt-1" style="float:left;">Já doou</h4>
           </a>
-
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <li>
-              <div>
-                <a class="dropdown-item border-bottom" href="#">
-                  <h4 class="text-success">Pet name</h4>
-                  <p class="text-secondary">Dono anterior</p>
-                </a>
-              </div>  
-            </li>
-            <li>
-              <div>
-                <a class="dropdown-item border-bottom" href="#">
-                  <h4 class="text-success">Pet name</h4>
-                  <p class="text-secondary">Dono anterior</p>
-                </a>
-              </div>  
-            </li>
-            <li>
-              <div>
-                <a class="dropdown-item" href="#">
-                  <h4 class="text-success">Pet name</h4>
-                  <p class="text-secondary">Dono anterior</p>
-                </a>
-              </div>  
+            <li v-for="pet in donatedPets">
+              <a class="dropdown-item border-bottom" href="#">
+                <h4 class="text-success mt-2">{{ pet.pet_name }}</h4>
+                <p v-if="pet.pet_species" class="text-secondary">{{ pet.pet_species }} - {{ pet.pet_breed }}</p>
+              </a>
             </li>
           </ul>
         </div>
 
-        <div class="dropdown">
+        <div v-if="Object.keys(adoptedPets).length" class="dropdown">
           <a class="btn border rounded shadow-sm btn-outline-success mb-2" style="width:100%" href="#" role="button" id="dropdownMenuLink2" data-bs-toggle="dropdown" aria-expanded="false">
             <h4 class="mt-1" style="float:left;">Já adotou</h4>
           </a>
 
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <li>
-              <div>
-                <a class="dropdown-item border-bottom" href="#">
-                  <h4 class="text-success">Pet name</h4>
-                  <p class="text-secondary">Dono anterior</p>
-                </a>
-              </div>  
-            </li>
-            <li>
-              <div>
-                <a class="dropdown-item border-bottom" href="#">
-                  <h4 class="text-success">Pet name</h4>
-                  <p class="text-secondary">Dono anterior</p>
-                </a>
-              </div>  
-            </li>
-            <li>
-              <div>
-                <a class="dropdown-item" href="#">
-                  <h4 class="text-success">Pet name</h4>
-                  <p class="text-secondary">Dono anterior</p>
-                </a>
-              </div>  
+            <li v-for="pet in adoptedPets">
+              <a class="dropdown-item border-bottom" href="#">
+                <h4 class="text-success mt-2">{{ pet.pet_name }}</h4>
+                <p v-if="pet.pet_species" class="text-secondary">{{ pet.pet_species }} - {{ pet.pet_breed }}</p>
+              </a>
             </li>
           </ul>
         </div>
 
       </div>
       <div class="col-md-4">
-        <!-- v-if pets disponibilizados -->
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-          <div class="col p-4 d-flex flex-column position-static">
+          <div v-if="Object.keys(availablePets).length" class="col p-4 d-flex flex-column position-static">
             <div class="row">
               <h4 class="text-success col-6 me-2 mb-2"> Disponibilizando: </h4>
               <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
             </div>
-            <!-- v-for pets disponibilizados -->
-            <div class="border rounded shadow-sm mb-3">
+            <div v-for="pet in availablePets" class="border rounded shadow-sm mb-3">
               <div class="row m-2">
-                <p class="col-5 text-secondary"> Pet name </p>
-                <p class="col-4 me-4 text-secondary"> Age </p>
-                <img class="col-2 mt-3" src="../../assets/icons/svg/trash.svg">
+                <p v-if="pet.pet_name" class="col-5 text-secondary"> {{ pet.pet_name }} </p>
+                <p v-if="pet.pet_age" class="col-4 me-4 text-secondary"> {{ pet.pet_age }} Meses </p>
+                <button v-on:click="removePet(pet.id)" style="border-color: transparent !important;" class="col-2 mt-3 btn btn-outline-danger">
+                  <img src="../../assets/icons/svg/trash.svg">
+                </button>
               </div>
               <div class="row m-2">
-                <p class="col-5 text-secondary"> Species </p>
-                <a role="button" class="col-4 link-success"> Ver perfil </a>
-              </div>
-            </div>
-            <div class="border rounded shadow-sm mb-3">
-              <div class="row m-2">
-                <p class="col-5 text-secondary"> Pet name </p>
-                <p class="col-4 me-4 text-secondary"> Age </p>
-                <img class="col-2 mt-3" src="../../assets/icons/svg/trash.svg">
-              </div>
-              <div class="row m-2">
-                <p class="col-5 text-secondary"> Species </p>
+                <p v-if="pet.pet_species" class="col-5 text-secondary"> {{ pet.pet_species }} </p>
                 <a role="button" class="col-4 link-success"> Ver perfil </a>
               </div>
             </div>
           </div>
+          <div v-else class="col p-4 d-flex flex-column position-static">
+            <div class="row">
+              <h5 class="text-success col-6 me-2 mb-2"> Sem pets disponíveis! </h5>
+              <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
+            </div>
+          </div>    
         </div>
       </div>
     </div>
