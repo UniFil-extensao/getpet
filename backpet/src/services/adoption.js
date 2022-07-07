@@ -191,6 +191,7 @@ const update = async (author, data, openOnly = true) => {
   delete data.id;
 
   const ownerId = await Adoption.getOwnerId(options.id);
+  if (!ownerId) throw new NotFoundError({ adoption: 'Adoção não encontrada' });
   if (!author.admin && ownerId !== author.id) {
     throw new ForbiddenError({
       accessDenied: 'Você não tem permissão para fazer isso',
@@ -206,17 +207,9 @@ const update = async (author, data, openOnly = true) => {
   }
 
   data = adoptionValidator.validate(data);
-  try {
-    const adoption = await Adoption.update(options, data);
-    return adoption;
-  } catch (error) {
-    if (error.message === 'Adoção não encontrada') {
-      throw new NotFoundError({
-        adoption: 'Adoção não encontrada',
-      });
-    }
-    throw error;
-  }
+
+  const adoption = await Adoption.update(options, data);
+  return adoption;
 };
 
 const close = async (author, data) => {
@@ -235,23 +228,15 @@ const deleteById = async (author, id) => {
   });
 
   const ownerId = await Adoption.getOwnerId(id);
+  if (!ownerId) throw new NotFoundError({ adoption: 'Adoção não encontrada' });
   if (!author.admin && ownerId !== author.id) {
     throw new ForbiddenError({
       accessDenied: 'Você não tem permissão para fazer isso',
     });
   }
 
-  try {
-    const adoptionId = await Adoption.deleteById(id);
-    return adoptionId;
-  } catch (error) {
-    if (error.message === 'Adoção não encontrada') {
-      throw new NotFoundError({
-        adoption: 'Adoção não encontrada',
-      });
-    }
-    throw error;
-  }
+  const adoptionId = await Adoption.deleteById(id);
+  return adoptionId;
 };
 
 module.exports = {

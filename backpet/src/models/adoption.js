@@ -16,7 +16,7 @@ const getOwnerId = async id => {
     .select('old_owner_id')
     .where('id', id);
 
-  return ownerId.old_owner_id;
+  return ownerId?.old_owner_id;
 };
 
 const getByOwner = async (id, type = { old: true, new: true }, conn = knex) => {
