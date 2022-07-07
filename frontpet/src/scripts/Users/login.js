@@ -19,6 +19,13 @@ export default {
       this.loggedUser = {};
       this.$router.push('/login');
     },
+    profile: function() {
+      if(Object.keys(this.loggedUser).length) this.$router.push({ path: `/users/1`}).then(() => this.$router.go());
+      else this.$router.push('/login');
+    },
+    home: function() {
+      this.$router.push('/');
+    }
   },
   mounted: async function () {
     if (localStorage.user) {

@@ -4,10 +4,10 @@
   <header class="p-3 bg-success text-white">
     <div class="container" id="cabecalho">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-        <button class="btn btn-outline-light nav col-6 col-lg-auto mb-2 justify-content-center mb-md-0" id="btnIcones1">
+        <button v-on:click="profile()" class="btn btn-outline-light nav col-6 col-lg-auto mb-2 justify-content-center mb-md-0" id="btnIcones1">
           <img class="ms-2" src="../../assets/icons/svg/person.svg" style="height: 20px;">
         </button>
-        <button class="btn btn-outline-light nav col-6 col-lg-auto mb-2 justify-content-center mb-md-0" id="btnIcones2">
+        <button v-on:click="home()" class="btn btn-outline-light nav col-6 col-lg-auto mb-2 justify-content-center mb-md-0" id="btnIcones2">
           <img class="ms-2" src="../../assets/icons/svg/home.svg">
         </button>
         <h1 style="color: black">GetPet</h1>  
