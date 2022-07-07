@@ -180,7 +180,7 @@ const update = async (options, data) => {
 
 const deleteById = async id => {
   const deletedRows = await knex.transaction(async trx => {
-    await trx('adoptions').delete().where('id', id);
+    await trx('adoptions').where('id', id).del();
   });
 
   if (deletedRows === 0) throw new Error('Adoção não encontrada');
