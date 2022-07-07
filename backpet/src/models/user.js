@@ -90,7 +90,7 @@ const update = async (id, data, conn) => {
 const remove = async id => {
   await knex.transaction(async trx => {
     await trx('users').delete().where('id', id);
-    imgService.deleteAllFrom(`uploads/adoptions/${id}`, true);
+    imgService.deleteAllFrom(`uploads/users/${id}`, true);
   });
 
   return id;

@@ -7,8 +7,8 @@ const createDirs = filePath => {
 };
 
 const deleteAllFrom = (folderPath, deletePfp = true) => {
-  if (deletePfp) return fs.rmdirSync(folderPath, { recursive: true });
-
+  if (!fs.existsSync(folderPath)) return;
+  if (deletePfp) return fs.rmSync(folderPath, { recursive: true });
   const files = fs.readdirSync(folderPath);
   files.forEach(file => {
     const filePath = path.join(folderPath, file);
