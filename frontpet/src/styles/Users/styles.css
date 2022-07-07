@@ -99,3 +99,25 @@
     height: 35px;
     width: 40px;
 }
+
+#btnIcones1:focus, #btnIcones2:focus {
+    border: none;
+    background-color: white;
+}
+
+#btnProx:focus {
+    background-color: rgb(31, 119, 31);
+    color: white;
+}
+
+#divMenu {
+    height: 110px; padding-top: 10px; background-color: rgb(209, 206, 206);
+}
+
+#btnMenu:hover {
+    background-color: darkgrey;
+}
+
+#btnMenu:focus {
+    background-color: darkgrey;
+}
