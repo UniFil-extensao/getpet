@@ -13,12 +13,29 @@ const uploadValidator = multer({
   },
 });
 
-const validateUpload = function (pfp = true, img = true) {
+const bodyParser = (req, res, next) => {
+  const fields = Object.keys(req.body);
+
+  if (!req.files) return next();
+  if (fields.length !== 1) {
+    return res.status(400).json({
+      errors: {
+        fields: 'Os dados devem ser passados no campo apropriado.',
+      },
+    });
+  }
+
+  req.body = JSON.parse(req.body[fields[0]]);
+  req.body.files = req.files;
+  next();
+};
+
+const validateUpload = function (pfp = false, img = false) {
   const fields = [];
   pfp && fields.push({ name: 'pfp', maxCount: 1 });
   img && fields.push({ name: 'img', maxCount: MAX_PET_PICS });
 
-  return uploadValidator.fields(fields);
+  return [uploadValidator.fields(fields), bodyParser];
 };
 
 module.exports = {

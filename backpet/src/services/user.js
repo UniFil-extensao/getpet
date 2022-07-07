@@ -67,11 +67,7 @@ const validations = {
     if (typeof active !== 'boolean') return onFail('Status Inválido');
     return active ? 'S' : 'N';
   },
-  // TODO: validar imagem
-  // eslint-disable-next-line no-unused-vars
-  profilePic: (profilePic, onFail) => {
-    return profilePic;
-  },
+  files: files => files,
 };
 
 const create = async data => {
@@ -152,7 +148,8 @@ const update = async (author, data) => {
   const errors = {};
   Object.keys(data).forEach(field => {
     if (field !== 'active')
-      data[field] = field !== 'profilePic' ? trim(data[field]) : data[field];
+      data[field] = field !== 'files' ? trim(data[field]) : data[field];
+
     if (!data[field] && data[field] !== false)
       // eslint-disable-next-line array-callback-return
       return (errors[field] = 'Valor inválido');

@@ -64,7 +64,6 @@ const getById = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
-  // TODO: instalar multer e implementar upload de imagens
   try {
     const allowedUpdates = [
       'username',
@@ -72,7 +71,7 @@ const update = async (req, res, next) => {
       'email',
       'phone',
       'address',
-      'profilePic',
+      'files',
       'active',
     ];
 

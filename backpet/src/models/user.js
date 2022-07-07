@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const knex = require('../services/db');
+const imgService = require('../services/image');
 const { PASSWD_SALT } = require('../../config/general.config');
 
 const schema = async () => {
@@ -64,6 +65,17 @@ const findByCredentials = async (username, password) => {
 
 const update = async (id, data, conn) => {
   const updateTransaction = async trx => {
+    const [pfp] = data.files?.pfp || [];
+    delete data.files;
+
+    if (pfp) {
+      const pfpPath = `users/${id}/profile_picture${
+        pfp.mimetype === 'image/png' ? '.png' : '.jpg'
+      }`;
+
+      data.profile_pic_path = imgService.saveToDisk(pfp.buffer, pfpPath);
+    }
+
     await trx('users').update(data).where('id', id);
     return await getById(id, trx);
   };

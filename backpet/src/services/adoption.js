@@ -8,6 +8,7 @@ const {
 const { DataValidator, validateId } = require('./data');
 const userService = require('./user');
 const Adoption = require('../models/adoption');
+const AdoptionPic = require('../models/adoption_pic');
 
 // REFAC: organizar melhor essas validations
 const validations = {
@@ -119,7 +120,7 @@ const list = async options => {
   options.search = options.search?.trim();
   options.page = +options.page || 1;
   options.orderBy = options.orderBy?.trim().toLowerCase();
-  options.species = options.species.trim().toLowerCase();
+  options.species = options.species?.trim().toLowerCase();
   options.breeds = splitOpts(options.breeds);
   options.colors = splitOpts(options.colors);
   options.sizes = splitOpts(options.sizes);
@@ -165,9 +166,19 @@ const getById = async id => {
   });
 
   const adoption = await Adoption.getById(id);
-  if (!adoption)
-    throw new NotFoundError({ adoption: 'Usuário não encontrado' });
+  if (!adoption) throw new NotFoundError({ adoption: 'Adoção não encontrada' });
   return adoption;
+};
+
+const getPictures = async id => {
+  id = validations.id(id, msg => {
+    throw new InputValidationError({ id: msg }, 404);
+  });
+
+  await getById(id);
+
+  const pictures = await AdoptionPic.getPicturesFrom(id);
+  return pictures;
 };
 
 const update = async (author, data, openOnly = true) => {
@@ -247,6 +258,7 @@ module.exports = {
   create,
   list,
   getById,
+  getPictures,
   update,
   close,
   deleteById,

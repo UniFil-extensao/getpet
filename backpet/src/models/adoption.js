@@ -8,11 +8,6 @@ const schema = async () => {
 
 const getById = async (id, conn = knex) => {
   const [adoption] = await conn('adoptions').select('*').where('id', id);
-
-  Object.keys(adoption).forEach(key => {
-    adoption[key] === null && delete adoption[key];
-  });
-
   return adoption;
 };
 

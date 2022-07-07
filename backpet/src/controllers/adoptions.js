@@ -2,8 +2,6 @@ const adoptionsService = require('../services/adoption');
 const { filterData } = require('../services/data');
 
 const create = async (req, res, next) => {
-  // REFAC: criar middleware para parsing do body
-  req.body = JSON.parse(req.body.adoption);
   const allowedFields = [
     'desc',
     'petSize',
@@ -12,11 +10,10 @@ const create = async (req, res, next) => {
     'petSpecies',
     'petBreed',
     'petColor',
-    'thumbnailPath',
+    'files',
   ];
 
   const data = filterData(allowedFields, req.body);
-  data.files = req.files;
 
   try {
     const adoption = await adoptionsService.create(req.user, data);
@@ -62,9 +59,6 @@ const getById = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
-  // REFAC: criar middleware para parsing do body
-  req.body = JSON.parse(req.body.adoption);
-
   const allowedUpdates = [
     'desc',
     'petSize',
@@ -73,11 +67,10 @@ const update = async (req, res, next) => {
     'petSpecies',
     'petBreed',
     'petColor',
-    'thumbnailPath',
+    'files',
   ];
 
   const data = filterData(allowedUpdates, req.body);
-  data.files = req.files;
 
   data.id = +req.params.id;
   try {
@@ -113,10 +106,20 @@ const deleteById = async (req, res, next) => {
   }
 };
 
+const getPictures = async (req, res, next) => {
+  try {
+    const adoption = await adoptionsService.getPictures(+req.params.id);
+    res.json(adoption);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   create,
   list,
   getById,
+  getPictures,
   update,
   close,
   deleteById,

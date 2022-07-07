@@ -26,7 +26,7 @@ const saveToDisk = (fileData, filePath) => {
   clearFile(finalPath);
   fs.writeFileSync(finalPath, fileData);
 
-  return finalPath.match(/\/uploads(\/.*)$/)[1];
+  return finalPath.match(/(\/uploads\/.*)$/)[1];
 };
 
 module.exports = {
