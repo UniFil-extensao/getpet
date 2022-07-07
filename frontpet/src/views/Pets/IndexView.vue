@@ -10,26 +10,32 @@
                     <div class="col p-4 d-flex flex-column">
                         <h2>Filtros</h2>
                         <div class="divisor-linha"></div>
-                        <h4>Raça:</h4>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="dalmata" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Dalmataaaa
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="golden" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Golden
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="outros" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Outros
-                            </label>
+                        <h4>Espécie:</h4>
+                        <div v-for="specie in species" class="form-check">
+                            <input class="form-check-input" type="checkbox" v-model="checkedSpecies" :value="specie" id="flexCheckDefault">
+                            <label class="form-check-label" for="flexCheckDefault">{{ specie }}</label>
                         </div>
                         <div class="divisor-linha"></div>
+                        <h4 v-if="checkedSpecies.length">Raça:</h4>
+                        <div v-for="specie in checkedSpecies" class="form-check">
+                            <div v-if="specie == 'Cachorro'" v-for="breed in breedDog">
+                                <input class="form-check-input"  type="checkbox" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">{{ breed }}</label>
+                            </div>
+                            <div v-else-if="specie == 'Gato'" v-for="breed in breedCat">
+                                <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">{{ breed }}</label>
+                            </div>
+                            <div v-else-if="specie == 'Ave'" v-for="breed in breedBird">
+                                <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">{{ breed }}</label>
+                            </div>
+                            <div v-else-if="specie == 'Réptil'" v-for="breed in breedReptile">
+                                <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                                <label class="form-check-label" for="flexCheckDefault">{{ breed }}</label>
+                            </div>
+                        </div>
+                        <div v-if="checkedSpecies.length" class="divisor-linha"></div>
                         <h4>Idade:</h4>
                         <div>
                             <input min="0" max="10" v-model="selM" type="range" class="form-range" id="customRange1">
@@ -40,34 +46,28 @@
                         </div>
                         <div class="divisor-linha"></div>
                         <h4>Cor:</h4>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="preto" id="flexCheckDefault">
+                        <div v-for="color in colors" class="form-check">
+                            <input class="form-check-input" type="checkbox" :value="color" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
-                                Preto
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="cinza" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">
-                                Cinza
+                                {{ color }}
                             </label>
                         </div>
                         <div class="divisor-linha"></div>
                         <h4>Tamanho:</h4>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="pequeno" id="flexCheckDefault">
+                            <input v-model="checkedSizes" class="form-check-input" type="checkbox" value="S" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 Pequeno
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="medio" id="flexCheckDefault">
+                            <input v-model="checkedSizes" class="form-check-input" type="checkbox" value="M" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 Médio
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="grande" id="flexCheckDefault">
+                            <input v-model="checkedSizes" class="form-check-input" type="checkbox" value="L" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 Grande
                             </label>
@@ -76,8 +76,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <div
-                    class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
                         <strong class="d-inline-block mb-3 text-success">Adote:</strong>
                         <div class="input-group">
@@ -87,35 +86,21 @@
                         </div>
                     </div>
                 </div>
-                <div
-                    class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-                    <div class="rounded-circle col-3 d-none d-lg-block"
-                        style="border: 1px solid; margin-right: 5px; margin-left: 15px;">
-                    </div>
-                    <div class="col p-4 d-flex flex-column position-static">
-                        <span>
-                            <p style="float:left" class="mb-4 text-success">Species Age Race Color Petname</p>
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                    <div class="border shadow-sm" v-if="pets.length" v-for="pet in pets">
+                        <div class="col p-4 d-flex flex-column position-static">
                             <span>
-                                <button style="float:right" type="button"
-                                    class="btn btn-outline-success">Visualizar/Adotar</button>
+                                <p style="float:left" class="mb-4 text-success"><strong>{{ pet.pet_name }}:</strong> {{ pet.pet_species }} - {{ pet.pet_breed }} {{ pet.pet_age }} {{ pet.pet_color }}</p>
+                                <span>
+                                    <button style="float:right" type="button" class="btn btn-outline-success">Visualizar/Adotar</button>
+                                </span>
                             </span>
-                        </span>
+                        </div>
+                        <div class="divisor-linha"></div>
                     </div>
-                    <div class="divisor-linha"></div>
-                    <div class="rounded-circle col-3 d-none d-lg-block"
-                        style="border: 1px solid; margin-right: 5px; margin-left: 15px;">
+                    <div v-else>
                     </div>
-                    <div class="col p-4 d-flex flex-column position-static">
-                        <span>
-                            <p style="float:left" class="mb-4 text-success">Species Age Race Color Petname</p>
-                            <span>
-                                <button style="float:right" type="button"
-                                    class="btn btn-outline-success">Visualizar/Adotar</button>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="divisor-linha"></div>
-                    <ul class="pagination justify-content-center">
+                    <ul class="mt-3 pagination justify-content-center">
                         <li class="page-item disabled">
                             <a class="btn btn-outline-success page-link">Anterior</a>
                         </li>
@@ -143,7 +128,7 @@ ul {
 }
 @media screen and (-webkit-min-device-pixel-ratio:0) {
     input[type='range']::-webkit-slider-thumb {
-      background: #4CAF50;
+        background: #4CAF50;
     }
 }
 

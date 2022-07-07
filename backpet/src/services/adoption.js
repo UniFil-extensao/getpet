@@ -1,4 +1,5 @@
 const validator = require('validator');
+const { PAGE_LIMIT } = require('../../config/general.config');
 const {
   InputValidationError,
   NotFoundError,
@@ -103,8 +104,66 @@ const create = async (author, data) => {
   return adoption;
 };
 
-// eslint-disable-next-line no-unused-vars
-const list = async options => {};
+const list = async options => {
+  const filters = {
+    sort: {
+      column: 'created_at',
+      order: 'desc',
+    },
+    limit: 50,
+    offset: 0,
+  };
+
+  const splitOpts = field => {
+    return field
+      ?.split(',')
+      .map(s => s.trim().toLowerCase())
+      .filter(s => s);
+  };
+
+  options.search = options.search?.trim();
+  options.page = +options.page || 1;
+  options.orderBy = options.orderBy?.trim().toLowerCase();
+  options.species = options.species?.trim().toLowerCase();
+  options.breeds = splitOpts(options.breeds);
+  options.colors = splitOpts(options.colors);
+  options.sizes = splitOpts(options.sizes);
+  options.minAge = +options.minAge >= 0 ? +options.minAge : 0;
+  options.maxAge = +options.maxAge >= 0 ? +options.maxAge : 0;
+  options.newOwnerId = +options.newOwnerId >= 0 ? +options.newOwnerId : 0;
+  options.oldOwnerId = +options.oldOwnerId >= 0 ? +options.oldOwnerId : 0;
+
+  // validar options
+  if (options.search) filters.search = options.search;
+
+  if (!options.noLimit) {
+    filters.limit = PAGE_LIMIT;
+    filters.offset = PAGE_LIMIT * (options.page - 1);
+  }
+
+  if (
+    options.orderBy &&
+    ['created_at', 'breed', 'age', 'color', 'size'].includes(options.orderBy)
+  ) {
+    filters.sort.column = options.orderBy;
+    filters.sort.order =
+      options.orderBy === 'created_at' &&
+      options.orderDir?.toLowerCase() === 'asc'
+        ? 'asc'
+        : 'desc';
+  }
+
+  if (options.species) filters.species = options.species;
+  if (options.breeds) filters.breeds = options.breeds;
+  if (options.colors) filters.color = options.colors;
+  if (options.size) filters.sizes = options.sizes;
+  if (options.minAge) filters.min_age = options.minAge;
+  if (options.maxAge) filters.max_age = options.maxAge;
+  if (options.newOwnerId) filters.new_owner_id = options.newOwnerId;
+  if (options.oldOwnerId) filters.old_owner_id = options.oldOwnerId;
+
+  return await Adoption.list(filters);
+};
 
 const getById = async id => {
   id = validations.id(id, msg => {
@@ -143,7 +202,7 @@ const update = async (author, data, openOnly = true) => {
   }
 
   data = adoptionValidator.validate(data);
-
+  // TODO: implementar update e insert de imagens
   try {
     const adoption = await Adoption.update(options, data);
     return adoption;
@@ -168,7 +227,30 @@ const close = async (author, data) => {
 };
 
 // eslint-disable-next-line no-unused-vars
-const deleteById = async (author, id) => {};
+const deleteById = async (author, id) => {
+  id = validations.id(id, msg => {
+    throw new InputValidationError({ id: msg }, 404);
+  });
+
+  const ownerId = await Adoption.getOwnerId(id);
+  if (!author.admin && ownerId !== author.id) {
+    throw new ForbiddenError({
+      accessDenied: 'Você não tem permissão para fazer isso',
+    });
+  }
+
+  try {
+    const adoptionId = await Adoption.deleteById(id);
+    return adoptionId;
+  } catch (error) {
+    if (error.message === 'Adoção não encontrada') {
+      throw new NotFoundError({
+        adoption: 'Adoção não encontrada',
+      });
+    }
+    throw error;
+  }
+};
 
 module.exports = {
   create,

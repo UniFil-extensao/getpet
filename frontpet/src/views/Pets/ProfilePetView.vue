@@ -9,11 +9,10 @@
                 <div class="row">
                     <div class="col-md-auto mb-3">
                         <img class="circular--square border border-success" src="../../assets/images/img-dog-test.jpg"/>
-                        
                     </div>
                     <div class="col-md-auto mt-3">
-                        <h5 class="text-success">pet.name</h5>
-                        <h5 class="text-success">pet.dono</h5>
+                        <h5 class="text-success">Nome: {{ pet.pet_name }}</h5>
+                        <h5 class="text-success">Dono(a): {{ owner.username }}</h5>
                     </div>
                 </div>
                 <div class="row g-0 border rounded overflow-auto mb-4 shadow-sm h-md-250 position-relative" style="height: 650px;">
@@ -57,41 +56,27 @@
                             <h2 class="text-success">Espécie:</h2>
                         </div>
                         <div class="col-md-3 mt-2 mb-4">
-                            <h3 class="text-success">pet.species</h3>
+                            <h3 class="text-success">{{pet.pet_species}}</h3>
                         </div>
                         <div class="col-md-3 mt-2 mb-4">
                             <h2 class="text-success">Tamanho:</h2>
                         </div>
                         <div class="col-md-3 mt-2 mb-4">
-                            <h3 class="text-success">pet.size</h3>
+                            <h3 class="text-success">{{pet.pet_size == 'M' ? 'Médio' : pet.pet_size == 'L' ? 'Grande' : 'Pequeno'}}</h3>
                         </div>
                     </div>
-                    <div class="row centered">
+                    <div v-if="pet.pet_age" class="row centered">
                         <div class="col-md-3 mb-4">
                             <h2 class="text-success">Idade:</h2>
                         </div>
                         <div class="col-md-3 mt-2 mb-4">
-                            <h3 class="text-success">pet.age</h3>
-                        </div>
-                        <div class="col-md-3 mb-4">
-                            <h2 class="text-success">Peso:</h2>
-                        </div>
-                        <div class="col-md-3 mt-2 mb-4">
-                            <h3 class="text-success">pet.weight</h3>
+                            <h3 class="text-success">{{ pet.pet_age < 12 ? (pet.pet_age).toFixed() + ' Meses' : (pet.pet_age / 12).toFixed() + ' Anos' }}</h3>
                         </div>
                     </div>
                     <hr/>
                     <div class="col-md-11 mb-4 centered">
-                        <h3 class="text-success">Anúncio:</h3>
-                        <p class="fs-5 mr-3" text-break>
-                            Lorem ipsum dolor sit amet. Ea voluptatum expedita in nostrum itaque ut vitae ipsa ea earum facilis. Cum deserunt asperiores eos nulla ipsam quo assumenda consectetur est totam eligendi et dolorum impedit ea quam sunt. 
-                        </p>
-                        <p class="fs-5 mr-3" text-break>
-                            Et placeat eaque et recusandae velit et facere voluptate aut quod assumenda. Et voluptatem quos et fuga vitae eum consequuntur molestias ea sunt sint ut enim incidunt ut maiores maxime.
-                        </p>
-                        <p class="fs-5 mr-3" text-break>
-                            Eum laboriosam deserunt qui itaque fuga est tempore laudantium non quos autem ut ducimus internos in sapiente maiores. Qui necessitatibus consequatur id soluta rerum non enim vero sed illo alias. Qui ipsa omnis et obcaecati optio et voluptatem dolor est ipsum dolores vel voluptatem nihil At laudantium saepe. Ad unde illum sed  nihil vel nemo magni sit consequatur recusandae et galisum blanditiis eum aliquam rerum. 
-                        </p>
+                        <h3 class="text-success">Descrição:</h3>
+                        <p class="fs-5 mr-3">{{ pet.desc }}</p>
                     </div>
                 </div>
             </div>

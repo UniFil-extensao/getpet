@@ -33,7 +33,7 @@
           </div>
           <div class="col-4">
             <select v-model="inputUser.uf" required class="form-control" name="uf" placeholder="Estado">
-              <option value="">UF</option>
+              <option disabled hidden value="">UF</option>
               <option v-for="UF in ufs" :value="UF"> {{ UF }} </option>
             </select>
           </div>
