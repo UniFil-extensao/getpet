@@ -178,6 +178,9 @@ const update = async (options, data) => {
       })
     );
 
+    if (data.status === 'F')
+      imgService.deleteAllFrom(`uploads/adoptions/${options.id}`, false);
+
     return adoption;
   });
 };
@@ -185,6 +188,8 @@ const update = async (options, data) => {
 const deleteById = async id => {
   const deletedRows = await knex.transaction(async trx => {
     await trx('adoptions').where('id', id).del();
+
+    imgService.deleteAllFrom(`uploads/adoptions/${id}`, true);
   });
 
   if (deletedRows === 0) throw new Error('Adoção não encontrada');

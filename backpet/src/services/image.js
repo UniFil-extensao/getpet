@@ -6,6 +6,17 @@ const createDirs = filePath => {
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 };
 
+const deleteAllFrom = (folderPath, deletePfp = true) => {
+  if (deletePfp) return fs.rmdirSync(folderPath, { recursive: true });
+
+  const files = fs.readdirSync(folderPath);
+  files.forEach(file => {
+    const filePath = path.join(folderPath, file);
+    if (file.match(/profile_picture\.(png|jpg)$/) && !deletePfp) return;
+    fs.rmSync(filePath);
+  });
+};
+
 const clearFile = filePath => {
   // check if file exists as another extension
   const dir = path.dirname(filePath);
@@ -31,4 +42,5 @@ const saveToDisk = (fileData, filePath) => {
 
 module.exports = {
   saveToDisk,
+  deleteAllFrom,
 };

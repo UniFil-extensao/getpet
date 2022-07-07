@@ -13,5 +13,5 @@ exports.seed = async function (knex) {
     { user_id: 3, adoption_id: 3 },
   ]);
 
-  await knex.raw('ALTER TABLE favorites AUTO_INCREMENT = 5');
+  await knex.raw('ALTER TABLE favorites AUTO_INCREMENT=6');
 };
