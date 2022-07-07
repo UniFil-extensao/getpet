@@ -93,10 +93,10 @@ const list = async options => {
 
     if (options.species)
       queryBuilder.where('pet_species', 'like', `%${options.species}%`);
-    if (options.status) queryBuilder.where('status', '=', `${options.status}`);
 
     if (options.breeds) queryBuilder.whereIn('pet_breed', options.breeds);
 
+    if (options.status) queryBuilder.whereIn('status', options.status);
     if (options.colors) queryBuilder.whereIn('pet_color', options.colors);
     if (options.sizes) queryBuilder.whereIn('pet_size', options.sizes);
   };

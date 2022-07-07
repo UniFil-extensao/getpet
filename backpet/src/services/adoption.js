@@ -108,6 +108,7 @@ const list = async options => {
     },
     limit: 50,
     offset: 0,
+    status: 'A',
   };
 
   const splitOpts = field => {
@@ -121,7 +122,7 @@ const list = async options => {
   options.page = +options.page || 1;
   options.orderBy = options.orderBy?.trim().toLowerCase();
   options.species = options.species?.trim().toLowerCase();
-  options.status = options.status?.trim().toLowerCase();
+  options.status = splitOpts(options.status);
   options.breeds = splitOpts(options.breeds);
   options.colors = splitOpts(options.colors);
   options.sizes = splitOpts(options.sizes);
@@ -151,8 +152,7 @@ const list = async options => {
   }
 
   if (options.species) filters.species = options.species;
-  if (options.status && ['a', 'f'].includes(options.status))
-    filters.status = options.status;
+  if (options.status) filters.status = options.status;
   if (options.breeds) filters.breeds = options.breeds;
   if (options.colors) filters.color = options.colors;
   if (options.size) filters.sizes = options.sizes;
@@ -165,13 +165,14 @@ const list = async options => {
   return await Adoption.list(filters);
 };
 
-const getById = async id => {
+const getById = async (id, openOnly = true) => {
   id = validations.id(id, msg => {
     throw new InputValidationError({ id: msg }, 404);
   });
 
   const adoption = await Adoption.getById(id);
-  if (!adoption) throw new NotFoundError({ adoption: 'Adoção não encontrada' });
+  if (!adoption || (openOnly && adoption.status !== 'A'))
+    throw new NotFoundError({ adoption: 'Adoção não encontrada' });
   return adoption;
 };
 
@@ -180,7 +181,7 @@ const getPictures = async id => {
     throw new InputValidationError({ id: msg }, 404);
   });
 
-  await getById(id);
+  await getById(id, false);
 
   const pictures = await AdoptionPic.getPicturesFrom(id);
   return pictures;
