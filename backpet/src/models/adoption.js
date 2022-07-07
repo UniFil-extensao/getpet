@@ -1,4 +1,5 @@
 const knex = require('../services/db');
+const imgService = require('../services/image');
 const User = require('./user');
 
 const schema = async () => {
@@ -6,7 +7,6 @@ const schema = async () => {
 };
 
 const getById = async (id, conn = knex) => {
-  // TODO: criar e utilizar view retornando os usernames dos donos
   const [adoption] = await conn('adoptions').select('*').where('id', id);
 
   Object.keys(adoption).forEach(key => {
@@ -37,7 +37,40 @@ const getByOwner = async (id, type = { old: true, new: true }, conn = knex) => {
 
 const create = async data => {
   const adoption = await knex.transaction(async trx => {
+    const imgs = data.files?.img;
+    const pfp = data.files?.pfp[0];
+    delete data.files;
+
     const [id] = await trx('adoptions').insert(data);
+
+    const queries = [];
+    if (pfp) {
+      const pfpPath = `adoptions/${id}/profile_picture${
+        pfp.mimetype === 'image/png' ? '.png' : '.jpg'
+      }`;
+      queries.push(
+        trx('adoptions')
+          .update('thumbnail_path', imgService.saveToDisk(pfp.buffer, pfpPath))
+          .where('id', id)
+      );
+    }
+
+    if (imgs) {
+      queries.push(
+        ...imgs.map(async (img, index) => {
+          const imgPath = `adoptions/${id}/${index + 1}${
+            img.mimetype === 'image/png' ? '.png' : '.jpg'
+          }`;
+          return trx('adoption_pics').insert({
+            adoption_id: id,
+            path: imgService.saveToDisk(img.buffer, imgPath),
+          });
+        })
+      );
+    }
+
+    if (queries) await Promise.all(queries);
+
     return await getById(id, trx);
   });
 
@@ -99,6 +132,17 @@ const update = async (options, data) => {
     data.closed_at = new Date();
   }
   return await knex.transaction(async trx => {
+    const [pfp] = data.files?.pfp || [];
+    delete data.files;
+
+    if (pfp) {
+      const pfpPath = `adoptions/${options.id}/profile_picture${
+        pfp.mimetype === 'image/png' ? '.png' : '.jpg'
+      }`;
+
+      data.thumbnail_path = imgService.saveToDisk(pfp.buffer, pfpPath);
+    }
+
     const updatedRows = await trx('adoptions').update(data).where(options);
     if (updatedRows === 0) throw new Error('Adoção não encontrada');
 

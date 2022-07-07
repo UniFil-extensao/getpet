@@ -70,11 +70,6 @@ const validations = {
       : onFail('Cor do animal inválida', true);
   },
   newOwnerId: validateId,
-  // TODO: validate image
-  // eslint-disable-next-line no-unused-vars
-  thumbnail: (thumbnail, onFail) => {
-    return thumbnail;
-  },
   adopterScore: (adopterScore, onFail) => {
     if (!Number.isFinite(adopterScore))
       return onFail('Pontuação do adotante é obrigatória', false);
@@ -89,6 +84,7 @@ const validations = {
       ? donorScore
       : onFail('Pontuação inválida', true);
   },
+  files: files => files,
 };
 const adoptionValidator = new DataValidator(validations);
 
@@ -97,7 +93,6 @@ const create = async (author, data) => {
 
   data = adoptionValidator.validate(data, requiredFields);
 
-  // eslint-disable-next-line camelcase
   data.old_owner_id = author.id;
 
   const adoption = await Adoption.create(data);
@@ -133,7 +128,6 @@ const list = async options => {
   options.newOwnerId = +options.newOwnerId >= 0 ? +options.newOwnerId : 0;
   options.oldOwnerId = +options.oldOwnerId >= 0 ? +options.oldOwnerId : 0;
 
-  // validar options
   if (options.search) filters.search = options.search;
 
   if (!options.noLimit) {
@@ -191,7 +185,6 @@ const update = async (author, data, openOnly = true) => {
       accessDenied: 'Você não tem permissão para fazer isso',
     });
   }
-  // eslint-disable-next-line camelcase
   options.old_owner_id = ownerId;
 
   if (!Object.keys(data).length) {
@@ -202,7 +195,6 @@ const update = async (author, data, openOnly = true) => {
   }
 
   data = adoptionValidator.validate(data);
-  // TODO: implementar update e insert de imagens
   try {
     const adoption = await Adoption.update(options, data);
     return adoption;
@@ -226,7 +218,6 @@ const close = async (author, data) => {
   return update(author, data, false);
 };
 
-// eslint-disable-next-line no-unused-vars
 const deleteById = async (author, id) => {
   id = validations.id(id, msg => {
     throw new InputValidationError({ id: msg }, 404);

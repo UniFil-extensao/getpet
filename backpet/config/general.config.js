@@ -24,6 +24,7 @@ const env = (({
 }))(process.env);
 
 const PAGE_LIMIT = 3;
+const MAX_PET_PICS = 4;
 
 const DISABLE_AUTH = env.NODE_ENV !== 'production' && false;
 const USE_SSL = env.NODE_ENV === 'production' && false;
@@ -33,4 +34,5 @@ module.exports = {
   DISABLE_AUTH,
   USE_SSL,
   PAGE_LIMIT,
+  MAX_PET_PICS,
 };

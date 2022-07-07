@@ -2,6 +2,8 @@ const adoptionsService = require('../services/adoption');
 const { filterData } = require('../services/data');
 
 const create = async (req, res, next) => {
+  // REFAC: criar middleware para parsing do body
+  req.body = JSON.parse(req.body.adoption);
   const allowedFields = [
     'desc',
     'petSize',
@@ -14,6 +16,7 @@ const create = async (req, res, next) => {
   ];
 
   const data = filterData(allowedFields, req.body);
+  data.files = req.files;
 
   try {
     const adoption = await adoptionsService.create(req.user, data);
@@ -59,6 +62,9 @@ const getById = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
+  // REFAC: criar middleware para parsing do body
+  req.body = JSON.parse(req.body.adoption);
+
   const allowedUpdates = [
     'desc',
     'petSize',
@@ -71,6 +77,7 @@ const update = async (req, res, next) => {
   ];
 
   const data = filterData(allowedUpdates, req.body);
+  data.files = req.files;
 
   data.id = +req.params.id;
   try {
