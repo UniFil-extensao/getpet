@@ -1,7 +1,7 @@
 <script src="../../scripts/Pets/indexPet.js"></script>
 <template>
     <HeaderView />
-    <MenuView />
+    <!-- <MenuView /> -->
     <div class="divisor-linha"></div>
     <div class="container">
         <div class="row mb-2 ms-5">
@@ -92,7 +92,7 @@
                             <span>
                                 <p style="float:left" class="mb-4 text-success"><strong>{{ pet.pet_name }}:</strong> {{ pet.pet_species }} - {{ pet.pet_breed }} {{ pet.pet_age }} {{ pet.pet_color }}</p>
                                 <span>
-                                    <button style="float:right" type="button" class="btn btn-outline-success">Visualizar/Adotar</button>
+                                    <button style="float:right" type="button" class="btn btn-outline-success" v-on:click="petProfile(pet)">Visualizar/Adotar</button>
                                 </span>
                             </span>
                         </div>
