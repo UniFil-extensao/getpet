@@ -10,8 +10,8 @@
         <button v-on:click="home()" class="btn btn-outline-light nav col-6 col-lg-auto mb-2 justify-content-center mb-md-0" id="btnIcones2">
           <img class="ms-2" src="../../assets/icons/svg/home.svg">
         </button>
-        <h1 style="color: black">GetPet</h1>
-        <div v-if="Object.keys(favs).length" class="dropdown" style="margin-left: 20%;" >
+        <h1 v-on:click="home()" class="pointer" style="color: black">GetPet</h1>
+        <div class="dropdown" style="margin-left: 20%;" >
           <button class="btn btn-secondary dropdown-toggle" type="button" id="btnDrop" data-bs-toggle="dropdown" aria-expanded="false">
             Favoritos
           </button>
@@ -36,3 +36,9 @@
     </div>
   </header>
 </template>
+
+<style>
+
+  .pointer {cursor: pointer;}
+
+</style>

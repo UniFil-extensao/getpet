@@ -1,9 +1,12 @@
 import HeaderView from '../../views/Users/HeaderView.vue';
-import { createOptions } from '../../utils/http';
+import { createOptions, createOptionsImgs } from '../../utils/http';
 
 export default {
   created: async function () {
-    this.user = await fetch(`${this.server}/users/${this.userId}`, createOptions('GET'));
+    this.user = await fetch(
+      `${this.server}/users/${this.userId}`,
+      createOptions('GET')
+    );
     this.user = await this.user.json();
     this.updateUser.city = this.user.city;
     this.updateUser.uf = this.user.uf;
@@ -12,53 +15,87 @@ export default {
   beforeMount: async function () {
     await this.getPets();
   },
-  methods:{
-    getPets: async function(){
-      console.log(this.loggedUser.id, 'loggedUser ID EU JURO')
-      var res = await fetch(`${this.server}/adoptions/?oldOwnerId=${this.userId}&status=F`, createOptions('GET')),
-          data = await res.json();
+  methods: {
+    getPets: async function () {
+      console.log(this.loggedUser.id, 'loggedUser ID EU JURO');
+      var res = await fetch(
+          `${this.server}/adoptions/?oldOwnerId=${this.userId}&status=F`,
+          createOptions('GET')
+        ),
+        data = await res.json();
       this.donatedPets = data.adoptions;
-  
-      this.availablePets = await fetch(`${this.server}/adoptions/?oldOwnerId=${this.userId}&status=A`, createOptions('GET'));
+
+      this.availablePets = await fetch(
+        `${this.server}/adoptions/?oldOwnerId=${this.userId}&status=A`,
+        createOptions('GET')
+      );
       this.availablePets = await this.availablePets.json();
       this.availablePets = this.availablePets.adoptions;
-  
-      this.adoptedPets = await fetch(`${this.server}/adoptions/?newOwnerId=${this.userId}&status=F`, createOptions('GET'));
+
+      this.adoptedPets = await fetch(
+        `${this.server}/adoptions/?newOwnerId=${this.userId}&status=F`,
+        createOptions('GET')
+      );
       this.adoptedPets = await this.adoptedPets.json();
       this.adoptedPets = this.adoptedPets.adoptions;
     },
-    update: async function(){
+    update: async function () {
+      const fetchOptions = this.updateUser.pfp
+        ? createOptionsImgs('PATCH', 'user', this.updateUser)
+        : createOptions('PATCH', this.updateUser);
 
-      for(let prop in this.updateUser) if(!this.updateUser[prop]) delete this.updateUser[prop];
-      if(this.updateUser.pass == this.passConfirm) this.updateUser.password = this.updateUser.pass;
-      if(this.updateUser.city && this.updateUser.uf) this.updateUser.address = { city: this.updateUser.city, uf: this.updateUser.uf };
+      var res = await fetch(
+          `${this.server}/users/${this.user.id}`,
+          fetchOptions
+        ),
+        data = await res.json();
 
-      var res = await fetch(`${this.server}/users/${this.user.id}`, createOptions('PATCH', this.updateUser)),
-          data = await res.json();
-
-      if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
+      if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
       else this.user = data;
     },
-    removePet: async function(target){
-      if(confirm(`Deseja realmente remover o pet ${target.pet_name}?`)){
-        var res = await fetch(`${this.server}/adoptions/${target.id}`, createOptions('DELETE')),
-            data = await res.json();
-        if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
-        else for(let pet in this.availablePets) if(target.id === this.availablePets[pet].id) delete this.availablePets[pet];  
+    saveImage: async function (event) {
+      const imgFiles = event.target.files;
+      if (event.target.id.includes('pet-pfp')) {
+        this.insertPet.pfp = imgFiles[0];
+      } else if (event.target.id.includes('pet-imgs')) {
+        this.insertPet.imgs = imgFiles;
+      } else if (event.target.id.includes('user-pfp')) {
+        // TODO
       }
     },
-    petInsert: async function(){
-      if(this.petAge == 'Anos') this.insertPet.petAge = this.insertPet.petAge * 12;
-      
-      var res = await fetch(`${this.server}/adoptions/`, createOptions('POST', this.insertPet)),
+    removePet: async function (target) {
+      if (confirm(`Deseja realmente remover o pet ${target.pet_name}?`)) {
+        var res = await fetch(
+            `${this.server}/adoptions/${target.id}`,
+            createOptions('DELETE')
+          ),
           data = await res.json();
-          
-      if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
+        if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
+        else
+          for (let pet in this.availablePets)
+            if (target.id === this.availablePets[pet].id)
+              delete this.availablePets[pet];
+      }
+    },
+    petInsert: async function () {
+      // return console.log(this.insertPet);
+      const insertData = Object.assign({}, this.insertPet);
+      if (this.petAge == 'Anos') insertData.petAge = insertData.petAge * 12;
+
+      const fetchOptions =
+        insertData.pfp || insertData.imgs
+          ? createOptionsImgs('POST', 'adoption', insertData)
+          : createOptions('POST', insertData);
+
+      var res = await fetch(`${this.server}/adoptions/`, fetchOptions),
+        data = await res.json();
+
+      if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
       else this.$router.go();
     },
-    petProfile: function(target){
+    petProfile: function (target) {
       this.$router.push(`/adoptions/${target.id}`);
-    }
+    },
   },
   data: function () {
     return {
@@ -73,7 +110,7 @@ export default {
         username: '',
         city: '',
         uf: '',
-        pass: ''
+        pass: '',
       },
       insertPet: {
         petName: '',
@@ -82,19 +119,82 @@ export default {
         petSpecies: '',
         petColor: '',
         petBreed: '',
-        desc: ''
+        desc: '',
       },
-      species: ['Cachorro', 'Gato', 'Ave', 'Réptil','Outro'],
-      breedDog: [ 'Spitz Alemão', 'Bulldog Francês', 'Shih Tzu', 'Pug', 'Rottweiler', 'Golden Retriever', 'Pastor Alemão', 'Border Collie', 'SRD', 'Outro'],
-      breedCat: [ 'Persa', 'Siamese', 'Ragdoll', 'Siamês', 'Sphynx', 'SRD', 'Outro'],
-      breedBird: [ 'Canário', 'Pássaro', 'SRD', 'Outro'],
-      breedReptile: [ 'Tartaruga', 'Lagarto', 'Outro'],
-      colors: ['Branco', 'Preto', 'Marrom', 'Cinza', 'Pardo', 'Vermelho', 'Amarelo', 'Verde', 'Azul', 'Outro'],
+      pfp: {
+        pfp: '',
+        data: '',
+        imgs: '',
+      },
+      species: ['Cachorro', 'Gato', 'Ave', 'Réptil', 'Outro'],
+      breedDog: [
+        'Spitz Alemão',
+        'Bulldog Francês',
+        'Shih Tzu',
+        'Pug',
+        'Rottweiler',
+        'Golden Retriever',
+        'Pastor Alemão',
+        'Border Collie',
+        'SRD',
+        'Outro',
+      ],
+      breedCat: [
+        'Persa',
+        'Siamese',
+        'Ragdoll',
+        'Siamês',
+        'Sphynx',
+        'SRD',
+        'Outro',
+      ],
+      breedBird: ['Canário', 'Pássaro', 'SRD', 'Outro'],
+      breedReptile: ['Tartaruga', 'Lagarto', 'Outro'],
+      colors: [
+        'Branco',
+        'Preto',
+        'Marrom',
+        'Cinza',
+        'Pardo',
+        'Vermelho',
+        'Amarelo',
+        'Verde',
+        'Azul',
+        'Outro',
+      ],
       petAge: '',
-      ufs: ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'],
-      passConfirm: ''
-    }
+      ufs: [
+        'AC',
+        'AL',
+        'AP',
+        'AM',
+        'BA',
+        'CE',
+        'DF',
+        'ES',
+        'GO',
+        'MA',
+        'MT',
+        'MS',
+        'MG',
+        'PA',
+        'PB',
+        'PR',
+        'PE',
+        'PI',
+        'RJ',
+        'RN',
+        'RS',
+        'RO',
+        'RR',
+        'SC',
+        'SP',
+        'SE',
+        'TO',
+      ],
+      passConfirm: '',
+    };
   },
 
-  components: { HeaderView }
-}
+  components: { HeaderView },
+};

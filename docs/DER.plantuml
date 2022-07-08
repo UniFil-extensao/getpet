@@ -1,91 +1,107 @@
 @startuml
+
 ' hide the spot
 hide circle
 
 ' avoid problems with angled crows feet
 skinparam linetype ortho
 
-entity "Usuário" as e01 {
-  *id_usuário: number <<generated>>
+!define unique(x) <color:green>x</color>
+
+entity "users" as users {
+  * id : int <<generated>>
   --
-  name : text
-  idade: number
-  cpf: number 
-  email: number
-  admin: boolean
-  avaliação : number
+  * username : varchar(15)
+  * password : varchar(255)
+  * city : varchar(255)
+  * uf : varchar(2)
+  * unique(cpf) : varchar(11)
+  * unique(email) : varchar(80)
+  * unique(phone) : varchar(11)
+  adopter_score : double(2, 1) unsigned
+  donor_score : double(2, 1) unsigned
+  profile_pic_path : varchar(255)
+  * admin : enum('S', 'N') default 'N'
+  * active : enum('S', 'N', 'B') default 'S'
 }
 
-entity "Pet" as e02 {
-  *id_pet : number <<generated>>
+entity "adoptions" as adoptions {
+  * id : number <<generated>>
   --
-  *id_usuario: number <<FK>>
-  name : text
-  idade : number
-  peso : number
-  raça : text
-  descrição : text
-  fotos : longblob
-
+  * created_at : timestamp default current_timestamp
+  closed_at : timestamp
+  * status : enum('A', 'F') default 'A'
+  * old_owner_id : int <<FK>>
+  new_owner_id : int <<FK>>
+  * desc : text
+  * pet_size : enum('S','M','L')
+  pet_name : varchar(20)
+  pet_age : int(4) unsigned
+  pet_species : enum('cachorro', 'gato')
+  pet_breed : varchar(40)
+  pet_color : varchar(20)
+  thumbnail_path : varchar(255)
+  adopter_score : double(2, 1) unsigned
+  donor_score : double(2, 1) unsigned
 }
 
-entity "Avaliações" as e03 {
-  *id_aval : number <<generated>>
+entity "adoption_pics" as adp_pics {
+  * id : int <<generated>>
   --
-  *id_usuario: number <<FK>>
-  qtdEstrela : number
-  descrição : text
+  * path : varchar(255)
+  * adoption_id : int <<FK>>
 }
 
-
-entity "AvaliaçãoMapa" as e04 {
-  *id_avalMapa : number <<generated>>
+entity "favorites" as favs {
+  * id : int <<generated>>
   --
-  *id_usuario : number 
-  coords: text
-  qtdEstrela : number<<FK>>
-  descrição : text
+  * adoption_id : int <<FK>>
+  * user_id : int <<FK>>
+  * created_at : timestamp default current_timestamp
 }
 
-entity "Publicações" as e05 {
-  *id_pub : number <<generated>>
+entity "reports" as reports {
+  * id int <<generated>>
   --
-  *id_usuario : number <<FK>>
-  *id_pet : number <<FK>>
-   titulo : text
-   descrição : text
-   fotos : longblob
+  * type : enum('U', 'A')
+  * reporter_id : int <<FK>>
+  * status : enum('A', 'F', 'D') default 'A'
+  desc : text
+  reported_user_id : int <<FK>>
+  reported_adoption_id : int <<FK>>
 }
 
-
-entity "Conversa" as e06 {
-  *id_chat : number <<generated>>
+entity "chats" as chats {
+  * id int <<generated>>
   --
-  *id_usuario1 : number <<FK>>
-  *id_usuario2 : number <<FK>>  
+  * adoption_id : int <<FK>>
+  * adopter_id : int <<FK>>
 }
 
-entity "Mensagem" as e07 {
-  *id_mensagem : number <<generated>>
+entity "messages" as msgs {
+  * id int <<generated>>
   --
-  *id_chat : number <<FK>>
-  conteudo : text
+  * chat_id : int <<FK>>
+  * sender_id : int <<FK>>
+  * created_at : timestamp default current_timestamp
+  * content : text
+  desc : text
 }
 
-entity "Report" as e08 {
- *id_report : number <<generated>>
-  --
-  *id_usuario: number <<FK>>
-  tipo : number
-  comentario : text
-}
+' e01 ||..o{ e02
+' e01 |o..o{ e03
 
-e01 ||..o{ e02
-e01 ||..o{ e03
-e01 }o..|{ e06
-e01 }o..|| e05
-e05 ||..o| e02
-e08 ||..o{ e01
-e04 ||..o{ e01
-e07 ||..o{ e06
+users ||..o{ favs
+users ||..o{ adoptions
+users ||..o{ reports
+users ||..o{ chats
+users ||..o{ msgs
+
+adoptions ||..o{ favs
+adoptions ||..o{ chats
+adoptions ||..o{ adp_pics
+adoptions |o..o{ reports
+
+chats ||..o{ msgs
+
 @enduml
