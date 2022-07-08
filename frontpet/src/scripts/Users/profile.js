@@ -1,5 +1,5 @@
 import HeaderView from '../../views/Users/HeaderView.vue';
-import { createOptions } from '../../utils/http';
+import { createOptions, createOptionsImg } from '../../utils/http';
 
 export default {
   created: async function () {
@@ -34,6 +34,15 @@ export default {
 
       var res = await fetch(`${this.server}/users/${this.user.id}`, createOptions('PATCH', this.updateUser)),
           data = await res.json();
+
+      if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
+      else this.user = data;
+    },
+    uploadPfp: async function(imgs){
+      var res = await fetch(`${this.server}/adoptions/${this.user.id}`, createOptionsImg('PATCH', imgs.target.files[0], null)),
+          data = await res.json();
+
+          console.log(data);
 
       if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
       else this.user = data;
@@ -82,6 +91,11 @@ export default {
         petColor: '',
         petBreed: '',
         desc: ''
+      },
+      pfp:{
+        pfp: '',
+        data: '',
+        imgs: ''
       },
       species: ['Cachorro', 'Gato', 'Ave', 'Réptil','Outro'],
       breedDog: [ 'Spitz Alemão', 'Bulldog Francês', 'Shih Tzu', 'Pug', 'Rottweiler', 'Golden Retriever', 'Pastor Alemão', 'Border Collie', 'SDR', 'Outro'],
