@@ -33,7 +33,7 @@ const validations = {
     if (!petName) return onFail('Nome do animal é obrigatório', false);
     const options = { max: 20 };
     return validator.isLength(petName, options) &&
-      validator.isAlpha(petName, 'pt-BR')
+      validator.isAlpha(petName, 'pt-BR', { ignore: '- ' })
       ? petName
       : onFail('Nome do animal inválido', true);
   },

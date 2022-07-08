@@ -1,34 +1,27 @@
 //Module Public API
 export { createOptions, createOptionsImgs };
 
-
 function createOptions(method, body) {
   return {
     method,
     credentials: 'include',
     headers: {
-        "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   };
 }
 
-function createOptionsImgs(method, field, data, imgs, pfp) {
-  const f = new FormData();
-  
-  const test = {
-    ...(imgs),
-    pfp,
-    [field]:data
-  };
-  f.append('pfp', pfp, 'pfp.png');
-  f.append(field, JSON.stringify(data));
+function createOptionsImgs(method, fieldName, { imgs, pfp, ...data }) {
+  const formData = new FormData();
+
+  pfp && formData.append('pfp', pfp, pfp.name);
+  imgs && imgs.forEach(img => formData.append('imgs', img, img.name));
+  data && formData.append(fieldName, JSON.stringify(data));
+
   return {
     method,
     credentials: 'include',
-    headers: {
-        "Content-Type": "multipart/form-data"
-    },
-    body:f
+    body: formData,
   };
 }

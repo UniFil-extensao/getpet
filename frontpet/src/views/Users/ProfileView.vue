@@ -7,7 +7,8 @@
       <div class="col-md-4">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
-            <h3 class="d-inline-block mb-3 text-success">{{ user.username }} 
+            <img v-bind:src="this.server + user.profile_pic_path" style="width: 128px"/>
+            <h3 class="d-inline-block mb-3 text-success">{{ user.username }}
             <button v-if="loggedUser.id == user.id" type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalUser">
               <img src="../../assets/icons/svg/pencil.svg">
             </button>
@@ -116,7 +117,7 @@
               <h5 class="text-success col-6 me-2 mb-2"> Sem pets disponíveis! </h5>
               <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
             </div>
-          </div>    
+          </div>
         </div>
       </div>
     </div>
@@ -252,7 +253,7 @@
                   <option v-for="color in colors">{{ color }}</option>
               </select>
             </div>
-            <div class="col-md-4 mb-3">              
+            <div class="col-md-4 mb-3">
               <select v-model="insertPet.petBreed" class="form-select" id="breed" required="">
                   <option hidden disabled value="">Raça</option>
                   <option v-if="insertPet.petSpecies == 'Cachorro'" v-for="dog in breedDog">{{ dog }}</option>
@@ -261,20 +262,21 @@
                   <option v-else-if="insertPet.petSpecies == 'Réptil'" v-for="reptile in breedReptile">{{ reptile }}</option>
                   <option v-else-if="insertPet.petSpecies == 'Outro'">SDR</option>
               </select>
-            </div>  
+            </div>
           </div>
 
         <div class="row">
           <div class="col-md-6 mb-3">
             <label for="country">Foto de Perfil (128px X 128px)</label>
             <div>
-              <input v-on:change="uploadPfp" class="custom-file-upload" id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
+              <!-- // BUG -->
+              <input v-on:change="saveImage" class="custom-file-upload" id="pet-pfp-upload" type="file" accept="image/png, image/jpeg"/>
             </div>
           </div>
           <div class="col-md-6 mb-3">
             <label for="country">Fotos adicionais</label>
             <div>
-              <input class="custom-file-upload" id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
+              <input class="custom-file-upload" id="imgs-upload" type="file" accept="image/png, image/jpeg" multiple/>
             </div>
           </div>
         </div>
