@@ -25,15 +25,13 @@
             </div>
             <div class="col-md-8 mt-5">
                 <div class="row d-flex justify-content-center">
-                    <div class="col-md-auto mb-4">
-                        <button type="button" class="btn btn-outline-success" disabled>
-                            Enviar Mensagem
-                            <img src="../../assets/icons/svg/chat.svg" width="15" height="15"/>
-                        </button>
-                    </div>
-                    <div class="col-md-auto mb-4">
-                        <button type="button" class="btn btn-outline-success">
+                    <div v-if="loggedUser.id != owner.id" class="col-md-auto mb-4">
+                        <button v-if="isFav" v-on:click="addFav()" type="button" class="btn btn-outline-success">
                             Adicionar aos Favoritos
+                            <img src="../../assets/icons/svg/star.svg" width="15" height="15"/>
+                        </button>
+                        <button v-else v-on:click="removeFav()" type="button" class="btn btn-outline-danger">
+                            Remover dos Favoritos
                             <img src="../../assets/icons/svg/star.svg" width="15" height="15"/>
                         </button>
                     </div>
@@ -50,8 +48,8 @@
                         </button>
                     </div>
                     <div class="col-md-auto mb-4">
-                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalFav">
-                            Favoritos
+                        <button v-if="loggedUser.id == owner.id" v-on:click="getFavUsers()" type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalFav">
+                            Interessados
                             <img src="../../assets/icons/svg/star.svg" width="15" height="15"/>
                         </button>
                     </div>
@@ -95,29 +93,21 @@
     <div class="modal-content">
       <form>
         <div class="modal-header">
-          <h3 class="modal-title" id="modalLabelUser">Selecionar Favorito</h3>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h3 class="modal-title" id="modalLabelUser">Selecionar usuário para adoção:</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div style="margin-top: 15px; margin-bottom: 15px;">
+        <div v-for="favUser in favUsers" v-on:click="selectUser(favUser)" role="button" style="margin-top: 15px; margin-bottom: 15px;">
             <img src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 80px; margin-left: 40px" alt="">
-            <label id="profileFav">Jaozin</label>
-        </div>
-        <div style="margin-top: 15px; margin-bottom: 15px;">
-            <img src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 80px; margin-left: 40px" alt="">
-            <label id="profileFav">Jaozin</label>
-        </div>
-        <div style="margin-top: 15px; margin-bottom: 15px;">
-            <img src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 80px; margin-left: 40px" alt="">
-            <label id="profileFav">Jaozin</label>
+            <label role="button" class="profileFav">{{ favUser.username }}</label>
         </div>
         <div class="row" style="margin-bottom: 10px;">
-            <input type="text" class="form-control" style="margin-left: 23%; border-radius: 10px; width: 260px; height: 30px;">
+            <input type="text" readonly :value="selected.username" class="form-control" style="background-color:white; margin-left: 23%; border-radius: 10px; width: 260px; height: 30px;">
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Salvar</button>
-          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" v-if="selected.username" class="btn btn-outline-success" data-bs-dismiss="modal">Doar para: {{selected.username}}</button>
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
         </div>
-      </form>
+    </form>
     </div>
   </div>
 </div>
