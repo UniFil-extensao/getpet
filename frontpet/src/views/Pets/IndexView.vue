@@ -80,7 +80,7 @@
                     <div class="border shadow-sm" v-if="pets.length" v-for="pet in pets">
                         <div class="col p-4 d-flex flex-column position-static">
                             <span>
-                                <p style="float:left" class="mb-4 text-success"><strong>{{ pet.pet_name }}:</strong> {{ pet.pet_species }} - {{ pet.pet_breed }} {{ pet.pet_age }} {{ pet.pet_color }}</p>
+                                <p style="float:left" class="mb-4 text-success"><strong>{{ pet.pet_name ?? 'Sem Nome' }}:</strong> {{ pet.pet_species }} - {{ pet.pet_breed }} {{ pet.pet_age }} {{ pet.pet_color }}</p>
                                 <span>
                                     <button style="float:right" type="button" class="btn btn-outline-success" v-on:click="petProfile(pet)">Visualizar/Adotar</button>
                                 </span>
