@@ -12,42 +12,32 @@
                         <div class="divisor-linha"></div>
                         <h4>Espécie:</h4>
                         <div v-for="specie in species" class="form-check">
-                            <input class="form-check-input" type="checkbox" v-model="checkedSpecies" :value="specie" id="flexCheckDefault">
-                            <label class="form-check-label" for="flexCheckDefault">{{ specie }}</label>
+                            <input class="form-check-input species-cb" type="checkbox" v-model="checkedSpecies" :value="specie" id="flexCheckDefault" @change="manageFilters">
+                            <label class="form-check-label" for="flexCheckDefault" >{{ specie }}</label>
                         </div>
                         <div class="divisor-linha"></div>
                         <h4 v-if="checkedSpecies.length">Raça:</h4>
                         <div v-for="specie in checkedSpecies" class="form-check">
-                            <div v-if="specie == 'Cachorro'" v-for="breed in breedDog">
-                                <input class="form-check-input"  type="checkbox" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">{{ breed }}</label>
-                            </div>
-                            <div v-else-if="specie == 'Gato'" v-for="breed in breedCat">
-                                <input class="form-check-input" type="checkbox" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">{{ breed }}</label>
-                            </div>
-                            <div v-else-if="specie == 'Ave'" v-for="breed in breedBird">
-                                <input class="form-check-input" type="checkbox" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">{{ breed }}</label>
-                            </div>
-                            <div v-else-if="specie == 'Réptil'" v-for="breed in breedReptile">
-                                <input class="form-check-input" type="checkbox" id="flexCheckDefault">
+                            <div v-for="breed in breeds[specie]">
+                            <input v-model="checkedBreeds" :value="breed"
+                            @change="manageFilters" class="form-check-input"  type="checkbox" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">{{ breed }}</label>
                             </div>
                         </div>
                         <div v-if="checkedSpecies.length" class="divisor-linha"></div>
                         <h4>Idade:</h4>
                         <div>
-                            <input min="0" max="10" v-model="selM" type="range" class="form-range" id="customRange1">
+                            <input min="0" :max="months.length-1" v-model="selM" @change="manageFilters" type="range" class="form-range" id="customRange1">
                             <label for="customRange1" class="form-label">De: {{ months[selM] }}</label>
                             <br>
-                            <input min="0" max="10" v-model="selY" type="range" class="form-range" id="customRange1">
+                            <input min="0" :max="years.length-1" v-model="selY"
+                            @change="manageFilters" type="range" class="form-range" id="customRange1">
                             <label for="customRange1" class="form-label">Até: {{ years[selY] }}</label>
                         </div>
                         <div class="divisor-linha"></div>
                         <h4>Cor:</h4>
                         <div v-for="color in colors" class="form-check">
-                            <input class="form-check-input" type="checkbox" :value="color" id="flexCheckDefault">
+                            <input class="form-check-input" type="checkbox" :value="color" v-model="checkedColors" @change="manageFilters"  id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 {{ color }}
                             </label>
@@ -79,11 +69,11 @@
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="col p-4 d-flex flex-column position-static">
                         <strong class="d-inline-block mb-3 text-success">Adote:</strong>
-                        <div class="input-group">
-                            <input type="search" class="form-control rounded" placeholder="Pesquisar..."
+                        <form class="input-group" @submit.prevent="manageFilters">
+                            <input v-model="search" type="search" class="form-control rounded" placeholder="Pesquisar..."
                                 aria-label="Search" aria-describedby="search-addon" />
-                            <button type="button" class="btn btn-outline-success">Pesquisar</button>
-                        </div>
+                            <button type="submit" class="btn btn-outline-success">Pesquisar</button>
+                        </form>
                     </div>
                 </div>
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
@@ -100,16 +90,16 @@
                     </div>
                     <div v-else>
                     </div>
-                    <ul class="mt-3 pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="btn btn-outline-success page-link">Anterior</a>
+                    <ul class="mt-3 pagination justify-content-center" v-for="n in totalPages">
+                        <li v-if="n == 1" :class="'page-item ' + ((currPage === 1) ?'disabled' : '')">
+                            <button value="a" v-on:click="changePage" class="btn btn-outline-success page-link">Anterior</button>
                         </li>
-                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#" id="btnProx">1</a></li>
-                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#" id="btnProx">2</a></li>
-                        <li class="page-item"><a class="btn btn-outline-success page-link-success transp" href="#" id="btnProx">3</a></li>
                         <li class="page-item">
-                            <a class="btn btn-success page-link-success" href="#">Próximo</a>
-                        </li>
+                            <button :value="n" v-on:click="changePage" class="btn btn-outline-success page-link-success transp" id="btnProx">{{n}}</button></li>
+                        <li v-if="n == totalPages" :class="'page-item'">
+                            <button value="p" v-on:click="changePage" :class="'btn btn-outline-success page-link-success transp ' +
+                            ((currPage === totalPages) ? 'disabled' : '')" id="btnProx">Próxima</button>
+                            </li>
                     </ul>
                 </div>
             </div>
