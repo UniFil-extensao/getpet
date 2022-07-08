@@ -59,8 +59,8 @@
       </div>
     </div>
     <div class="row mb-2 ms-5">
-      <div v-if="Object.keys(donatedPets).length" class="col-md-6 mb-4">
-        <div class="dropdown">
+      <div  class="col-md-6 mb-4">
+        <div v-if="Object.keys(donatedPets).length" class="dropdown">
           <a class="btn border rounded shadow-sm btn-outline-success mb-2" style="width:100%" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
             <h4 class="mt-1" style="float:left;">Já doou</h4>
           </a>

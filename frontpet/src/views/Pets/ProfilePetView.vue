@@ -14,10 +14,6 @@
                         <h5 role="button" v-on:click="ownerProfile()" class="text-success">Dono(a): {{ owner.username }}</h5>
                     </div>
                 </div>
-                <div class="col-md-auto mt-3">
-                    <h4 class="text-success">Nome: {{ pet.pet_name ?? 'Não tem' }}</h4>
-                    <h4 class="text-success">Dono(a): {{ owner.username }}</h4>
-                </div>
             </div>
             <div class="col-md-8 mt-5">
                 <div class="row d-flex justify-content-center">

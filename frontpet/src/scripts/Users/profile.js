@@ -36,8 +36,10 @@ export default {
         `${this.server}/adoptions/?newOwnerId=${this.userId}&status=F`,
         createOptions('GET')
       );
+
       this.adoptedPets = await this.adoptedPets.json();
       this.adoptedPets = this.adoptedPets.adoptions;
+      console.log(Object.keys(this.adoptedPets).length);
     },
     update: async function () {
       const fetchOptions = this.updateUser.pfp
