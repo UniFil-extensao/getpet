@@ -1,5 +1,5 @@
 //Module Public API
-export { createOptions };
+export { createOptions, createOptionsImgs };
 
 
 function createOptions(method, body) {
@@ -10,5 +10,25 @@ function createOptions(method, body) {
         "Content-Type": "application/json"
     },
     body: JSON.stringify(body)
+  };
+}
+
+function createOptionsImgs(method, field, data, imgs, pfp) {
+  const f = new FormData();
+  
+  const test = {
+    ...(imgs),
+    pfp,
+    [field]:data
+  };
+  f.append('pfp', pfp, 'pfp.png');
+  f.append(field, JSON.stringify(data));
+  return {
+    method,
+    credentials: 'include',
+    headers: {
+        "Content-Type": "multipart/form-data"
+    },
+    body:f
   };
 }
