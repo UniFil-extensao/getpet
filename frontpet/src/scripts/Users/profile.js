@@ -1,5 +1,5 @@
 import HeaderView from '../../views/Users/HeaderView.vue';
-import { createOptions, createOptionsImg } from '../../utils/http';
+import { createOptions, createOptionsImgs } from '../../utils/http';
 
 export default {
   created: async function () {
@@ -39,7 +39,7 @@ export default {
       else this.user = data;
     },
     uploadPfp: async function(imgs){
-      var res = await fetch(`${this.server}/adoptions/${this.user.id}`, createOptionsImg('PATCH', imgs.target.files[0], null)),
+      var res = await fetch(`${this.server}/adoptions/${this.user.id}`, createOptionsImgs('PATCH', 'adoptions', null, null, imgs.target.files[0])),
           data = await res.json();
 
           console.log(data);

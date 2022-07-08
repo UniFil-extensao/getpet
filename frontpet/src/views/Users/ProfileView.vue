@@ -271,7 +271,7 @@
               <label for="file-upload" class="custom-file-upload btn btn-success">
               Escolher...
               </label>
-              <input id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
+              <input v-on:change="uploadPfp" id="file-upload" type="file" accept="image/png, image/jpeg" multiple/>
             </div>
           </div>
           <div class="col-md-6 mb-3">
