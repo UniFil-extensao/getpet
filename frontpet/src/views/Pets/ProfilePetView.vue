@@ -109,8 +109,8 @@
             <p style="margin-left: 23%;">Nota para {{ selected.username }} : {{ adopterScore }}</p>
         </div>
         <div class="modal-footer">
-            <button type="button" v-on:click="donatePet(selected)" v-if="selected.username" class="btn btn-outline-success" data-bs-dismiss="modal">Doar para: {{selected.username}}</button>
             <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" v-on:click="donatePet(selected)" v-if="selected.username" class="btn btn-outline-success" data-bs-dismiss="modal">Doar para: {{selected.username}}</button>
         </div>
     </form>
     </div>
