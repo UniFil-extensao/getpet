@@ -35,4 +35,5 @@ module.exports = {
   USE_SSL,
   PAGE_LIMIT,
   MAX_PET_PICS,
+  DB_ALLOWS: require('./db_allowed.config.js'),
 };
