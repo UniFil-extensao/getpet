@@ -52,8 +52,7 @@
       <div v-else>
         <div class="col-md-6">
           <div>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#modalReport" class="btn me-5 btn-outline-danger">Denunciar usuário</button>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#modalChat" class="btn btn-outline-success">Chat com o usuário</button>
+            <button type="button" data-bs-toggle="modal" disabled data-bs-target="#modalReport" class="btn me-5 btn-outline-danger">Denunciar usuário</button>
           </div>
         </div>
       </div>
@@ -114,7 +113,7 @@
           <div v-else class="col p-4 d-flex flex-column position-static">
             <div class="row">
               <h5 class="text-success col-6 me-2 mb-2"> Sem pets disponíveis! </h5>
-              <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
+              <button  v-if="loggedUser.id == user.id" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
             </div>
           </div>    
         </div>

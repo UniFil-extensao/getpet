@@ -12,7 +12,7 @@
                     </div>
                     <div class="col-md-auto mt-3">
                         <h5 class="text-success">Nome: {{ pet.pet_name }}</h5>
-                        <h5 class="text-success">Dono(a): {{ owner.username }}</h5>
+                        <h5 role="button" v-on:click="ownerProfile()" class="text-success">Dono(a): {{ owner.username }}</h5>
                     </div>
                 </div>
                 <div class="row g-0 border rounded overflow-auto mb-4 shadow-sm h-md-250 position-relative" style="height: 650px;">
@@ -26,7 +26,7 @@
             <div class="col-md-8 mt-5">
                 <div class="row d-flex justify-content-center">
                     <div v-if="loggedUser.id != owner.id" class="col-md-auto mb-4">
-                        <button v-if="isFav" v-on:click="addFav()" type="button" class="btn btn-outline-success">
+                        <button v-if="!isFav" v-on:click="addFav()" type="button" class="btn btn-outline-success">
                             Adicionar aos Favoritos
                             <img src="../../assets/icons/svg/star.svg" width="15" height="15"/>
                         </button>
@@ -98,13 +98,15 @@
         </div>
         <div v-for="favUser in favUsers" v-on:click="selectUser(favUser)" role="button" style="margin-top: 15px; margin-bottom: 15px;">
             <img src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 80px; margin-left: 40px" alt="">
-            <label role="button" class="profileFav">{{ favUser.username }}</label>
+            <label role="button" style ="margin-left: 30px !important; font-size: 25px !important; font-weight: bold !important;" class="profileFav">{{ favUser.username }}</label>
         </div>
-        <div class="row" style="margin-bottom: 10px;">
-            <input type="text" readonly :value="selected.username" class="form-control" style="background-color:white; margin-left: 23%; border-radius: 10px; width: 260px; height: 30px;">
+        <div class="row" v-if="selected.username" style="margin-bottom: 10px;">
+            <input type="text" readonly :value="'Novo dono: ' + selected.username" class="form-control" style="background-color:white; margin-left: 23%; border-radius: 10px; width: 260px; height: 30px;">
+            <input type="range" v-model="adopterScore" class="mt-3 form-range" style="margin-left: 23%; max-width: 260px;" min="0" max="5">
+            <p style="margin-left: 23%;">Nota para {{ selected.username }} : {{ adopterScore }}</p>
         </div>
         <div class="modal-footer">
-            <button type="button" v-if="selected.username" class="btn btn-outline-success" data-bs-dismiss="modal">Doar para: {{selected.username}}</button>
+            <button type="button" v-on:click="donatePet(selected)" v-if="selected.username" class="btn btn-outline-success" data-bs-dismiss="modal">Doar para: {{selected.username}}</button>
             <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
         </div>
     </form>
@@ -136,5 +138,9 @@
         cursor: not-allowed;
         pointer-events: all !important;
     }
-
+    @media screen and (-webkit-min-device-pixel-ratio:0) {
+        input[type='range']::-webkit-slider-thumb {
+            background: #4CAF50;
+        }
+    }
 </style>

@@ -19,7 +19,7 @@
                         <h4 v-if="checkedSpecies.length">Raça:</h4>
                         <div v-for="specie in checkedSpecies" class="form-check">
                             <div v-if="specie == 'Cachorro'" v-for="breed in breedDog">
-                                <input class="form-check-input"  type="checkbox" id="flexCheckDefault">
+                                <input class="form-check-input" v-model="checkedBreeds" :value="breed" type="checkbox" id="flexCheckDefault">
                                 <label class="form-check-label" for="flexCheckDefault">{{ breed }}</label>
                             </div>
                             <div v-else-if="specie == 'Gato'" v-for="breed in breedCat">

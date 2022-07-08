@@ -17,6 +17,10 @@ export default {
       this.$router.push(`/adoptions/${target.id}`);
     }
   },
+  updated: function(){
+    console.log(this.checkedBreeds)
+    console.log(this.checkedSpecies)
+  },
   data: function(){
     return {
       pets: [],
@@ -30,9 +34,9 @@ export default {
       checkedColors: [],
       checkedBreeds: [],
       checkedSizes: [],
-      breedDog: [ 'Spitz Alemão', 'Bulldog Francês', 'Shih Tzu', 'Pug', 'Rottweiler', 'Golden Retriever', 'Pastor Alemão', 'Border Collie', 'SDR', 'Outro'],
-      breedCat: [ 'Persa', 'Siamese', 'Ragdoll', 'Siamês', 'Sphynx', 'Gato SDR', 'Outras raças de gato'],
-      breedBird: [ 'Canário', 'Pássaro', 'Ave SDR', 'Outras raças de ave'],
+      breedDog: [ 'Spitz Alemão', 'Bulldog Francês', 'Shih Tzu', 'Pug', 'Rottweiler', 'Golden Retriever', 'Pastor Alemão', 'Border Collie', 'SRD', 'Outro'],
+      breedCat: [ 'Persa', 'Siamese', 'Ragdoll', 'Siamês', 'Sphynx', 'Gato SRD', 'Outras raças de gato'],
+      breedBird: [ 'Canário', 'Pássaro', 'Ave SRD', 'Outras raças de ave'],
       breedReptile: [ 'Tartaruga', 'Lagarto', 'Outros tipos de répteis'],
       colors: ['Branco', 'Preto', 'Marrom', 'Cinza', 'Pardo', 'Vermelho', 'Amarelo', 'Verde', 'Azul', 'Outro']
     }

@@ -6,20 +6,34 @@ export default {
     this.pet = await fetch(`${this.server}/adoptions/${this.$route.params.id}`, createOptions('GET'));  
     this.pet = await this.pet.json();
 
-    this.owner = await fetch(`${this.server}/users/${this.petnew_owner_id || this.pet.old_owner_id}`, createOptions('GET'));
+    this.owner = await fetch(`${this.server}/users/${this.pet.new_owner_id || this.pet.old_owner_id}`, createOptions('GET'));
     this.owner = await this.owner.json();
     this.loggedUser = JSON.parse(localStorage.user);
-
-    this.myFavs = await fetch(`${this.server}/favorites/`, createOptions('GET'));
-    this.myFavs = await this.myFavs.json();
-    for(let fav in this.myFavs) {
-      if(this.myFavs[fav].id == this.$route.params.id) {
-        this.favId = this.myFavs[fav].favorite_id;
-        
-      }
-    }
   },
   methods:{
+    ownerProfile: function() {
+      this.$router.push(`/users/${this.owner.id}`);
+    },
+    donatePet: async function(user){
+      var body = { newOwnerId: this.selected.id, adopterScore: this.adopterScore, donorScore: 0},
+          res = await fetch(`${this.server}/adoptions/${this.adoptionId}/close`, createOptions('PATCH', body)),
+          data = await res.json();
+      if(data.errors) alert(data.errors[Object.keys(data.errors)[0]])
+      else {
+        alert('A doação foi realizada com sucesso! Você será redirecionado para tela inicial.');
+        this.$router.push('/');
+      }
+    },
+    getMyFavs: async function(){
+      this.myFavs = await fetch(`${this.server}/favorites/`, createOptions('GET'));
+      this.myFavs = await this.myFavs.json();
+      for(let fav in this.myFavs) {
+        if(this.myFavs[fav].id == this.$route.params.id) {
+          this.favId = this.myFavs[fav].favorite_id;
+          this.isFav = true;
+        } else this.isFav = false;
+      }
+    },
     getFavUsers: async function(){
       var res = await fetch(`${this.server}/favorites/${this.adoptionId}`, createOptions('GET'));
       this.favUsers = await res.json();
@@ -34,12 +48,13 @@ export default {
           data = await res.json();
 
       if (data.errors) alert(data.errors[Object.keys(data.errors)[0]])
-      else this.isFav = false;
+      else this.isFav = true;
     },
     removeFav: async function(){
+      await this.getMyFavs();
       var res = await fetch(`${this.server}/favorites/${this.favId}`, createOptions('DELETE')),
           data = await res.json();
-      this.isFav = true;
+      this.isFav = false;
       this.$router.go();
     }
   },
@@ -51,6 +66,7 @@ export default {
       selected: {},
       owner: {},
       isFav: '',
+      adopterScore: 5,
       favId: '',
       loggedUser: {},
       server: `http://localhost:${import.meta.env.VITE_PORT}`

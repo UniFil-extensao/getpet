@@ -4,7 +4,7 @@ export default {
   methods: {
     login: async function (username, password) {
       var res = await fetch(
-          `${this.server}/login`,
+          `${this.server}/users/login`,
           createOptions('POST', { username, password })
         ),
         data = await res.json();
@@ -19,12 +19,23 @@ export default {
       this.loggedUser = {};
       this.$router.push('/login');
     },
+    petProfile: function(target) {
+
+    },
     profile: function() {
       if(Object.keys(this.loggedUser).length) this.$router.push({ path: `/users/${this.loggedUser.id}`}).then(() => this.$router.go());
       else this.$router.push('/login');
     },
     home: function() {
       this.$router.push('/');
+    }
+  },
+  created: async function() {
+    var res = await fetch(`${this.server}/favorites/`, createOptions('GET'));
+    this.favs = await res.json();
+    for(let fav of this.favs) {
+      res = await fetch(`${this.server}/adoptions/${fav.id}`, createOptions('GET'));
+      fav.adoption = await res.json();
     }
   },
   mounted: async function () {
@@ -39,9 +50,10 @@ export default {
   },
   data: function () {
     return {
-      server: `http://localhost:${import.meta.env.VITE_PORT}/users`,
+      server: `http://localhost:${import.meta.env.VITE_PORT}`,
       user: '',
       pass: '',
+      favs: '',
       loggedUser: {},
     };
   },

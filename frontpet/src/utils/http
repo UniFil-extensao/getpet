@@ -3,6 +3,7 @@ export { createOptions };
 
 
 function createOptions(method, body) {
+  console.log(method);
   return {
     method,
     credentials: 'include',

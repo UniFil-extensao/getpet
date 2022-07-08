@@ -11,14 +11,12 @@
           <img class="ms-2" src="../../assets/icons/svg/home.svg">
         </button>
         <h1 style="color: black">GetPet</h1>
-        <div class="dropdown" style="margin-left: 20%;" >
+        <div v-if="Object.keys(favs).length" class="dropdown" style="margin-left: 20%;" >
           <button class="btn btn-secondary dropdown-toggle" type="button" id="btnDrop" data-bs-toggle="dropdown" aria-expanded="false">
             Favoritos
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
+            <li v-for="fav in favs"><a v-on:click="petProfile(fav)" class="dropdown-item" href="#">Adoção nº: {{ fav.id }}</a></li>
           </ul>
         </div>
         <div class="dropdown" style="margin-left: ;">
