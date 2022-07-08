@@ -14,13 +14,8 @@ export default {
     this.myFavs = await this.myFavs.json();
     for(let fav in this.myFavs) {
       if(this.myFavs[fav].id == this.$route.params.id) {
-<<<<<<< Updated upstream
         this.favId = this.myFavs[fav].favorite_id;
         
-=======
-        this.myFavs = this.myFavs[fav];
-        break;
->>>>>>> Stashed changes
       }
     }
   },
