@@ -47,7 +47,10 @@ const getAll = async (req, res, next) => {
 const getById = async (req, res, next) => {
   try {
     const token = req.cookies?.token;
-    if (token) req.user = await authService.validateToken(token);
+    if (token) {
+      req.user = await authService.validateToken(token);
+      req.user.admin = req.user.admin === 'S';
+    }
 
     const user = await userService.getById(+req.params.id);
     delete user.admin;
@@ -64,7 +67,6 @@ const getById = async (req, res, next) => {
 };
 
 const update = async (req, res, next) => {
-  // TODO: instalar multer e implementar upload de imagens
   try {
     const allowedUpdates = [
       'username',
@@ -72,7 +74,7 @@ const update = async (req, res, next) => {
       'email',
       'phone',
       'address',
-      'profilePic',
+      'files',
       'active',
     ];
 

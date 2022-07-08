@@ -299,6 +299,32 @@ describe('testes de seleção de usuário', () => {
     }
   );
 
+  test.each([1, 2])(
+    '%# deve retornar outro usuário sem dados sensíveis',
+    async id => {
+      const { token } = authenticate({ id: 3 });
+
+      const response = await request(app)
+        .get(`/users/${id}`)
+        .set({
+          cookie: `token=${token}; HttpOnly; SameSite=Strict`,
+        });
+      expect(response.status).toBe(200);
+
+      const user = response.body;
+
+      expect(user).toBeDefined();
+      expect(user.id).toBeDefined();
+      expect(user.password).toBeUndefined();
+      expect(user.admin).toBeUndefined();
+      expect(user.active).toBeUndefined();
+
+      expect(user.cpf).toBeUndefined();
+      expect(user.email).toBeUndefined();
+    },
+    10000
+  );
+
   test.each(['0', 'sda', '-1'])(
     '%# deve retornar erro ao selecionar um usuário inexistente',
     async id => {
