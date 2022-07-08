@@ -2,25 +2,17 @@
 
 <template>
     <HeaderView/>
-    <div class="divisor-linha"></div>
-    <div class="container">
+    <div class="container p-5 mr-4">
         <div class="row mb-2 ms-4">
             <div class="col-md-3">
                 <div class="row">
-                    <div class="col-md-auto mb-3">
-                        <img class="circular--square border border-success" src="../../assets/images/img-dog-test.jpg"/>
-                    </div>
-                    <div class="col-md-auto mt-3">
-                        <h5 class="text-success">Nome: {{ pet.pet_name }}</h5>
-                        <h5 class="text-success">Dono(a): {{ owner.username }}</h5>
+                    <div class="col-md-auto mt-5 mb-2">
+                        <img class="circular--square border border-3 border-success centered" src="../../assets/images/img-cat-test.jpg"/>
                     </div>
                 </div>
-                <div class="row g-0 border rounded overflow-auto mb-4 shadow-sm h-md-250 position-relative" style="height: 650px;">
-                    <img src="../../assets/images/apple-touch-icon.png" height="200" />
-                    <img src="../../assets/images/apple-touch-icon.png" height="200" />
-                    <img src="../../assets/images/apple-touch-icon.png" height="200" />
-                    <img src="../../assets/images/apple-touch-icon.png" height="200" />
-                    <img src="../../assets/images/apple-touch-icon.png" height="200" />
+                <div class="col-md-auto mt-3">
+                    <h4 class="text-success">Nome: {{ pet.pet_name }}</h4>
+                    <h4 class="text-success">Dono(a): {{ owner.username }}</h4>
                 </div>
             </div>
             <div class="col-md-8 mt-5">
@@ -50,7 +42,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm position-relative">
                     <div class="row centered">
                         <div class="col-md-3 mt-2 mb-4">
                             <h2 class="text-success">Espécie:</h2>
@@ -81,6 +73,31 @@
                 </div>
             </div>
         </div>
+        <div class="container-fluid">
+            <h3 class="text-success">Fotos de {{ pet.pet_name }}:</h3>
+        </div>
+        <div class="scroll row row-cols-4 row-cols-md-3 g-4 border rounded overflow-auto flex-md-row mb-4 shadow-sm h-md-250 position-relative mt-3 centered" style=" width: 1150px; height: 600px;">
+            <div class="col">
+                <div class="card shadow p-3 mb-5 bg-body rounded">
+                    <img src="../../assets/images/apple-touch-icon.png"/>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow p-3 mb-5 bg-body rounded">
+                    <img src="../../assets/images/apple-touch-icon.png"/>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card shadow p-3 mb-5 bg-body rounded">
+                    <img src="../../assets/images/apple-touch-icon.png"/>
+                </div>
+            </div>
+            <div class="col mb-3">
+                <div class="card shadow p-3 mb-5 bg-body rounded">
+                    <img src="../../assets/images/apple-touch-icon.png"/>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -98,13 +115,26 @@
 
     .circular--square {
         border-radius: 50%;
-        width: 95px;
-        height: 95px;
+        width: 200px;
+        height: 200px;
     }
 
     button:disabled {
         cursor: not-allowed;
         pointer-events: all !important;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #198754;
+    }
+
+    .scroll::-webkit-scrollbar {
+        width:10px;
+        height: 10px;
+    }
+ 
+    .scroll::-webkit-scrollbar-thumb {
+        background: #198754;
     }
 
 </style>
