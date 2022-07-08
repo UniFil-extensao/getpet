@@ -1,4 +1,5 @@
 const validator = require('validator');
+const { DB_ALLOWS } = require('../../config/general.config');
 const {
   InputValidationError,
   NotFoundError,
@@ -56,11 +57,7 @@ const validations = {
   uf: (uf, onFail) => {
     uf = validator.whitelist(uf.toUpperCase(), '[A-Z]');
     // prettier-ignore
-    return (validator.isIn(uf, [
-      'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA',
-      'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN',
-      'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
-    ])) ? uf : onFail('UF inválida');
+    return (validator.isIn(uf, DB_ALLOWS.validUFs)) ? uf : onFail('UF inválida');
   },
   active: (active, onFail) => {
     if (['S', 'N', 'B'].includes(trim(active))) return active;

@@ -1,5 +1,5 @@
 <script src="../../scripts/Users/login.js"></script>
-<style src="../../styles/users/styles.css"></style>
+<style src="../../styles/Users/styles.css"></style>
 <template>
   <header class="p-3 bg-success text-white">
     <div class="container" id="cabecalho">
@@ -10,7 +10,7 @@
         <button v-on:click="home()" class="btn btn-outline-light nav col-6 col-lg-auto mb-2 justify-content-center mb-md-0" id="btnIcones2">
           <img class="ms-2" src="../../assets/icons/svg/home.svg">
         </button>
-        <h1 style="color: black">GetPet</h1>  
+        <h1 style="color: black">GetPet</h1>
         <div class="dropdown" style="margin-left: 20%;" >
           <button class="btn btn-secondary dropdown-toggle" type="button" id="btnDrop" data-bs-toggle="dropdown" aria-expanded="false">
             Favoritos
@@ -30,11 +30,11 @@
             <li><a class="dropdown-item" href="#">Another action</a></li>
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
-        </div>        
+        </div>
         <button @click="logout()" class="btn btn-outline-danger nav col-6 col-lg-auto mb-2 justify-content-center mb-md-0" style="border-color: transparent !important; margin-left: 1%; width: 45px;">
           <img class="ms-2 mt-2" src="../../assets/icons/svg/account-logout.svg">
         </button>
-      </div>      
+      </div>
     </div>
   </header>
 </template>

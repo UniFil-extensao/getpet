@@ -24,6 +24,7 @@ const getFavUsers = async adoptionId => {
 const getAllFromUser = async userId => {
   const favoriteAdoptions = await knex('favorites')
     .select(
+      'favorites.id as favorite_id',
       'adoptions.id',
       'adoptions.pet_species',
       'adoptions.desc',
