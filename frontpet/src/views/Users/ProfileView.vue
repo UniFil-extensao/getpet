@@ -94,8 +94,8 @@
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div v-if="Object.keys(availablePets).length" class="col p-4 d-flex flex-column position-static">
             <div class="row">
-              <h4 class="text-success col-6 me-2 mb-2"> Disponibilizando: </h4>
-              <button v-if="loggedUser.id == user.id" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
+              <h4 class="text-success col-6 me-2 mb-2" style="font-size: 23px"> Disponibilizando: </h4>
+              <button v-if="loggedUser.id == user.id" type="button" stryle="height" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
             </div>
             <div v-for="pet in availablePets" class="border rounded shadow-sm mb-3">
               <div class="row m-2">
