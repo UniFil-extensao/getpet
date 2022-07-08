@@ -49,6 +49,12 @@
                             <img src="../../assets/icons/svg/warning.svg" width="15" height="15"/>
                         </button>
                     </div>
+                    <div class="col-md-auto mb-4">
+                        <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalFav">
+                            Favoritos
+                            <img src="../../assets/icons/svg/star.svg" width="15" height="15"/>
+                        </button>
+                    </div>
                 </div>
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
                     <div class="row centered">
@@ -82,7 +88,41 @@
             </div>
         </div>
     </div>
+
+<!--Modal User-->
+<div class="modal fade" id="modalFav" tabindex="-1" aria-labelledby="modalLabelFav" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form>
+        <div class="modal-header">
+          <h3 class="modal-title" id="modalLabelUser">Selecionar Favorito</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div style="margin-top: 15px; margin-bottom: 15px;">
+            <img src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 80px; margin-left: 40px" alt="">
+            <label id="profileFav">Jaozin</label>
+        </div>
+        <div style="margin-top: 15px; margin-bottom: 15px;">
+            <img src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 80px; margin-left: 40px" alt="">
+            <label id="profileFav">Jaozin</label>
+        </div>
+        <div style="margin-top: 15px; margin-bottom: 15px;">
+            <img src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 80px; margin-left: 40px" alt="">
+            <label id="profileFav">Jaozin</label>
+        </div>
+        <div class="row" style="margin-bottom: 10px;">
+            <input type="text" class="form-control" style="margin-left: 23%; border-radius: 10px; width: 260px; height: 30px;">
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal">Salvar</button>
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 </template>
+
 
 <style>
 

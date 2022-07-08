@@ -126,6 +126,7 @@ ul {
     height: 3rem;
     border-width: 1px 0;
 }
+
 @media screen and (-webkit-min-device-pixel-ratio:0) {
     input[type='range']::-webkit-slider-thumb {
         background: #4CAF50;
@@ -136,6 +137,7 @@ input:checked{
     border: 1px solid #4CAF50;
     background-color: #4CAF50;
 }
+
 .transp {
     border-color: transparent !important;
 }
