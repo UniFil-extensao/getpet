@@ -7,11 +7,12 @@
             <div class="col-md-3">
                 <div class="row">
                     <div class="col-md-auto mt-5 mb-2">
-                        <img class="circular--square border border-3 border-success centered" src="../../assets/images/img-cat-test.jpg"/>
+                        <img v-if="pet.thumbnail_path" class="circular--square border border-3 border-success centered" v-bind:src="this.server + pet.thumbnail_path"/>
+                        <img v-else class="circular--square border border-3 border-success centered" src="../../assets/images/img-cat-test.jpg"/>
                     </div>
                 </div>
                 <div class="col-md-auto mt-3">
-                    <h4 class="text-success">Nome: {{ pet.pet_name }}</h4>
+                    <h4 class="text-success">Nome: {{ pet.pet_name ?? 'Não tem' }}</h4>
                     <h4 class="text-success">Dono(a): {{ owner.username }}</h4>
                 </div>
             </div>
@@ -30,7 +31,7 @@
                         </button>
                     </div>
                     <div class="col-md-auto mb-4">
-                        <button type="button" class="btn btn-outline-success">
+                        <button type="button" class="btn btn-outline-success" v-on:click="shareLink">
                             Compartilhar
                             <img src="../../assets/icons/svg/share.svg" width="15" height="15"/>
                         </button>
@@ -74,27 +75,13 @@
             </div>
         </div>
         <div class="container-fluid">
-            <h3 class="text-success">Fotos de {{ pet.pet_name }}:</h3>
+            <h3 class="text-success">Fotos {{ pet.pet_name ? 'de ' + pet.pet_name : 'do animal' }}:</h3>
         </div>
         <div class="scroll row row-cols-4 row-cols-md-3 g-4 border rounded overflow-auto flex-md-row mb-4 shadow-sm h-md-250 position-relative mt-3 centered" style=" width: 1150px; height: 600px;">
-            <div class="col">
+
+            <div class="col" v-for="pic in petPics">
                 <div class="card shadow p-3 mb-5 bg-body rounded">
-                    <img src="../../assets/images/apple-touch-icon.png"/>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card shadow p-3 mb-5 bg-body rounded">
-                    <img src="../../assets/images/apple-touch-icon.png"/>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card shadow p-3 mb-5 bg-body rounded">
-                    <img src="../../assets/images/apple-touch-icon.png"/>
-                </div>
-            </div>
-            <div class="col mb-3">
-                <div class="card shadow p-3 mb-5 bg-body rounded">
-                    <img src="../../assets/images/apple-touch-icon.png"/>
+                    <img style="width: auto" v-bind:src="this.server + pic.path"/>
                 </div>
             </div>
         </div>
@@ -132,7 +119,7 @@
         width:10px;
         height: 10px;
     }
- 
+
     .scroll::-webkit-scrollbar-thumb {
         background: #198754;
     }

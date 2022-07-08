@@ -9,8 +9,10 @@ export default {
     );
     this.pet = await this.pet.json();
 
-    // REM: REMOVER
-    console.log(this.pet);
+    this.petPics = await fetch(
+      `${this.server}/adoptions/${this.pet.id}/pictures`,
+      createOptions('GET')
+    ).then(res => res.json());
 
     this.owner = await fetch(
       `${this.server}/users/${this.petnew_owner_id || this.pet.old_owner_id}`,
@@ -18,10 +20,16 @@ export default {
     );
     this.owner = await this.owner.json();
   },
-  methods: {},
+  methods: {
+    shareLink: function () {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copiado!');
+    },
+  },
   data: function () {
     return {
       pet: {},
+      petPics: [],
       owner: {},
       server: `http://localhost:${import.meta.env.VITE_PORT}`,
     };
