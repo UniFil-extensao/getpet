@@ -11,32 +11,36 @@ export default {
     this.updateUser.city = this.user.city;
     this.updateUser.uf = this.user.uf;
     this.loggedUser = JSON.parse(localStorage.user ?? '{}');
-    // this.loggedUser = JSON.parse(cookie.get('loggedUser') ?? '{}');
-
-    this.donatedPets = await fetch(
-      `${this.server}/adoptions/?oldOwnerId=${this.userId}`,
-      createOptions('GET')
-    );
-    this.donatedPets = await this.donatedPets.json();
-    this.donatedPets = this.donatedPets.adoptions;
-    for (let pet in this.donatedPets) {
-      if (this.donatedPets[pet].status === 'A') {
-        this.availablePets[pet] = this.donatedPets[pet];
-        delete this.donatedPets[pet];
-      }
-    }
-
-    this.adoptedPets = await fetch(
-      `${this.server}/adoptions/?newOwnerId=${this.userId}`,
-      createOptions('GET')
-    );
-    this.adoptedPets = await this.adoptedPets.json();
-    this.adoptedPets = this.adoptedPets.adoptions;
-    // REM:
-    console.clear();
-    console.log(this.user);
+    // this.loggedUser = JSON.parse(cookie.get("loggedUser") ?? "{}");
+  },
+  beforeMount: async function () {
+    await this.getPets();
   },
   methods: {
+    getPets: async function () {
+      console.log(this.loggedUser.id, 'loggedUser ID EU JURO');
+      var res = await fetch(
+          `${this.server}/adoptions/?oldOwnerId=${this.userId}&status=F`,
+          createOptions('GET')
+        ),
+        data = await res.json();
+      this.donatedPets = data.adoptions;
+
+      this.availablePets = await fetch(
+        `${this.server}/adoptions/?oldOwnerId=${this.userId}&status=A`,
+        createOptions('GET')
+      );
+      this.availablePets = await this.availablePets.json();
+      this.availablePets = this.availablePets.adoptions;
+
+      this.adoptedPets = await fetch(
+        `${this.server}/adoptions/?newOwnerId=${this.userId}&status=F`,
+        createOptions('GET')
+      );
+
+      this.adoptedPets = await this.adoptedPets.json();
+      this.adoptedPets = this.adoptedPets.adoptions;
+    },
     update: async function () {
       for (let prop in this.updateUser)
         if (!this.updateUser[prop]) delete this.updateUser[prop];
@@ -108,7 +112,7 @@ export default {
   data: function () {
     return {
       server: `http://localhost:${import.meta.env.VITE_PORT}`,
-      userId: this.$route.params.id,
+      userId: Number(this.$route.params.id),
       user: {},
       donatedPets: {},
       adoptedPets: {},
@@ -144,7 +148,7 @@ export default {
         'Golden Retriever',
         'Pastor Alemão',
         'Border Collie',
-        'SDR',
+        'SRD',
         'Outro',
       ],
       breedCat: [
@@ -153,10 +157,10 @@ export default {
         'Ragdoll',
         'Siamês',
         'Sphynx',
-        'SDR',
+        'SRD',
         'Outro',
       ],
-      breedBird: ['Canário', 'Pássaro', 'SDR', 'Outro'],
+      breedBird: ['Canário', 'Pássaro', 'SRD', 'Outro'],
       breedReptile: ['Tartaruga', 'Lagarto', 'Outro'],
       colors: [
         'Branco',
