@@ -10,23 +10,27 @@
                         <img v-if="pet.thumbnail_path" class="circular--square border border-3 border-success centered" v-bind:src="this.server + pet.thumbnail_path"/>
                         <img v-else class="circular--square border border-3 border-success centered" src="../../assets/images/img-cat-test.jpg"/>
                     </div>
-                </div>
-                <div class="col-md-auto mt-3">
-                    <h4 class="text-success">Nome: {{ pet.pet_name ?? 'Não tem' }}</h4>
-                    <h4 class="text-success">Dono(a): {{ owner.username }}</h4>
+                    </div>
+                    <div class="col-md-auto mt-3">
+                        <h4 class="text-success">Nome: {{ pet.pet_name ?? 'Não tem' }}</h4>
+                    <h4 role="button" v-on:click="ownerProfile()" class="text-success">Dono(a): {{ owner.username }}</h4>
                 </div>
             </div>
             <div class="col-md-8 mt-5">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-md-auto mb-4">
+                <div class="row d-flex justify-content-end">
+                    <div v-if="loggedUser.id != owner.id" class="col-md-auto mb-4">
                         <button type="button" class="btn btn-outline-success" disabled>
                             Enviar Mensagem
                             <img src="../../assets/icons/svg/chat.svg" width="15" height="15"/>
                         </button>
                     </div>
-                    <div class="col-md-auto mb-4">
-                        <button type="button" class="btn btn-outline-success">
+                    <div v-if="loggedUser.id != owner.id" class="col-md-auto mb-4">
+                        <button v-if="!isFav" v-on:click="addFav()" type="button" class="btn btn-outline-success">
                             Adicionar aos Favoritos
+                            <img src="../../assets/icons/svg/star.svg" width="15" height="15"/>
+                        </button>
+                        <button v-else v-on:click="removeFav()" type="button" class="btn btn-outline-danger">
+                            Remover dos Favoritos
                             <img src="../../assets/icons/svg/star.svg" width="15" height="15"/>
                         </button>
                     </div>
@@ -36,7 +40,13 @@
                             <img src="../../assets/icons/svg/share.svg" width="15" height="15"/>
                         </button>
                     </div>
-                    <div class="col-md-auto mb-4">
+                    <div v-if="loggedUser.id == owner.id" class="col-md-auto mb-4">
+                        <button v-on:click="getFavUsers()" type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalFav">
+                            Interessados
+                            <img src="../../assets/icons/svg/star.svg" width="15" height="15"/>
+                        </button>
+                    </div>
+                    <div v-if="loggedUser.id != owner.id" class="col-md-auto mb-4">
                         <button type="button" class="btn btn-danger" disabled>
                             Reportar Anúncio
                             <img src="../../assets/icons/svg/warning.svg" width="15" height="15"/>
@@ -74,18 +84,47 @@
                 </div>
             </div>
         </div>
-        <div class="container-fluid">
+        <div v-if="petPics.length" class="container-fluid">
             <h3 class="text-success">Fotos {{ pet.pet_name ? 'de ' + pet.pet_name : 'do animal' }}:</h3>
-        </div>
-        <div class="scroll row row-cols-4 row-cols-md-3 g-4 border rounded overflow-auto flex-md-row mb-4 shadow-sm h-md-250 position-relative mt-3 centered" style=" width: 1150px; height: 600px;">
-
-            <div class="col" v-for="pic in petPics">
-                <div class="card shadow p-3 mb-5 bg-body rounded">
-                    <img style="width: auto" v-bind:src="this.server + pic.path"/>
+            <div class="scroll row row-cols-4 row-cols-md-3 g-4 border rounded overflow-auto flex-md-row mb-4 shadow-sm h-md-250 position-relative mt-3" style=" width: 1150px; height: 600px;">
+                <div class="col" v-for="pic in petPics">
+                    <div class="card shadow p-3 mb-5 bg-body rounded">
+                        <img style="width: auto" v-bind:src="this.server + pic.path"/>
+                    </div>
                 </div>
             </div>
         </div>
+        <div v-else class="d-flex">
+            <h3 class="text-success opacity-75 centered" style="display: inline">Não há fotos para este animal.</h3>
+        </div>
     </div>
+
+<!--Modal User-->
+<div class="modal fade" id="modalFav" tabindex="-1" aria-labelledby="modalLabelFav" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form>
+        <div class="modal-header">
+            <h3 class="modal-title" id="modalLabelUser">Selecionar usuário para adoção:</h3>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div v-for="favUser in favUsers" v-on:click="selectUser(favUser)" role="button" style="margin-top: 15px; margin-bottom: 15px;">
+            <img src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 80px; margin-left: 40px" alt="">
+            <label role="button" style ="margin-left: 30px !important; font-size: 25px !important; font-weight: bold !important;" class="profileFav">{{ favUser.username }}</label>
+        </div>
+        <div class="row" v-if="selected.username" style="margin-bottom: 10px;">
+            <input type="text" readonly :value="'Novo dono: ' + selected.username" class="form-control" style="background-color:white; margin-left: 23%; border-radius: 10px; width: 260px; height: 30px;">
+            <input type="range" v-model="adopterScore" class="mt-3 form-range" style="margin-left: 23%; max-width: 260px;" min="0" max="5">
+            <p style="margin-left: 23%;">Nota para {{ selected.username }} : {{ adopterScore }}</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" v-on:click="donatePet(selected)" v-if="selected.username" class="btn btn-outline-success" data-bs-dismiss="modal">Doar para: {{selected.username}}</button>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
 </template>
 
 <style>
@@ -109,6 +148,11 @@
     button:disabled {
         cursor: not-allowed;
         pointer-events: all !important;
+    }
+    @media screen and (-webkit-min-device-pixel-ratio:0) {
+        input[type='range']::-webkit-slider-thumb {
+            background: #4CAF50;
+        }
     }
 
     ::-webkit-scrollbar-thumb {

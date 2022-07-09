@@ -79,10 +79,10 @@
 					<div v-if="pets.length" v-for="pet in pets" class="border shadow-sm">
 						<div class="col p-4 d-flex flex-column position-static">
 							<span>
-								<p style="float:left" class="mb-4 text-success"><strong>{{ pet.pet_name }}:</strong> {{ pet.pet_species }} - {{ pet.pet_breed }} {{ pet.pet_age }} {{ pet.pet_color }}</p>
-								<span>
-									<button style="float:right" type="button" class="btn btn-outline-success" v-on:click="petProfile(pet)">Visualizar/Adotar</button>
-								</span>
+								<p style="float:left" class="mb-4 text-success"><strong>{{ pet.pet_name ?? 'Sem Nome' }}:</strong> {{ pet.pet_species !== 'outro' && pet.pet_species || '' }} {{ pet.pet_breed ?? 'outra raça' }} {{ pet.pet_age > 11 ? Math.floor(pet.pet_age / 12) + ' anos' : pet.pet_age ? pet.pet_age + ' meses' : '(idade desconhecida)' }} {{ pet.pet_color !== 'outro' && pet.pet_color || '(cor não fornecida)' }}</p>
+                                <span>
+                                    <button style="float:right" type="button" class="btn btn-outline-success" v-on:click="petProfile(pet)">Mais Detalhes</button>
+                                </span>
 							</span>
 						</div>
 						<div class="divisor-linha"></div>

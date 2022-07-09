@@ -121,3 +121,9 @@
 #btnMenu:focus {
     background-color: darkgrey;
 }
+
+#profileFav {
+    margin-left: 30px !important;
+    font-size: 25px !important;
+    font-weight: bold !important;
+}

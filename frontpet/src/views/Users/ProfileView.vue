@@ -53,15 +53,14 @@
       <div v-else>
         <div class="col-md-6">
           <div>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#modalReport" class="btn me-5 btn-outline-danger">Denunciar usuário</button>
-            <button type="button" data-bs-toggle="modal" data-bs-target="#modalChat" class="btn btn-outline-success">Chat com o usuário</button>
+            <button type="button" data-bs-toggle="modal" disabled data-bs-target="#modalReport" class="btn me-5 btn-outline-danger">Denunciar usuário</button>
           </div>
         </div>
       </div>
     </div>
     <div class="row mb-2 ms-5">
-      <div v-if="Object.keys(donatedPets).length" class="col-md-6 mb-4">
-        <div class="dropdown">
+      <div  class="col-md-6 mb-4">
+        <div v-if="Object.keys(donatedPets).length" class="dropdown">
           <a class="btn border rounded shadow-sm btn-outline-success mb-2" style="width:100%" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
             <h4 class="mt-1" style="float:left;">Já doou</h4>
           </a>
@@ -93,12 +92,12 @@
       </div>
       <div class="col-md-4">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
-          <div v-if="Object.keys(availablePets).length" class="col p-4 d-flex flex-column position-static">
+          <div class="col p-4 d-flex flex-column position-static">
             <div class="row">
-              <h4 class="text-success col-6 me-2 mb-2"> Disponibilizando: </h4>
+              <h4 class="text-success col-6 me-2 mb-2" style="font-size: 23px"> Disponibilizando: </h4>
               <button v-if="loggedUser.id == user.id" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
             </div>
-            <div v-for="pet in availablePets" class="border rounded shadow-sm mb-3">
+            <div v-if="Object.keys(availablePets).length" v-for="pet in availablePets" class="border rounded shadow-sm mb-3">
               <div class="row m-2">
                 <p v-if="pet.pet_name" class="col-5 text-secondary"> {{ pet.pet_name }} </p>
                 <p v-if="pet.pet_age" class="col-4 me-4 text-secondary"> {{ pet.pet_age < 12 ? pet.pet_age.toFixed() + ' Meses' : (pet.pet_age / 12).toFixed() + ' Anos'  }} </p>
@@ -111,11 +110,12 @@
                 <a role="button" v-on:click="petProfile(pet)" class="col-4 link-success"> Ver perfil </a>
               </div>
             </div>
-          </div>
-          <div v-else class="col p-4 d-flex flex-column position-static">
-            <div class="row">
+            <div v-else-if="loggedUser.id == user.id" class="row">
               <h5 class="text-success col-6 me-2 mb-2"> Sem pets disponíveis! </h5>
               <button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="col-4 ms-3 mb-3 btn btn-outline-success">Anunciar Pet</button>
+            </div>
+            <div v-else class="row">
+              <h5 class="text-success opacity-75 mt-4 me-2 mb-2" style="display: inline; text-align: center"> Sem pets disponíveis! </h5>
             </div>
           </div>
         </div>

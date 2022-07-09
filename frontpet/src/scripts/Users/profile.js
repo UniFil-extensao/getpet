@@ -11,7 +11,7 @@ export default {
     this.updateUser.city = this.user.city;
     this.updateUser.uf = this.user.uf;
     this.loggedUser = JSON.parse(localStorage.user ?? '{}');
-    // this.loggedUser = JSON.parse(cookie.get("loggedUser") ?? "{}");
+    // this.loggedUser = JSON.parse(cookieStore.get("loggedUser") ?? "{}");
   },
   beforeMount: async function () {
     await this.getPets();
@@ -42,16 +42,6 @@ export default {
       this.adoptedPets = this.adoptedPets.adoptions;
     },
     update: async function () {
-      for (let prop in this.updateUser)
-        if (!this.updateUser[prop]) delete this.updateUser[prop];
-      if (this.updateUser.pass == this.passConfirm)
-        this.updateUser.password = this.updateUser.pass;
-      if (this.updateUser.city && this.updateUser.uf)
-        this.updateUser.address = {
-          city: this.updateUser.city,
-          uf: this.updateUser.uf,
-        };
-
       const fetchOptions = this.updateUser.pfp
         ? createOptionsImgs('PATCH', 'user', this.updateUser)
         : createOptions('PATCH', this.updateUser);
