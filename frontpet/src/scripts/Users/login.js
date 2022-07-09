@@ -11,13 +11,19 @@ export default {
 
       if (data.username) {
         this.loggedUser = data;
+        this.loggedIn = true;
         this.home();
       } else if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
     },
     logout: async function () {
       await fetch(`${this.server}/users/logout`, createOptions('POST'));
+
+      /* TEMPORÁRIO */
       this.loggedUser = {};
-      this.$router.push('/login');
+      localStorage.clear();
+      //
+
+      this.loggedIn = false;
     },
     petProfile: function (target) {},
     profile: function () {
@@ -45,11 +51,14 @@ export default {
   mounted: async function () {
     if (localStorage.user) {
       this.loggedUser = JSON.parse(localStorage.user);
+      // this.loggedUser = cookieStore.get('user');
+      this.loggedIn = true;
     }
   },
   watch: {
     loggedUser: function (user) {
-      localStorage.user = JSON.stringify(user);
+      // TODO: na próxima versão, usar cookieStore e remover isso
+      if (Object.keys(user).length) localStorage.user = JSON.stringify(user);
     },
   },
   data: function () {
@@ -59,6 +68,7 @@ export default {
       pass: '',
       favs: '',
       loggedUser: {},
+      loggedIn: false,
     };
   },
 };
