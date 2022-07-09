@@ -74,12 +74,6 @@ const create = async data => {
 
 const list = async options => {
   const adjustQuery = queryBuilder => {
-    if (options.search) {
-      queryBuilder
-        .where('pet_name', 'like', `%${options.search}%`)
-        .orWhere('desc', 'like', `%${options.search}%`);
-    }
-
     if (options.old_owner_id)
       queryBuilder.where('old_owner_id', options.old_owner_id);
 
@@ -99,6 +93,15 @@ const list = async options => {
     if (options.status) queryBuilder.whereIn('status', options.status);
     if (options.colors) queryBuilder.whereIn('pet_color', options.colors);
     if (options.sizes) queryBuilder.whereIn('pet_size', options.sizes);
+    if (options.search) {
+      queryBuilder.andWhere(qb => {
+        qb.where('pet_name', 'like', `%${options.search}%`).orWhere(
+          'desc',
+          'like',
+          `%${options.search}%`
+        );
+      });
+    }
   };
 
   const results = await knex.transaction(async trx => {

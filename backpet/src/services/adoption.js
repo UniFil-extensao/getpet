@@ -55,7 +55,7 @@ const validations = {
     if (!petBreed) return onFail('Raça do animal é obrigatório', false);
     const options = { max: 40 };
     return validator.isLength(petBreed, options) &&
-      validator.isAlpha(petBreed, 'pt-BR')
+      validator.isAlpha(petBreed, 'pt-BR', { ignore: '- ' })
       ? petBreed
       : onFail('Raça do animal inválida', true);
   },
