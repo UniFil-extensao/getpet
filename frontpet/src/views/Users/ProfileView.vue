@@ -221,11 +221,10 @@
               <input v-model="insertPet.petName" type="text" class="form-control" id="zip" placeholder="Nome do animal" required="">
             </div>
             <div class="col-md-2 mb-3">
-              <input v-model="insertPet.petAge" type="number" class="form-control" id="zip" placeholder="Idade" required="">
+              <input v-model="insertPet.petAge" @scroll.prevent type="number" class="form-control" id="zip" placeholder="Idade" min="0" required="">
             </div>
             <div class="col-md-3 mb-3">
-              <select v-model="petAge" class="form-select" id="age" required="">
-                  <option value="" disabled hidden>Meses</option>
+              <select v-model="petAge" class="form-select" id="age" required>
                   <option value="Meses">Meses</option>
                   <option value="Anos">Anos</option>
               </select>
@@ -283,7 +282,7 @@
           <div class="row">
             <div class="col-md-12 mb-3">
               <label>Adicione uma descrição:</label>
-              <textarea v-model="insertPet.desc" class="form-control" id="message-text" placeholder="Descrição do Anúncio"></textarea>
+              <textarea v-model="insertPet.desc" class="form-control" id="message-text" placeholder="Descrição do Anúncio" required minlength="20"></textarea>
             </div>
           </div>
         </div>
@@ -304,6 +303,17 @@
   ul {
     width: 100%;
   }
+
+  input[type="number"] {
+    -moz-appearance:textfield;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
   .divisor-linha {
     height: 3rem;
     border-width: 1px 0;

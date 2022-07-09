@@ -163,7 +163,7 @@ export default {
         'Azul',
         'Outro',
       ],
-      petAge: '',
+      petAge: 'Meses',
       ufs: [
         'AC',
         'AL',
