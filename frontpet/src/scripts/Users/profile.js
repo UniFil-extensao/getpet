@@ -18,7 +18,6 @@ export default {
   },
   methods: {
     getPets: async function () {
-      console.log(this.loggedUser.id, 'loggedUser ID EU JURO');
       var res = await fetch(
           `${this.server}/adoptions/?oldOwnerId=${this.userId}&status=F`,
           createOptions('GET')

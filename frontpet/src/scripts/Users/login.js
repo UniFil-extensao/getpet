@@ -11,7 +11,7 @@ export default {
 
       if (data.username) {
         this.loggedUser = data;
-        this.$router.push(`/users/${this.loggedUser.id}`);
+        this.home();
       } else if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
     },
     logout: async function () {
