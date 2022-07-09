@@ -117,7 +117,7 @@ const list = async options => {
   options.search = options.search?.trim();
   options.page = +options.page || 1;
   options.orderBy = options.orderBy?.trim().toLowerCase();
-  options.species = options.species?.trim().toLowerCase();
+  options.species = splitOpts(options.species);
   options.status = splitOpts(options.status);
   options.breeds = splitOpts(options.breeds);
   options.colors = splitOpts(options.colors);

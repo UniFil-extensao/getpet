@@ -85,8 +85,7 @@ const list = async options => {
     if (options.donor_score !== undefined)
       queryBuilder.where('donor_score', options.donor_score);
 
-    if (options.species)
-      queryBuilder.where('pet_species', 'like', `%${options.species}%`);
+    if (options.species) queryBuilder.whereIn('pet_species', options.species);
 
     if (options.breeds) queryBuilder.whereIn('pet_breed', options.breeds);
 
