@@ -1,0 +1,53 @@
+{
+    "root" : true,
+    "parserOptions": {
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "extends": [
+        "eslint:recommended",
+        "prettier"
+    ],
+    "env": {
+        "node": true,
+        "commonjs": true,
+        "es2021": true
+    },
+    "rules": {
+        "no-console": [
+            "warn",
+            {
+                "allow": [
+                    "warn",
+                    "error"
+                ]
+            }
+        ],
+        "prefer-const": "warn",
+        "no-unused-vars": "warn",
+        "array-callback-return": [
+            "error",
+            {
+                "allowImplicit": true,
+                "checkForEach": true
+            }
+        ],
+        "no-await-in-loop": "error",
+        "no-constant-binary-expression": "warn",
+        "no-duplicate-imports": "warn",
+        "no-self-compare": "error",
+        "no-unmodified-loop-condition": "error",
+        "no-unreachable-loop": "error",
+        "no-use-before-define": "error",
+        "curly" : [
+            "warn",
+            "multi-or-nest",
+            "consistent"
+        ]
+    },
+    "ignorePatterns": [
+        "node_modules/",
+        "dist/",
+        "db/seeds/"
+    ]
+}

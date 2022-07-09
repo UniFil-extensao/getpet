@@ -1,26 +1,25 @@
 
-# <i>Caso de Uso</i>:
 @startuml GetPet
 skinparam actorStyle awesome
 :Admin: as admin
 :Usuário: as user
-(controlarPetPerfil) as (post)
-(buscarPublicação) as (search)
-(controlarUsuario) as (controlUser)
-(reportarUsuario) as (report)
-(consultarMapa) as (consultarMapa)
-(avaliarPetshop) as (avaliarPetshop)
-(chatUsuario) as (userChat)
-(avaliarAdocao) as (rateProcess)
-user <|-- admin 
-user --> post
-user --> search
-user --> controlUser
-user --> report
-user --> consultarMapa
-user --> avaliarPetshop
-user --> userChat
-user --> rateProcess
+
+(controlarFavoritos)
+(enviarReport)
+(controlarReport)
+(controlarChat)
+(controlarAdoção)
+(controlarUsuario)
+(sucEfetuarLogin)
+
+user <|-- admin
+user --> controlarFavoritos
+user --> enviarReport
+user --> controlarReport
+user --> controlarChat
+user --> controlarAdoção
+user --> controlarUsuario
+user --> sucEfetuarLogin
 
 @enduml
 

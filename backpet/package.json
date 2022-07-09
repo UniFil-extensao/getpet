@@ -1,0 +1,58 @@
+{
+  "name": "getpet",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "helmet": "^5.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^2.1.0",
+    "multer": "^1.4.5-lts.1",
+    "mysql": "^2.18.1",
+    "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0",
+    "eslint": "^8.18.0",
+    "eslint-config-prettier": "^8.5.0",
+    "husky": "^8.0.1",
+    "jest": "^28.1.1",
+    "lint-staged": "^13.0.3",
+    "nodemon": "^2.0.18",
+    "prettier": "^2.7.1",
+    "supertest": "^6.2.3"
+  },
+  "scripts": {
+    "dev": "env-cmd -f ./config/.env nodemon index.js",
+    "test": "env-cmd -f ./config/.env jest",
+    "testing": "env-cmd -f ./config/.env jest --watch",
+    "migrate:make": "env-cmd -f config/.env knex migrate:make --knexfile config/knexfile.js",
+    "migrate:run": "env-cmd -f ./config/.env knex migrate:latest --knexfile config/knexfile.js",
+    "seed:make": "env-cmd -f config/.env knex seed:make --knexfile config/knexfile.js",
+    "seed:run": "env-cmd -f config/.env knex seed:run --knexfile config/knexfile.js",
+    "updatedb": "npm run migrate:run && npm run seed:run",
+    "salt:new": "env-cmd -f config/.env node config/salt.js",
+    "prepare": "cd .. && npx husky install backpet/.husky"
+  },
+  "lint-staged": {
+    "*.{js,ts}": "eslint --fix -c .pre-commit.eslintrc",
+    "*.{json,html}": "prettier --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet/issues"
+  },
+  "homepage": "https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet"
+}
