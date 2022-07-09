@@ -269,14 +269,13 @@
           <div class="col-md-6 mb-3">
             <label for="country">Foto de Perfil (128px X 128px)</label>
             <div>
-              <!-- // BUG -->
               <input v-on:change="saveImage" class="custom-file-upload" id="pet-pfp-upload" type="file" accept="image/png, image/jpeg"/>
             </div>
           </div>
           <div class="col-md-6 mb-3">
             <label for="country">Fotos adicionais</label>
             <div>
-              <input class="custom-file-upload" id="imgs-upload" type="file" accept="image/png, image/jpeg" multiple/>
+              <input v-on:change="saveImage" class="custom-file-upload" id="pet-imgs-upload" type="file" accept="image/png, image/jpeg" multiple/>
             </div>
           </div>
         </div>

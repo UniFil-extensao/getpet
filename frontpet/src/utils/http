@@ -16,7 +16,11 @@ function createOptionsImgs(method, fieldName, { imgs, pfp, ...data }) {
   const formData = new FormData();
 
   pfp && formData.append('pfp', pfp, pfp.name);
-  imgs && imgs.forEach(img => formData.append('imgs', img, img.name));
+  if (imgs){
+    for (const img of imgs){
+      formData.append('imgs', img, img.name);
+    }
+  }
   data && formData.append(fieldName, JSON.stringify(data));
 
   return {

@@ -62,12 +62,13 @@ export default {
       else this.user = data;
     },
     saveImage: async function (event) {
-      const imgFiles = event.target.files;
-      if (event.target.id.includes('pet-pfp')) {
+      const evSrc = event.target;
+      const imgFiles = evSrc.files;
+      if (evSrc.id.includes('pet-pfp')) {
         this.insertPet.pfp = imgFiles[0];
-      } else if (event.target.id.includes('pet-imgs')) {
+      } else if (evSrc.id.includes('pet-imgs')) {
         this.insertPet.imgs = imgFiles;
-      } else if (event.target.id.includes('user-pfp')) {
+      } else if (evSrc.id.includes('user-pfp')) {
         // TODO
       }
     },
@@ -86,7 +87,6 @@ export default {
       }
     },
     petInsert: async function () {
-      // return console.log(this.insertPet);
       const insertData = Object.assign({}, this.insertPet);
       if (this.petAge == 'Anos') insertData.petAge = insertData.petAge * 12;
 
