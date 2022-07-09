@@ -17,7 +17,7 @@ const bodyParser = (req, res, next) => {
   const fields = Object.keys(req.body);
 
   if (!req.files) return next();
-  if (fields.length !== 1) {
+  if (fields.length > 1) {
     return res.status(400).json({
       errors: {
         fields: 'Os dados devem ser passados no campo apropriado.',
@@ -25,7 +25,7 @@ const bodyParser = (req, res, next) => {
     });
   }
 
-  req.body = JSON.parse(req.body[fields[0]]);
+  req.body = fields.length > 0 ? JSON.parse(req.body[fields[0]]) : {};
   req.body.files = req.files;
   next();
 };

@@ -1,17 +1,31 @@
 //Module Public API
-export { 
-  createOptions, 
-  alertError 
-};
-
+export { createOptions, createOptionsImgs };
 
 function createOptions(method, body) {
   return {
     method,
     credentials: 'include',
     headers: {
-        "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
+  };
+}
+
+function createOptionsImgs(method, fieldName, { imgs, pfp, ...data }) {
+  const formData = new FormData();
+
+  pfp && formData.append('pfp', pfp, pfp.name);
+  if (imgs){
+    for (const img of imgs){
+      formData.append('imgs', img, img.name);
+    }
+  }
+  data && formData.append(fieldName, JSON.stringify(data));
+
+  return {
+    method,
+    credentials: 'include',
+    body: formData,
   };
 }

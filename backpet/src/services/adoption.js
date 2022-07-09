@@ -1,5 +1,5 @@
 const validator = require('validator');
-const { PAGE_LIMIT } = require('../../config/general.config');
+const { PAGE_LIMIT, DB_ALLOWS } = require('../../config/general.config');
 const {
   InputValidationError,
   NotFoundError,
@@ -24,17 +24,16 @@ const validations = {
   petSize: (petSize, onFail) => {
     petSize = typeof petSize === 'string' && petSize.trim().toUpperCase();
     if (!petSize) return onFail('Tamanho do animal é obrigatório', false);
-    const validSizes = ['S', 'M', 'L'];
-    return validator.isIn(petSize, validSizes)
+    return validator.isIn(petSize, DB_ALLOWS.allowedSizes)
       ? petSize
       : onFail('Tamanho do animal inválido', true);
   },
   petName: (petName, onFail) => {
     petName = typeof petName === 'string' && petName.trim();
     if (!petName) return onFail('Nome do animal é obrigatório', false);
-    const options = { max: 30 };
+    const options = { max: 20 };
     return validator.isLength(petName, options) &&
-      validator.isAlpha(petName, 'pt-BR')
+      validator.isAlpha(petName, 'pt-BR', { ignore: '- ' })
       ? petName
       : onFail('Nome do animal inválido', true);
   },
@@ -47,8 +46,7 @@ const validations = {
     petSpecies =
       typeof petSpecies === 'string' && petSpecies.trim().toLowerCase();
     if (!petSpecies) return onFail('Espécie do animal é obrigatório', false);
-    const validSpecies = ['cachorro', 'gato'];
-    return validator.isIn(petSpecies, validSpecies)
+    return validator.isIn(petSpecies, DB_ALLOWS.allowedSpecies)
       ? petSpecies
       : onFail('Espécie do animal inválida', true);
   },
@@ -57,18 +55,16 @@ const validations = {
     if (!petBreed) return onFail('Raça do animal é obrigatório', false);
     const options = { max: 40 };
     return validator.isLength(petBreed, options) &&
-      validator.isAlpha(petBreed, 'pt-BR')
+      validator.isAlpha(petBreed, 'pt-BR', { ignore: '- ' })
       ? petBreed
       : onFail('Raça do animal inválida', true);
   },
   petColor: (petColor, onFail) => {
     petColor = typeof petColor === 'string' && petColor.trim().toLowerCase();
     if (!petColor) return onFail('Cor do animal é obrigatório', false);
-    const options = { max: 20 };
-    return validator.isLength(petColor, options) &&
-      validator.isAlpha(petColor, 'pt-BR')
+    return validator.isIn(petColor, DB_ALLOWS.allowedColors)
       ? petColor
-      : onFail('Cor do animal inválida', true);
+      : onFail('Cor inválida', true);
   },
   newOwnerId: validateId,
   adopterScore: (adopterScore, onFail) => {
@@ -108,7 +104,7 @@ const list = async options => {
     },
     limit: 50,
     offset: 0,
-    status: 'A',
+    status: ['a'],
   };
 
   const splitOpts = field => {

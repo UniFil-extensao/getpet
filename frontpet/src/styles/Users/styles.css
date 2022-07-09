@@ -1,0 +1,129 @@
+/* ======================== */
+/* 
+    Ignore the following styles. They are not important to achieve the effect.
+    I'm only using them for looks (overall page background/font styles/centering content).
+*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ======================== */
+/* Everything here is pretty straight forward so I don't think I have to explain.*/
+.button {
+    display: flex;
+    color: #fff;
+    text-decoration: none;
+    padding: 20px 50px;
+    border: 3px solid #3c67e3;
+    border-radius: 10px;
+    background-color: #212534;
+    margin-top: 10%;
+    align-items: center;
+    align-self: center;
+}
+
+.button:hover {
+    animation: pulsate 1s ease-in-out;
+    /*The pulsate animation is added on hover. You could also add this on .button:focus and it will add it when clicking the button as well.*/
+}
+
+@keyframes pulsate {
+
+    /* 
+        Here we have two shadows. You can add as many as you want by using different offset values as long as you separate it with a comma.
+        The values are as follow: offset-x | offset-y | blur-radius | color
+    */
+    0% {
+        box-shadow:
+            0 0 25px #5ddcff,
+            0 0 50px #4e00c2;
+    }
+}
+
+.teste {
+    width: 100%;
+    height: 100%;
+    display: relative;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    border: 1px solid black;
+}
+
+.divbotao {
+    border: 1px solid black;
+    width: 100%;
+    align-items: center;
+    align-content: center;
+}
+
+#btnDrop {
+    background: none; 
+    border: none;
+    color: black;
+}
+
+#btnDrop:hover {
+    background: fixed;
+    background-color: white;
+    color: black;
+    border: none;
+}
+
+#btnDrop:focus {
+    background: fixed;
+    background-color: white;
+    color: black;
+    border: none;
+    margin: 0;
+    box-shadow: none;
+}
+
+#cabecalho {
+    min-width: 600px;
+}
+
+#btnIcones1 {
+    border-color: transparent !important; margin-right: 0%;
+    height: 35px;
+    width: 40px;
+    margin-right: 10px;
+}
+
+#btnIcones2 {
+    border-color: transparent !important; margin-right: 35%;
+    height: 35px;
+    width: 40px;
+}
+
+#btnIcones1:focus, #btnIcones2:focus {
+    border: none;
+    background-color: white;
+}
+
+#btnProx:focus {
+    background-color: rgb(31, 119, 31);
+    color: white;
+}
+
+#divMenu {
+    height: 110px; padding-top: 10px; background-color: rgb(209, 206, 206);
+}
+
+#btnMenu:hover {
+    background-color: darkgrey;
+}
+
+#btnMenu:focus {
+    background-color: darkgrey;
+}
+
+#profileFav {
+    margin-left: 30px !important;
+    font-size: 25px !important;
+    font-weight: bold !important;
+}

@@ -42,6 +42,7 @@ const list = async (req, res, next) => {
       'status',
       'nullDonorScore',
     ];
+
     const options = filterData(allowedFields, req.query);
 
     const adoptions = await adoptionService.list(options);
