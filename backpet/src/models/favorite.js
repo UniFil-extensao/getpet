@@ -12,6 +12,10 @@ const getById = async id => {
   return favorite[0];
 };
 
+const findDuplicate = async idPair => {
+  return await knex('favorites').select('*').where(idPair);
+};
+
 const getFavUsers = async adoptionId => {
   const users = await knex('favorites')
     .select('users.id', 'users.username', 'users.profile_pic_path')
@@ -54,6 +58,7 @@ module.exports = {
   add,
   remove,
   getById,
+  findDuplicate,
   getFavUsers,
   getAllFromUser,
 };

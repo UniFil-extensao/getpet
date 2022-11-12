@@ -8,13 +8,21 @@ const adoptionService = require('./adoption');
 const userService = require('./user');
 const Favorite = require('../models/favorite');
 
+const getAllFromUser = async userId => {
+  const favorites = await Favorite.getAllFromUser(userId);
+  return favorites;
+};
+
 const add = async data => {
+  const duplicateFavorite = await Favorite.findDuplicate(data);
+  if (duplicateFavorite)
+    throw new InputValidationError({ favorite: 'Adoção já favoritada' }, 422);
+
   await userService.getById(data.user_id);
   await adoptionService.getById(data.adoption_id);
 
   try {
-    const favorite = await Favorite.add(data);
-    return favorite;
+    return await Favorite.add(data);
   } catch (err) {
     if (err.code === '23505')
       throw new InputValidationError({ favorite: 'Adoção já favoritada' }, 422);
@@ -55,11 +63,6 @@ const getFavUsers = async (author, adoptionId) => {
 
   const favUsers = await Favorite.getFavUsers(adoptionId);
   return favUsers;
-};
-
-const getAllFromUser = async userId => {
-  const favorites = await Favorite.getAllFromUser(userId);
-  return favorites;
 };
 
 module.exports = {

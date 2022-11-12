@@ -20,6 +20,7 @@ exports.up = function (knex) {
       .inTable('adoptions')
       .onDelete('CASCADE');
     table.timestamp('created_at').defaultTo(knex.fn.now());
+    table.unique(['user_id', 'adoption_id']);
   });
 };
 
