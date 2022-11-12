@@ -16,8 +16,6 @@ export default {
 
       if (this.search) options.search = this.search;
 
-      // TODO: pages
-
       options.species = prepQuery(this.checkedSpecies);
 
       options.breeds = prepQuery(this.checkedBreeds);
@@ -74,7 +72,6 @@ export default {
   data: function () {
     return {
       pets: [],
-      server: `http://localhost:${import.meta.env.VITE_PORT}`,
       selM: 0,
       months: [
         'Sem Limite',
@@ -142,4 +139,9 @@ export default {
     };
   },
   components: { HeaderView, MenuView },
+  inject: {
+    server: {
+      from: 'server',
+    },
+  },
 };

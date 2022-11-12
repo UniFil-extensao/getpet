@@ -218,10 +218,10 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-md-4 mb-3">
-              <input v-model="insertPet.petName" type="text" class="form-control" id="zip" placeholder="Nome do animal" required="">
+              <input v-model="insertPet.petName" type="text" class="form-control" placeholder="Nome do animal" required="">
             </div>
             <div class="col-md-2 mb-3">
-              <input v-model="insertPet.petAge" @scroll.prevent type="number" class="form-control" id="zip" placeholder="Idade" min="0" required="">
+              <input v-model="insertPet.petAge" @scroll.prevent type="number" class="form-control" placeholder="Idade" min="0" required="">
             </div>
             <div class="col-md-3 mb-3">
               <select v-model="petAge" class="form-select" id="age" required>

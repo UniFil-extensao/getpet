@@ -107,9 +107,13 @@ export default {
       adopterScore: 5,
       favId: '',
       loggedUser: {},
-      server: `http://localhost:${import.meta.env.VITE_PORT}`,
       petPics: [],
     };
   },
   components: { HeaderView },
+  inject: {
+    server: {
+      from: 'server',
+    },
+  },
 };

@@ -102,7 +102,6 @@ export default {
   },
   data: function () {
     return {
-      server: `http://localhost:${import.meta.env.VITE_PORT}`,
       userId: Number(this.$route.params.id),
       user: {},
       donatedPets: {},
@@ -198,6 +197,10 @@ export default {
       passConfirm: '',
     };
   },
-
   components: { HeaderView },
+  inject: {
+    server: {
+      from: 'server',
+    },
+  },
 };

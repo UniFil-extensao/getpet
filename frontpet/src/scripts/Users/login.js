@@ -63,12 +63,16 @@ export default {
   },
   data: function () {
     return {
-      server: `http://localhost:${import.meta.env.VITE_PORT}`,
       user: '',
       pass: '',
       favs: '',
       loggedUser: {},
       loggedIn: false,
     };
+  },
+  inject: {
+    server: {
+      from: 'server',
+    },
   },
 };
