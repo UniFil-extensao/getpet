@@ -83,10 +83,11 @@ export default {
     removeFav: async function () {
       await this.getMyFavs();
       var res = await fetch(
-          `${this.server}/favorites/${this.favId}`,
-          createOptions('DELETE')
-        ),
-        data = await res.json();
+        `${this.server}/favorites/${this.favId}`,
+        createOptions('DELETE')
+      );
+      if (res.status !== 204) return alert('Erro ao remover favorito');
+
       this.isFav = false;
       this.$router.go();
     },

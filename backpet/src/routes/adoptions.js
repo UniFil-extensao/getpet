@@ -27,7 +27,4 @@ router.patch('/:id/close', authHandler, adoptionsController.close);
 
 router.delete('/:id', authHandler, adoptionsController.deleteById);
 
-// TODO: implementar
-// router.put('/:id/pictures', authHandler, adoptionsController.updatePictures);
-
 module.exports = router;

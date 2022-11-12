@@ -67,16 +67,18 @@ export default {
     },
     removePet: async function (target) {
       if (confirm(`Deseja realmente remover o pet ${target.pet_name}?`)) {
-        var res = await fetch(
-            `${this.server}/adoptions/${target.id}`,
-            createOptions('DELETE')
-          ),
+        const res = await fetch(
+          `${this.server}/adoptions/${target.id}`,
+          createOptions('DELETE')
+        );
+        if (res.status !== 204) {
           data = await res.json();
-        if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
-        else
-          for (let pet in this.availablePets)
-            if (target.id === this.availablePets[pet].id)
-              delete this.availablePets[pet];
+          return alert(data.errors[Object.keys(data.errors)[0]]);
+        }
+
+        this.availablePets = this.availablePets.filter(
+          pet => pet.id !== target.id
+        );
       }
     },
     petInsert: async function () {

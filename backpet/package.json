@@ -35,6 +35,7 @@
     "testing": "env-cmd -f ./config/.env jest --watch",
     "migrate:make": "env-cmd -f config/.env knex migrate:make --knexfile config/knexfile.js",
     "migrate:run": "env-cmd -f ./config/.env knex migrate:latest --knexfile config/knexfile.js",
+    "migrate:clear": "env-cmd -f config/.env knex migrate:rollback --knexfile config/knexfile.js",
     "seed:make": "env-cmd -f config/.env knex seed:make --knexfile config/knexfile.js",
     "seed:run": "env-cmd -f config/.env knex seed:run --knexfile config/knexfile.js",
     "updatedb": "npm run migrate:run && npm run seed:run",

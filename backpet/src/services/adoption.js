@@ -256,7 +256,7 @@ const deleteById = async (author, id) => {
     throw new InputValidationError({ id: msg }, 404);
   });
 
-  const adoption = await Adoption.getById(id);
+  const adoption = await getById(id);
   if (!author.admin && author.id !== adoption.old_owner_id) {
     throw new ForbiddenError({
       accessDenied: 'Você não tem permissão para fazer isso',

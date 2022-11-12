@@ -99,8 +99,8 @@ const close = async (req, res, next) => {
 
 const deleteById = async (req, res, next) => {
   try {
-    const adoption = await adoptionService.deleteById(req.user, +req.params.id);
-    res.json(adoption);
+    await adoptionService.deleteById(req.user, +req.params.id);
+    res.status(204).end();
   } catch (err) {
     next(err);
   }

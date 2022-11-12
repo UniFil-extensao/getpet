@@ -13,9 +13,8 @@ const add = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    const favorite = await favoriteService.remove(req.user, +req.params.id);
-
-    res.json(favorite);
+    await favoriteService.remove(req.user, +req.params.id);
+    res.status(204).end();
   } catch (err) {
     next(err);
   }
