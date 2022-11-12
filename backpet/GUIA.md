@@ -2,18 +2,16 @@
 
 ## Índice
 
-1. <a style="color: inherit" href="#install">Instalação (Desenvolvimento)</a>
+1. <a style="color: inherit" href="#install">Instalação</a>
 1. <a style="color: inherit" href="#scripts">Scripts de Desenvolvimento</a>
 1. <a style="color: inherit" href="#structure">Estrutura do Código</a>
-1. <a style="color: inherit" href="#routes">Rotas</a>
-1. <a style="color: inherit" href="#tests">Testes</a>
 1. <a style="color: inherit" href="#help">Socorro</a>
 
 ## Instalação<span id="install"></span>
 
 ### Necessário
 
-Esses devem ser instalados manualmente.
+Se não for utilizar docker, esses devem ser instalados manualmente:
 
 1. [Node.js](https://nodejs.org/)
 1. NPM (Vem junto com o Node.js)
@@ -21,75 +19,191 @@ Esses devem ser instalados manualmente.
 
 ### Passos
 
+> As instruções consideram que o diretório atual é a raiz do projeto.
+
+1. Crie um arquivo `.env` na pasta `./backpet/config` com o conteúdo do arquivo `./backpet/config/.env.example`. Altere as variáveis de ambiente conforme necessário.
+
+   Para desenvolvimento, uma simples _cópia_ do arquivo `.env.example` é suficiente.
+
+   Esse aruivo **_NÃO DEVE_** ser commitado.
+
+1. Crie um arquivo `.env` na pasta `./frontpet` com o conteúdo do arquivo `./frontpet/.env.example`. Altere as variáveis de ambiente conforme necessário.
+
+#### Docker Composer
+
+#### Manual (sem docker composer)
+
 Ao baixar o projeto pela primeira vez, será necessário criar o banco de dados para o projeto e instalar as dependências.
 
-> As instruções consideram que o diretório atual é `/backpet`.
-
-1. Instale as dependências:
+1. Instale as dependências para o front-end:
 
    ```bash
+   cd frontpet
    npm install
+   cd ..
    ```
 
-1. Crie seu arquivo `.env`.
+1. Instale as dependências para o back-end:
 
-   Utilize como base o arquivo .env.example. Esse aruivo **_NÃO DEVE_** ser commitado.
+   ```bash
+   cd backpet
+   npm install
+   cd ..
+   ```
 
-   Para desenvolvimento, uma simples _cópia_ do arquivo `.env.example`, renomeada para `.env` é suficiente.
+1. Certifique-se de estar na pasta `/backpet`.
+
+```bash
+cd backpet
+```
 
 1. Certifique-se que o MariaDB está instalado e, caso estiver usando Windows, acessível no `%PATH%`.
 
-1. Crie os bancos de dados e o usuário da aplicação:
+1. Prepare a infraestrutura:
 
-   Windows
+   1. Desenvolvimento
 
-   ```batch
-   mariadb -u root -p < config\startdb.sql
-   ```
+      1. Crie os bancos de dados e usuários:
 
-   Linux
+         Windows
 
-   ```bash
-   sudo mariadb -u root -p < config/startdb.sql
-   ```
+         ```batch
+         mariadb -u root -p < config\startdb.sql
+         ```
 
-   Agora os bancos de desenvolvimento, `getpet_dev`, e teste, `getpet_test`, estão disponíveis; além do usuário `getpet`.
+         Linux
 
-   Caso deseje mudar a senha do usuário:
+         ```bash
+         sudo mariadb -u root -p < config/startdb.sql
+         ```
 
-   1. Entre no Banco de Dados
+         Agora os bancos de desenvolvimento, `getpet_dev`, e teste, `getpet_test`, estão disponíveis; além do usuário `getpet`.
 
-      Windows:
+         > Caso queira mudar a senha do usuário:
+         >
+         > 1. Entre no Banco de Dados
+         >
+         >    Windows:
+         >
+         >    ```batch
+         >    mariadb -u root -p
+         >    ```
+         >
+         >    Linux:
+         >
+         >    ```bash
+         >    sudo mariadb -u root -p
+         >    ```
+         >
+         > 1. Digite o comando abaixo, trocando a senha como desejado:
+         >    ```sql
+         >    ALTER USER 'getpet'@'localhost' IDENTIFIED BY 'novasenha';
+         >    ```
+         >    **Não esqueça de ajustar a senha no arquivo `.env` também.**
 
-      ```batch
-      mariadb -u root -p
-      ```
+      1. Utilize o comando abaixo para criar as tabelas do banco de dados e inserir dados iniciais:
 
-      Linux:
+         ```bash
+         npm run updatedb
+         ```
 
-      ```bash
-      sudo mariadb -u root -p
-      ```
+   1. Produção
 
-   1. Digite o comando abaixo, trocando a senha como desejado:
-      ```sql
-      ALTER USER 'getpet'@'localhost' IDENTIFIED BY 'novasenha';
-      ```
-      > Não esqueça de ajustar a senha no seu arquivo `.env` também.
+      1. Acesse o MariaDB como root:
 
-1. Ajuste o banco:
+         Windows:
 
-   Utilize o comando abaixo para criar as tabelas do banco de dados e inserir dados iniciais:
+         ```batch
+         mariadb -u root -p
+         ```
 
-   ```bash
-   npm run updatedb
-   ```
+         Linux:
 
-Agora você já deve conseguir rodar o projeto. Para isso utilize o comando:
+         ```bash
+         sudo mariadb -u root -p
+         ```
 
-```bash
-npm run dev
-```
+      1. Crie o banco de dados `getpet`:
+
+         ```sql
+         CREATE DATABASE getpet;
+         ```
+
+      1. Crie o usuário `getpet`, com a senha de produção:
+
+         ```sql
+         CREATE USER 'getpet'@'localhost' IDENTIFIED BY 'senhaProducao';
+         ```
+
+         > Ajuste a senha no arquivo `.env` para que sejam a mesma.
+
+      1. Dê permissões ao usuário `getpet` para acessar o banco de dados `getpet`:
+
+         ```sql
+         GRANT ALL PRIVILEGES ON getpet.* TO 'getpet'@'localhost';
+         ```
+
+      1. Saia do MariaDB:
+
+         ```sql
+         EXIT;
+         ```
+
+      1. Utilize o comando abaixo para criar as tabelas no banco de dados `getpet`:
+
+         ```bash
+         npm run migrate:run
+         ```
+
+      1. Entre novamente no MariaDB e crie o usuário administrador para a aplicação:
+
+         ```bash
+         mariadb -u getpet -p
+         ```
+
+         _Altere os dados conforme necessário._
+
+         ```sql
+         INSERT INTO users
+            (username, password, city, uf, cpf, phone, email, admin)
+         VALUES
+            ('admin', 'senhadeadmin', '', '', '', '', '', 'S');
+         EXIT;
+         ```
+
+1. Agora o sistema está pronto para rodar. Para isso, utilize cada comando abaixo em um terminal separado (abrir cada terminal na pasta raiz do projeto):
+
+   1. Desenvolvimento
+
+      1. Front-end:
+
+         ```bash
+         cd frontpet
+         npm run dev
+         ```
+
+      1. Back-end:
+
+         ```bash
+         cd backpet
+         npm run dev
+         ```
+
+   1. Produção
+
+      1. Front-end
+
+         ```bash
+         cd frontpet
+         npm start
+         ```
+
+      1. Back-end
+
+         ```bash
+         cd backpet
+         npm start
+         ```
 
 ## Scripts de Desenvolvimento<span id="scripts"></span>
 
@@ -105,17 +219,18 @@ npm run <script> [argumentos]
 
 Abaixo estão os scripts disponíveis e suas descrições:
 
-| Nome           | Argumentos | Descrição                                                                                                                               |
-| -------------- | :--------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
-| `dev`          | -          | Roda o servidor de desenvolvimento. <br>A porta em que o servidor roda pode ser configurada no arquivo `.env`                           |
-| `test`         | -          | Roda todos os testes do projeto.                                                                                                        |
-| `testing`      | -          | Roda os testes em modo _watch_. Útil para debugar e corrigir falhas                                                                     |
-| `migrate:make` | \<nome>    | Cria um novo arquivo de migração. Utilizado quando for criar ou modificar uma tabela, trigger etc.                                      |
-| `migrate:run`  | -          | Roda todas as migrações do banco de dados.                                                                                              |
-| `seed:make`    | \<nome>    | Cria um novo arquivo de seed. Utilizado para agilizar a criação de registros em tabelas para testes e desenvolvimento.                  |
-| `seed:run`     | -          | Roda todos os seeds do banco de dados. <br>\*_**Cuidado**: Seeds apagam todos registros atuais do banco, para então inserir os padrões_ |
-| `updatedb`     | -          | Roda todas as migrações e seeds.<br>Atalho para `migrate:run` e `seed:run`                                                              |
-| `salt:new`     | -          | Gera um novo salt para fazer o hashing das senhas                                                                                       |
+| Nome            | Argumentos | Descrição                                                                                                                               |
+| --------------- | :--------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
+| `dev`           | -          | Roda o servidor de desenvolvimento. <br>A porta em que o servidor roda pode ser configurada no arquivo `.env`                           |
+| `test`          | -          | Roda todos os testes do projeto.                                                                                                        |
+| `testing`       | -          | Roda os testes em modo _watch_. Útil para debugar e corrigir falhas                                                                     |
+| `migrate:make`  | \<nome>    | Cria um novo arquivo de migração. Utilizado quando for criar ou modificar uma tabela, trigger etc.                                      |
+| `migrate:run`   | -          | Roda todas as migrações do banco de dados.                                                                                              |
+| `migrate:clear` | -          | Apaga todas as tabelas do banco de dados. Utilize em conjunto com `updatedb` para resetar rapidamente o banco de dados.                 |
+| `seed:make`     | \<nome>    | Cria um novo arquivo de seed. Utilizado para agilizar a criação de registros em tabelas para testes e desenvolvimento.                  |
+| `seed:run`      | -          | Roda todos os seeds do banco de dados. <br>\*_**Cuidado**: Seeds apagam todos registros atuais do banco, para então inserir os padrões_ |
+| `updatedb`      | -          | Roda todas as migrações e seeds.<br>Atalho para `migrate:run` e `seed:run`                                                              |
+| `salt:new`      | -          | Gera um novo salt para fazer o hashing das senhas                                                                                       |
 
 ## Estrutura do Código<span id="structure"></span>
 
@@ -155,28 +270,6 @@ index.js
 | routes      | Contém apenas as rotas disponíveis na API.                                                                                                                               |
 | services    | Contém os serviços que são responsáveis por operações relacionadas a regra de negócio. <br>_Ex_: tratamento de dados das requisições, validações etc.                    |
 | utils       | Contém funções que auxiliam no desenvolvimento e não se encaixam em outros lugares.                                                                                      |
-
-### tests
-
-> **_TODO_**
-
-## Rotas<span id="routes"></span>
-
-### Disponíveis
-
-#### Usuários
-
-| Método | Path         | Autorização | Disponibilidade |                                   Documentação                                   | Função                                |
-| :----: | ------------ | :---------: | :-------------: | :------------------------------------------------------------------------------: | ------------------------------------- |
-|  GET   | `/users`     |      -      | Desenvolvimento |                                        -                                         | Lista todos os usuários.              |
-|  POST  | `/users`     |      -      |      Final      | [#15](https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet/issues/15) | Cria um novo usuário.                 |
-|  GET   | `/users/:id` |      -      |      Final      | [#16](https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet/issues/16) | Lista dados de um usuário específico. |
-|  PUT   | `/users/:id` |    Login    |      Final      | [#17](https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet/issues/17) | Atualiza um usuário.                  |
-| DELETE | `/users/:id` |      -      | Desenvolvimento |                                        -                                         | Apaga um usuário.                     |
-
-### Previstas
-
-As rotas previstas para a API podem ser conferidas nas <a href="https://github.com/COMP4026-ENSW2026/atividade-config-01-getpet/issues">Issues do projeto</a>.
 
 ## Testes<span id="tests"></span>
 
