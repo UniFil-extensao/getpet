@@ -10,7 +10,6 @@ const userService = require('./user');
 const Adoption = require('../models/adoption');
 const AdoptionPic = require('../models/adoption_pic');
 
-// REFAC: organizar melhor essas validations
 const validations = {
   id: validateId,
   desc: (desc, onFail) => {
