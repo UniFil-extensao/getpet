@@ -11,7 +11,7 @@
 
 ### Notificações:
 
-- [ ] Incluir `closed_at` na lista de opções aceitas de ordenação na rota de listagem em `controllers/adoptions`;
+- [x] Incluir `closed_at` na lista de opções aceitas de ordenação na rota de listagem em `controllers/adoptions`;
 - [ ] Criar o dropdown de notificações;
 
   > Notificações são adoções que foram concluídas (fechadas) pelo Doador,
@@ -25,13 +25,14 @@
     status: 'f',
     orderBy: 'closed_at',
     newOwnerId: this.user.id,
+    nullDonorScore: 'true',
   };
   ```
 
 - [ ] Exibir um badge com o total de notificações encontradas;
 - [ ] Exibir os nomes dos pets no dropdown de notificações;
 - [ ] Exibir os fotos dos pets no dropdown de notificações (se quiser);
-  > Implementar consistente com o dropdown de favoritos;
+  > Implementar consistente com o dropdown de favoritos
 - [ ] Ao clicar em uma notificação, abrir o _ReviewModal_, passando id do Doador e da Adoção.
 - [ ] Ao confirmar o _ReviewModal_, remover a notificação com os id's passados.
 
@@ -57,4 +58,3 @@
     donorScore: this.donorScore,
   };
   ```
-  > Essa requisição pode não estar funcionando, mas já pode ser iniciada a implementação do modal mesmo assim.

@@ -136,7 +136,9 @@ const list = async options => {
 
   if (
     options.orderBy &&
-    ['created_at', 'breed', 'age', 'color', 'size'].includes(options.orderBy)
+    ['created_at', 'closed_at', 'breed', 'age', 'color', 'size'].includes(
+      options.orderBy
+    )
   ) {
     filters.sort.column = options.orderBy;
     filters.sort.order =
@@ -149,8 +151,8 @@ const list = async options => {
   if (options.species) filters.species = options.species;
   if (options.status) filters.status = options.status;
   if (options.breeds) filters.breeds = options.breeds;
-  if (options.colors) filters.color = options.colors;
-  if (options.size) filters.sizes = options.sizes;
+  if (options.colors) filters.colors = options.colors;
+  if (options.sizes) filters.sizes = options.sizes;
   if (options.minAge) filters.min_age = options.minAge;
   if (options.maxAge) filters.max_age = options.maxAge;
   if (options.newOwnerId) filters.new_owner_id = options.newOwnerId;
@@ -182,23 +184,19 @@ const getPictures = async id => {
   return pictures;
 };
 
-const update = async (author, data, openOnly = true) => {
+const update = async (author, data) => {
   const options = {
-    ...(openOnly && { status: 'A' }),
+    status: 'A',
   };
-  options.id = validations.id(data.id, msg => {
-    throw new InputValidationError({ id: msg }, 404);
-  });
+  const adoption = await getById(data.id);
+  options.id = adoption.id;
   delete data.id;
 
-  const ownerId = await Adoption.getOwnerId(options.id);
-  if (!ownerId) throw new NotFoundError({ adoption: 'Adoção não encontrada' });
-  if (!author.admin && ownerId !== author.id) {
+  if (!author.admin && author.id !== adoption.old_owner_id) {
     throw new ForbiddenError({
       accessDenied: 'Você não tem permissão para fazer isso',
     });
   }
-  options.old_owner_id = ownerId;
 
   if (!Object.keys(data).length) {
     throw new InputValidationError(
@@ -207,26 +205,50 @@ const update = async (author, data, openOnly = true) => {
     );
   }
 
-  if (data.new_owner_id && data.new_owner_id === ownerId) {
-    throw new InputValidationError(
-      { new_owner_id: 'O novo dono não pode ser o mesmo que o antigo' },
-      422
-    );
-  }
   data = adoptionValidator.validate(data);
 
-  const adoption = await Adoption.update(options, data);
-  return adoption;
+  return await Adoption.update(options, data);
 };
 
 const close = async (author, data) => {
-  if (data.newOwnerId) {
-    const newOwnerId = validations.id(data.newOwnerId, msg => {
-      throw new InputValidationError({ id: msg }, 404);
-    });
-    await userService.getById(newOwnerId);
+  const adoption = await getById(data.id, false);
+  const id = adoption.id;
+  delete data.id;
+
+  if (!author.admin) {
+    if (![adoption.old_owner_id, adoption.new_owner_id].includes(author.id)) {
+      throw new ForbiddenError({
+        accessDenied: 'Você não tem permissão para fazer isso',
+      });
+    }
+
+    if (author.id === adoption.old_owner_id) delete data.donorScore;
+    if (author.id === adoption.new_owner_id)
+      data = { ...(data.donorScore && { donorScore: data.donorScore }) };
   }
-  return update(author, data, false);
+
+  if (!Object.keys(data).length) {
+    throw new InputValidationError(
+      { data: 'Não foi passado nenhum dado' },
+      400
+    );
+  }
+
+  if (data.newOwnerId) {
+    data.newOwnerId = await userService
+      .getById(data.newOwnerId)
+      .then(user => user.id);
+
+    if (data.newOwnerId === adoption.old_owner_id) {
+      throw new InputValidationError(
+        { newOwnerId: 'O novo dono não pode ser o mesmo que o antigo' },
+        422
+      );
+    }
+  }
+
+  data = adoptionValidator.validate(data);
+  return await Adoption.update({ id }, data);
 };
 
 const deleteById = async (author, id) => {
@@ -234,9 +256,8 @@ const deleteById = async (author, id) => {
     throw new InputValidationError({ id: msg }, 404);
   });
 
-  const ownerId = await Adoption.getOwnerId(id);
-  if (!ownerId) throw new NotFoundError({ adoption: 'Adoção não encontrada' });
-  if (!author.admin && ownerId !== author.id) {
+  const adoption = await Adoption.getById(id);
+  if (!author.admin && author.id !== adoption.old_owner_id) {
     throw new ForbiddenError({
       accessDenied: 'Você não tem permissão para fazer isso',
     });

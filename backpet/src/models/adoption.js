@@ -11,14 +11,6 @@ const getById = async (id, conn = knex) => {
   return adoption;
 };
 
-const getOwnerId = async id => {
-  const [ownerId] = await knex('adoptions')
-    .select('old_owner_id')
-    .where('id', id);
-
-  return ownerId?.old_owner_id;
-};
-
 const getByOwner = async (id, type = { old: true, new: true }, conn = knex) => {
   // REFAC: mover para o list com opção de owner_id?
   const options = {};
@@ -201,7 +193,6 @@ const deleteById = async id => {
 module.exports = {
   schema,
   getById,
-  getOwnerId, // esqueci pra que eu ia usar mas deixa q já eu lembro
   getByOwner,
   create,
   list,
