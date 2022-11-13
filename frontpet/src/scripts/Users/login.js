@@ -62,23 +62,6 @@ export default {
     },
   },
   created: async function () {
-    this.favs = await await fetch(
-      `${this.server}/favorites/`,
-      createOptions('GET')
-    ).then(res => res.json());
-
-    console.log('favs', this.favs);
-
-    for (let fav of this.favs) {
-      res = await fetch(
-        `${this.server}/adoptions/${fav.id}`,
-        createOptions('GET')
-      );
-      fav.adoption = await res.json();
-    }
-  },
-  mounted: async function () {
-    // diferença entre mounted e created?
     const user = await cookieStore
       .get('user')
       .then(user => user && JSON.parse(user.value));
@@ -86,6 +69,14 @@ export default {
 
     this.loggedUser = user;
     this.loggedIn = true;
+
+    this.favs = await await fetch(
+      `${this.server}/favorites/`,
+      createOptions('GET')
+    ).then(res => res.json());
+  },
+  mounted: async function () {
+    if (!this.loggedUser) return;
 
     const params = {
         noLimit: 'true',

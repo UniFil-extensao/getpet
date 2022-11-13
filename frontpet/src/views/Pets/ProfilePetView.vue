@@ -18,13 +18,7 @@
             </div>
             <div class="col-md-8 mt-5">
                 <div class="row d-flex justify-content-end">
-                    <div v-if="loggedUser.id != owner.id" class="col-md-auto mb-4">
-                        <button type="button" class="btn btn-outline-success" disabled>
-                            Enviar Mensagem
-                            <img src="../../assets/icons/svg/chat.svg" width="15" height="15"/>
-                        </button>
-                    </div>
-                    <div v-if="loggedUser.id != owner.id" class="col-md-auto mb-4">
+                    <div v-if="loggedUser && loggedUser.id != owner.id" class="col-md-auto mb-4">
                         <button v-if="!isFav" v-on:click="addFav()" type="button" class="btn btn-outline-success">
                             Adicionar aos Favoritos
                             <img src="../../assets/icons/svg/star.svg" width="15" height="15"/>
@@ -40,16 +34,10 @@
                             <img src="../../assets/icons/svg/share.svg" width="15" height="15"/>
                         </button>
                     </div>
-                    <div v-if="loggedUser.id == owner.id" class="col-md-auto mb-4">
+                    <div v-if="loggedUser && loggedUser.id == owner.id" class="col-md-auto mb-4">
                         <button v-on:click="getFavUsers()" type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalFav">
                             Interessados
                             <img src="../../assets/icons/svg/star.svg" width="15" height="15"/>
-                        </button>
-                    </div>
-                    <div v-if="loggedUser.id != owner.id" class="col-md-auto mb-4">
-                        <button type="button" class="btn btn-danger" disabled>
-                            Reportar Anúncio
-                            <img src="../../assets/icons/svg/warning.svg" width="15" height="15"/>
                         </button>
                     </div>
                 </div>

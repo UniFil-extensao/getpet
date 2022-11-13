@@ -17,8 +17,10 @@ export default {
         ),
         data = await res.json();
 
-      if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
-      else this.$router.push('/login');
+      if (data.errors) return alert(data.errors[Object.keys(data.errors)[0]]);
+
+      await cookieStore.set('user', JSON.stringify(data));
+      this.$router.push('/');
     },
   },
   data: function () {

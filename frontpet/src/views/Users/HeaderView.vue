@@ -27,9 +27,8 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li v-if="favs.length" v-for="fav in favs">
-                <span v-if="fav.adoption" role="button" v-on:click="petProfile(fav)" class="dropdown-item" href="#">
-                  <!-- REFAC: refazer utilizando os dados certos -->
-                  {{ fav.adoption.pet_name }} - {{ fav.adoption.pet_species }} {{ fav.adoption.pet_breed }} 
+                <span role="button" v-on:click="petProfile(fav)" class="dropdown-item" href="#">
+                  {{ fav.pet_name }} - {{ fav.pet_species }}
                 </span>
               </li>
               <li v-else>

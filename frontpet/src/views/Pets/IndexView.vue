@@ -45,19 +45,19 @@
 						<div class="divisor-linha"></div>
 						<h4>Tamanho:</h4>
 						<div class="form-check">
-							<input v-model="checkedSizes" class="form-check-input" type="checkbox" value="S" id="flexCheckDefault">
+							<input v-model="checkedSizes" class="form-check-input" type="checkbox" value="S" id="flexCheckDefault" @change="manageFilters">
 							<label class="form-check-label" for="flexCheckDefault">
 								Pequeno
 							</label>
 						</div>
 						<div class="form-check">
-							<input v-model="checkedSizes" class="form-check-input" type="checkbox" value="M" id="flexCheckDefault">
+							<input v-model="checkedSizes" class="form-check-input" type="checkbox" value="M" id="flexCheckDefault" @change="manageFilters">
 							<label class="form-check-label" for="flexCheckDefault">
 								Médio
 							</label>
 						</div>
 						<div class="form-check">
-							<input v-model="checkedSizes" class="form-check-input" type="checkbox" value="L" id="flexCheckDefault">
+							<input v-model="checkedSizes" class="form-check-input" type="checkbox" value="L" id="flexCheckDefault" @change="manageFilters">
 							<label class="form-check-label" for="flexCheckDefault">
 								Grande
 							</label>

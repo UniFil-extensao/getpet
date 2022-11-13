@@ -5,7 +5,6 @@ function help(){
     echo "Opções:"
     echo "  -h, --help          Mostra esta ajuda"
     echo "  -p, --production    Instalação para ambiente de produção"
-    echo "  -d, --development   Instalação para ambiente de desenvolvimento"
     echo
     echo "  --setup-env         Configurar manualmente cada variável de ambiente"
     echo "  --skip-env          Não alterar arquivos de variáveis de ambiente"
@@ -144,7 +143,7 @@ function putUsers(){
     echo "Usuário de administrador ($username) inserido" || exit 1;
 }
 
-mode="";
+mode="development";
 setupenv=false;
 skipenv=false;
 skipsalt=false;
@@ -158,9 +157,6 @@ while [[ $# -gt 0 ]]; do
             ;;
         -p|--production)
             mode="production";
-            ;;
-        -d|--development)
-            mode="development";
             ;;
         --setup-env)
             setupenv=true;
@@ -185,9 +181,8 @@ while [[ $# -gt 0 ]]; do
     shift;
 done
 
-if [[ "$mode" == "development" ]] || [[ -z "$mode" ]]; then
+if [[ "$mode" == "development" ]]; then
     echo "Modo de instalação: Desenvolvimento";
-    mode="development";
 else
     echo "Modo de instalação: Produção";
 fi
