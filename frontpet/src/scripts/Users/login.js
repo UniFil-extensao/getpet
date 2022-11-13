@@ -25,7 +25,9 @@ export default {
 
       this.loggedIn = false;
     },
-    petProfile: function (target) {},
+    petProfile: function (target) {
+      this.$router.push({ path: `/adoptions/${target.id}`}).then(() => this.$router.go());
+    },
     profile: function () {
       if (Object.keys(this.loggedUser).length)
         this.$router
@@ -66,7 +68,7 @@ export default {
       server: `http://localhost:${import.meta.env.VITE_PORT}`,
       user: '',
       pass: '',
-      favs: '',
+      favs: { adoption: { pet_name: '' } },
       loggedUser: {},
       loggedIn: false,
     };

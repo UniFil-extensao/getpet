@@ -21,20 +21,19 @@
 
         <!-- LADO DIREITO -->
         <div class="d-flex flex-row align-items-center justify-content-around">
-          <div v-if="loggedIn" class="dropdown" >
+          <div v-if="loggedIn && favs.length" class="dropdown" >
             <button class="btn btn-secondary dropdown-toggle" type="button" id="btnDrop" data-bs-toggle="dropdown" aria-expanded="false">
               Favoritos
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li v-for="fav in favs">
-                <span role="button" v-on:click="petProfile(fav)" class="dropdown-item" href="#">
+                <span v-if="fav.adoption" role="button" v-on:click="petProfile(fav)" class="dropdown-item" href="#">
                   <!-- REFAC: refazer utilizando os dados certos -->
-                  Adoção nº: {{ fav.id }}
+                  {{ fav.adoption.pet_name }} - {{ fav.adoption.pet_species }} {{ fav.adoption.pet_breed }} 
                 </span>
               </li>
             </ul>
           </div>
-          <!-- EM DESENVOLVIMENTO :)
           <div class="dropdown" style="margin-left: ;">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="btnDrop" data-bs-toggle="dropdown" aria-expanded="false">
               Notificações
@@ -45,7 +44,6 @@
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
           </div>
-          -->
           <button v-if="loggedIn" @click="logout()" class="btn btn-outline-danger nav col-6 col-lg-auto mb-2 d-flex flex-nowrap flex-row justify-content-between align-items-center mb-md-0" style="border-color: transparent !important; margin-left: 1%;">
             <img class="ms-2 mt-1 me-2" src="../../assets/icons/svg/account-logout.svg">
             <span style="color: black">Logout</span>

@@ -20,7 +20,7 @@ export default {
     );
     this.owner = await this.owner.json();
     this.loggedUser = JSON.parse(localStorage.user ?? '{}');
-    // this.loggedUser = JSON.parse(cookieStore.get("loggedUser") ?? "{}");
+    await this.getMyFavs();
   },
   methods: {
     ownerProfile: function () {
@@ -78,7 +78,10 @@ export default {
         data = await res.json();
 
       if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
-      else this.isFav = true;
+      else {
+        this.$router.go();
+        this.isFav = true;
+      }
     },
     removeFav: async function () {
       await this.getMyFavs();
