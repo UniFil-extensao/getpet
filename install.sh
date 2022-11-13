@@ -15,7 +15,7 @@ function help(){
 }
 
 function setupEnvFile() {
-    echo "Criando arquivo $2";
+    echo "Configurando arquivo $2";
     if [ "$mode" != "production" ] && [ "$setupenv" = false ]; then
         cp $1 $2;
         echo "Arquivo $2 criado";
@@ -190,7 +190,7 @@ echo
 
 # Instalação e configuração do backend
 
-echo "Iniciando instalção e configuração do backend";
+echo "Iniciando instalação e configuração do backend";
 
 cd backpet/config;
 if [ "$skipenv" = false ]; then
@@ -199,23 +199,23 @@ if [ "$skipenv" = false ]; then
 fi
 
 echo "Instalando dependências do backend";
-npm install;
+npm install > /dev/null 2>&1;
 echo "Dependências do backend instaladas";
 echo
 
 if [ "$skipsalt" = false ]; then
-    read -p "Gerar novo salt para criptografia de senhas? (S/n) " -n 1 -r
+    read -p "Gerar novo salt para criptografia de senhas? (S/n): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Ss]$ ]]; then
         echo "Gerando novo salt";
-        npm run salt:new;
+        npm run salt:new > /dev/null 2>&1;
         echo "Novo salt gerado";
     fi
     echo
 fi
 
 if [[ "$skipdb" = false ]]; then
-    read -p "Criar banco de dados e usuário? (S/n) " -n 1 -r
+    read -p "Criar banco de dados e usuário? (S/n): " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Ss]$ ]]; then
         setupDB;
@@ -241,7 +241,7 @@ cd ../..;
 
 # Instalação e configuração do frontend
 
-echo "Iniciando instalção e configuração do frontend";
+echo "Iniciando instalação e configuração do frontend";
 
 cd frontpet;
 
