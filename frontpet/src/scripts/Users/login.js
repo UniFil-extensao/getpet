@@ -24,6 +24,8 @@ export default {
       //
 
       this.loggedIn = false;
+
+      this.$router.go();
     },
     petProfile: function (target) {
       this.$router.push({ path: `/adoptions/${target.id}`}).then(() => this.$router.go());
@@ -38,6 +40,18 @@ export default {
     home: function () {
       this.$router.push('/');
     },
+    openReview: async function (target) {
+      this.notif = target;
+      //get old owner user by id (target.old_owner_id)
+      var res = await fetch(`${this.server}/users/${target.old_owner_id}`, createOptions('GET'));
+      this.oldOwner = await res.json();
+    },
+    rate: async function() {
+      var res = await fetch(`${this.server}/adoptions/${this.notif.id}/close`, createOptions('POST', {donorScore: this.donorScore}));	
+      var data = await res.json();
+console.log(data);
+      if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
+    }
   },
   created: async function () {
     var res = await fetch(`${this.server}/favorites/`, createOptions('GET'));
@@ -56,6 +70,19 @@ export default {
       // this.loggedUser = cookieStore.get('user');
       this.loggedIn = true;
     }
+    
+    const params = {
+      noLimit: 'true',
+      status: 'f',
+      orderBy: 'closed_at',
+      newOwnerId: this.loggedUser.id,
+      nullDonorScore: true,
+    },
+    queryParams = new URLSearchParams(params).toString();
+    console.log(`${this.server}/adoptions/?${queryParams}`)
+    var res = await fetch(`${this.server}/adoptions/?${queryParams} `, createOptions('GET'));
+    this.notifications = await res.json();
+    console.log(this.notifications);
   },
   watch: {
     loggedUser: function (user) {
@@ -71,6 +98,10 @@ export default {
       favs: { adoption: { pet_name: '' } },
       loggedUser: {},
       loggedIn: false,
+      notifications: { adoptions: [] },
+      notif: {},
+      oldOwner: {},
+      donorScore: 5
     };
   },
 };
