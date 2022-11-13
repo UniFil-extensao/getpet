@@ -57,7 +57,6 @@ export default {
         createOptions('POST', { donorScore: this.donorScore })
       );
       var data = await res.json();
-
       if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
     },
   },
@@ -92,6 +91,7 @@ export default {
       createOptions('GET')
     );
     this.notifications = await res.json();
+    console.log(this.notifications);
   },
   watch: {
     loggedUser: async function (user) {
