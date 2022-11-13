@@ -17,18 +17,13 @@ app.use(helmet());
 app.use(
   cors({
     credentials: true,
-    origin: true, //'http://localhost:3000, http://localhost:8000',
+    origin: process.env.APP_FRONTEND_URL,
   })
 );
 
 app.use('/users', userRoutes);
 app.use('/adoptions', adoptionRoutes);
 app.use('/favorites', favoriteRoutes);
-
-// REM: remover no futuro
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
 
 app.use(errorHandler);
 

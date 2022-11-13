@@ -7,6 +7,26 @@ const {
   DB_PORT,
 } = require('./general.config');
 
+// banco de dados de produção
+const production = {
+  client: 'mysql',
+  connection: {
+    database: `${DB_NAME}`,
+    user: DB_USER,
+    password: DB_PASSWORD,
+    host: DB_HOST,
+    port: DB_PORT,
+  },
+  pool: {
+    min: 0,
+    max: 5,
+  },
+  migrations: {
+    directory: path.join(__dirname, '../db/migrations'),
+    tableName: 'knex_migrations',
+  },
+};
+
 // banco de dados de desenvolvimento
 const development = {
   client: 'mysql',
@@ -55,6 +75,7 @@ const test = {
  * @type { Object.<string, import("knex").Knex.Config> }
  */
 module.exports = {
+  production,
   development,
   test,
 };

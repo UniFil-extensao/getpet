@@ -13,7 +13,8 @@ const getById = async id => {
 };
 
 const findDuplicate = async idPair => {
-  return await knex('favorites').select('*').where(idPair);
+  const [duplicateFav] = await knex('favorites').select('*').where(idPair);
+  return duplicateFav;
 };
 
 const getFavUsers = async adoptionId => {

@@ -30,6 +30,7 @@
     "supertest": "^6.2.3"
   },
   "scripts": {
+    "start": "env-cmd -f ./config/.env node index.js",
     "dev": "env-cmd -f ./config/.env nodemon index.js",
     "test": "env-cmd -f ./config/.env jest",
     "testing": "env-cmd -f ./config/.env jest --watch",

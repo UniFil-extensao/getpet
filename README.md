@@ -26,5 +26,4 @@ GetPet é um aplicativo para conectar doadores/vendedores de Pets com adotantes/
 
 # <i>Instalação</i>:
 
-Instruções sobre cada parte do projeto estão disponíveis em arquivos
-.md nas pastas `./frontpet` e `./backpet`.
+Instruções de instalação e configuração estão disponíveis no arquivo `GUIA.md`.

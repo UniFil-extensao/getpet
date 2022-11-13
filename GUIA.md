@@ -17,7 +17,13 @@ Esses devem ser instalados manualmente:
 1. NPM (Vem junto com o Node.js)
 1. [MariaDB](https://mariadb.org/download/?t=mariadb&p=mariadb&r=10.6.8&os=windows&cpu=x86_64&pkg=msi&m=fder)
 
-### Passos
+### Procedimento
+
+1. Clone o repositório
+
+1. Caso o sistema operacional seja Debian, execute o script `install.sh` na raiz do projeto. Caso contrário, siga os passos abaixo.
+
+#### Manual: Básico
 
 > As instruções consideram que o diretório atual é a raiz do projeto.
 
@@ -55,120 +61,134 @@ cd backpet
 
 1. Certifique-se que o MariaDB está instalado e acessível como variável de ambiente.
 
-1. Prepare a infraestrutura:
+#### Manual: Produção
 
-   1. Desenvolvimento
+1. Acesse o MariaDB como root:
 
-      1. Crie os bancos de dados e usuários:
+   Windows:
 
-         Windows
+   ```batch
+   mariadb -u root -p
+   ```
 
-         ```batch
-         mariadb -u root -p < config\startdb.sql
-         ```
+   Linux:
 
-         Linux
+   ```bash
+   sudo mariadb -u root -p
+   ```
 
-         ```bash
-         sudo mariadb -u root -p < config/startdb.sql
-         ```
+1. Crie o banco de dados `getpet`:
 
-         Agora os bancos de desenvolvimento, `getpet_dev`, e teste, `getpet_test`, estão disponíveis; além do usuário `getpet`.
+   ```sql
+   CREATE DATABASE getpet;
+   ```
 
-         > Caso queira mudar a senha do usuário:
-         >
-         > 1. Entre no Banco de Dados
-         >
-         >    Windows:
-         >
-         >    ```batch
-         >    mariadb -u root -p
-         >    ```
-         >
-         >    Linux:
-         >
-         >    ```bash
-         >    sudo mariadb -u root -p
-         >    ```
-         >
-         > 1. Digite o comando abaixo, trocando a senha como desejado:
-         >    ```sql
-         >    ALTER USER 'getpet'@'localhost' IDENTIFIED BY 'novasenha';
-         >    ```
-         >    **Não esqueça de ajustar a senha no arquivo `.env` também.**
+1. Crie o usuário `getpet`, com a senha de produção:
 
-      1. Utilize o comando abaixo para criar as tabelas do banco de dados e inserir dados iniciais:
+   ```sql
+   CREATE USER 'getpet'@'localhost' IDENTIFIED BY 'senhaProducao';
+   ```
 
-         ```bash
-         npm run updatedb
-         ```
+   > Ajuste a senha no arquivo `.env` para que sejam a mesma.
 
-   1. Produção
+1. Dê permissões ao usuário `getpet` sobre o banco de dados `getpet`:
 
-      1. Acesse o MariaDB como root:
+   ```sql
+   GRANT ALL PRIVILEGES ON getpet.* TO 'getpet'@'localhost';
+   FLUSH PRIVILEGES;
+   ```
 
-         Windows:
+1. Saia do MariaDB:
 
-         ```batch
-         mariadb -u root -p
-         ```
+   ```sql
+   EXIT;
+   ```
 
-         Linux:
+1. Utilize o comando abaixo para criar as tabelas no banco de dados `getpet`:
 
-         ```bash
-         sudo mariadb -u root -p
-         ```
+   ```bash
+   npm run migrate:run
+   ```
 
-      1. Crie o banco de dados `getpet`:
+1. Entre novamente no MariaDB, desta vez utilizando o usuário `getpet`, e crie o usuário administrador para a aplicação:
 
-         ```sql
-         CREATE DATABASE getpet;
-         ```
+   ```bash
+   mariadb -u getpet -p
+   ```
 
-      1. Crie o usuário `getpet`, com a senha de produção:
+   _Altere os dados conforme necessário._
 
-         ```sql
-         CREATE USER 'getpet'@'localhost' IDENTIFIED BY 'senhaProducao';
-         ```
+   ```sql
+   INSERT INTO users
+      (username, password, city, uf, cpf, phone, email, admin)
+   VALUES
+      ('admin', 'senhadeadmin', '', '', '', '', '', 'S');
+   EXIT;
+   ```
 
-         > Ajuste a senha no arquivo `.env` para que sejam a mesma.
+1. Para iniciar a aplicação, utilize os comandos abaixo em terminais separados (abrir cada terminal na pasta raiz do projeto):
 
-      1. Dê permissões ao usuário `getpet` sobre o banco de dados `getpet`:
+   1. Front-end:
 
-         ```sql
-         GRANT ALL PRIVILEGES ON getpet.* TO 'getpet'@'localhost';
-         FLUSH PRIVILEGES;
-         ```
+      ```bash
+      cd frontpet
+      npm start
+      ```
 
-      1. Saia do MariaDB:
+   1. Back-end:
 
-         ```sql
-         EXIT;
-         ```
+      ```bash
+      cd backpet
+      npm start
+      ```
 
-      1. Utilize o comando abaixo para criar as tabelas no banco de dados `getpet`:
+#### Manual: Desenvolvimento
 
-         ```bash
-         npm run migrate:run
-         ```
+1. Crie os bancos de dados e usuários:
 
-      1. Entre novamente no MariaDB, desta vez utilizando o usuário `getpet`, e crie o usuário administrador para a aplicação:
+   Windows
 
-         ```bash
-         mariadb -u getpet -p
-         ```
+   ```batch
+   mariadb -u root -p < config\startdb.sql
+   ```
 
-         _Altere os dados conforme necessário._
+   Linux
 
-         ```sql
-         INSERT INTO users
-            (username, password, city, uf, cpf, phone, email, admin)
-         VALUES
-            ('admin', 'senhadeadmin', '', '', '', '', '', 'S');
-         EXIT;
-         ```
+   ```bash
+   sudo mariadb -u root -p < config/startdb.sql
+   ```
 
-1. Agora o sistema está pronto para rodar. Para isso, utilize cada comando abaixo em um terminal separado (abrir cada terminal na pasta raiz do projeto):
+   Agora os bancos de desenvolvimento, `getpet_dev`, e teste, `getpet_test`, estão disponíveis; além do usuário `getpet`.
+
+   > Caso queira mudar a senha do usuário:
+   >
+   > 1. Entre no Banco de Dados
+   >
+   >    Windows:
+   >
+   >    ```batch
+   >    mariadb -u root -p
+   >    ```
+   >
+   >    Linux:
+   >
+   >    ```bash
+   >    sudo mariadb -u root -p
+   >    ```
+   >
+   > 1. Digite o comando abaixo, trocando a senha como desejado:
+   >    ```sql
+   >    ALTER USER 'getpet'@'localhost' IDENTIFIED BY 'novasenha';
+   >    ```
+   >    **Não esqueça de ajustar a senha no arquivo `.env` também.**
+
+1. Utilize o comando abaixo para criar as tabelas do banco de dados e inserir dados iniciais:
+
+   ```bash
+   npm run updatedb
+   ```
+
+1. Agora o sistema está pronto para rodar. Para isso, utilize os comandos abaixo em terminais separados (abrir cada terminal na pasta raiz do projeto):
 
    1. Front-end:
 
