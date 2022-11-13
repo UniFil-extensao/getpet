@@ -1,6 +1,7 @@
 const knex = require('../services/db');
 const imgService = require('../services/image');
 const User = require('./user');
+const Favorite = require('./favorite');
 
 const schema = async () => {
   return await knex.table('adoptions').columnInfo();
@@ -172,8 +173,10 @@ const update = async (options, data) => {
       })
     );
 
-    if (data.status === 'F')
+    if (data.status === 'F') {
       imgService.deleteAllFrom(`uploads/adoptions/${options.id}`, false);
+      await Favorite.removeByAdoption(options.id);
+    }
 
     return adoption;
   });

@@ -19,7 +19,10 @@ export default {
       createOptions('GET')
     );
     this.owner = await this.owner.json();
-    this.loggedUser = JSON.parse(localStorage.user ?? '{}');
+    this.loggedUser = await cookieStore
+      .get('user')
+      .then(user => user && JSON.parse(user.value));
+    if (!this.loggedUser) return;
     await this.getMyFavs();
   },
   methods: {
@@ -49,14 +52,12 @@ export default {
       this.myFavs = await fetch(
         `${this.server}/favorites/`,
         createOptions('GET')
-      );
-      this.myFavs = await this.myFavs.json();
-      for (let fav in this.myFavs) {
-        if (this.myFavs[fav].id == this.$route.params.id) {
-          this.favId = this.myFavs[fav].favorite_id;
-          this.isFav = true;
-        } else this.isFav = false;
-      }
+      ).then(res => res.json());
+
+      this.isFav = this.myFavs.find(fav => {
+        if (fav.id === this.$route.params.id) this.favId = fav.id;
+        return true;
+      });
     },
     getFavUsers: async function () {
       var res = await fetch(
@@ -109,7 +110,7 @@ export default {
       isFav: '',
       adopterScore: 5,
       favId: '',
-      loggedUser: {},
+      loggedUser: null,
       petPics: [],
     };
   },

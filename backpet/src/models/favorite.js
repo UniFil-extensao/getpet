@@ -30,9 +30,9 @@ const getAllFromUser = async userId => {
   const favoriteAdoptions = await knex('favorites')
     .select(
       'favorites.id as favorite_id',
-      'adoptions.id',
+      'favorites.adoption_id',
       'adoptions.pet_species',
-      'adoptions.desc',
+      'adoptions.pet_name',
       'adoptions.thumbnail_path'
     )
     .join('adoptions', 'favorites.adoption_id', '=', 'adoptions.id')
@@ -54,10 +54,16 @@ const remove = async id => {
   return id;
 };
 
+const removeByAdoption = async adoptionId => {
+  await knex('favorites').where('adoption_id', adoptionId).del();
+  return adoptionId;
+};
+
 module.exports = {
   schema,
   add,
   remove,
+  removeByAdoption,
   getById,
   findDuplicate,
   getFavUsers,
