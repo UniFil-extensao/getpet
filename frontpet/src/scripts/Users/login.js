@@ -19,8 +19,8 @@ export default {
       await fetch(`${this.server}/users/logout`, createOptions('POST'));
 
       /* TEMPORÁRIO */
-      this.loggedUser = null;
-      cookieStore.delete('user');
+      this.loggedUser = {};
+      localStorage.clear();
       //
 
       this.loggedIn = false;
@@ -28,9 +28,7 @@ export default {
       this.$router.go();
     },
     petProfile: function (target) {
-      this.$router
-        .push({ path: `/adoptions/${target.id}` })
-        .then(() => this.$router.go());
+      this.$router.push({ path: `/adoptions/${target.id}`}).then(() => this.$router.go());
     },
     profile: function () {
       if (Object.keys(this.loggedUser).length)
@@ -45,30 +43,18 @@ export default {
     openReview: async function (target) {
       this.notif = target;
       //get old owner user by id (target.old_owner_id)
-      var res = await fetch(
-        `${this.server}/users/${target.old_owner_id}`,
-        createOptions('GET')
-      );
+      var res = await fetch(`${this.server}/users/${target.old_owner_id}`, createOptions('GET'));
       this.oldOwner = await res.json();
     },
-    rate: async function () {
-      var res = await fetch(
-        `${this.server}/adoptions/${this.notif.id}/close`,
-        createOptions('POST', { donorScore: this.donorScore })
-      );
+    rate: async function() {
+      var res = await fetch(`${this.server}/adoptions/${this.notif.id}/close`, createOptions('POST', {donorScore: this.donorScore}));	
       var data = await res.json();
-
-      if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
-    },
+      if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
+    }
   },
   created: async function () {
-    this.favs = await await fetch(
-      `${this.server}/favorites/`,
-      createOptions('GET')
-    ).then(res => res.json());
-
-    console.log('favs', this.favs);
-
+    var res = await fetch(`${this.server}/favorites/`, createOptions('GET'));
+    this.favs = await res.json();
     for (let fav of this.favs) {
       res = await fetch(
         `${this.server}/adoptions/${fav.id}`,
@@ -78,52 +64,43 @@ export default {
     }
   },
   mounted: async function () {
-    // diferença entre mounted e created?
-    const user = await cookieStore
-      .get('user')
-      .then(user => user && JSON.parse(user.value));
-    if (!user) return;
-
-    this.loggedUser = user;
-    this.loggedIn = true;
-
+    if (localStorage.user) {
+      this.loggedUser = JSON.parse(localStorage.user);
+      // this.loggedUser = cookieStore.get('user');
+      this.loggedIn = true;
+    }
+    
     const params = {
-        noLimit: 'true',
-        status: 'f',
-        orderBy: 'closed_at',
-        newOwnerId: this.loggedUser.id,
-        nullDonorScore: true,
-      },
-      queryParams = new URLSearchParams(params).toString();
-    console.log(`${this.server}/adoptions/?${queryParams}`);
-    var res = await fetch(
-      `${this.server}/adoptions/?${queryParams} `,
-      createOptions('GET')
-    );
+      noLimit: 'true',
+      status: 'f',
+      orderBy: 'closed_at',
+      newOwnerId: this.loggedUser.id,
+      nullDonorScore: true,
+    },
+    queryParams = new URLSearchParams(params).toString();
+    console.log(`${this.server}/adoptions/?${queryParams}`)
+    var res = await fetch(`${this.server}/adoptions/?${queryParams} `, createOptions('GET'));
     this.notifications = await res.json();
+    console.log(this.notifications);
   },
   watch: {
-    loggedUser: async function (user) {
-      if (Object.keys(user).length)
-        await cookieStore.set('user', JSON.stringify(user));
+    loggedUser: function (user) {
+      // TODO: na próxima versão, usar cookieStore e remover isso
+      if (Object.keys(user).length) localStorage.user = JSON.stringify(user);
     },
   },
   data: function () {
     return {
+      server: `http://localhost:${import.meta.env.VITE_PORT}`,
       user: '',
       pass: '',
       favs: { adoption: { pet_name: '' } },
-      loggedUser: null,
+      loggedUser: {},
       loggedIn: false,
       notifications: { adoptions: [] },
       notif: {},
       oldOwner: {},
-      donorScore: 5,
+      donorScore: 5
     };
-  },
-  inject: {
-    server: {
-      from: 'server',
-    },
   },
 };

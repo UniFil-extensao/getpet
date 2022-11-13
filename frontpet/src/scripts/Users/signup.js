@@ -20,6 +20,9 @@ export default {
       if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
       else this.$router.push('/login');
     },
+    home: function () {
+      this.$router.push('/');
+    }
   },
   data: function () {
     return {
