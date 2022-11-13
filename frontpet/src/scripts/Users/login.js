@@ -49,7 +49,7 @@ export default {
     rate: async function() {
       var res = await fetch(`${this.server}/adoptions/${this.notif.id}/close`, createOptions('POST', {donorScore: this.donorScore}));	
       var data = await res.json();
-console.log(data);
+
       if(data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
     }
   },
@@ -79,10 +79,8 @@ console.log(data);
       nullDonorScore: true,
     },
     queryParams = new URLSearchParams(params).toString();
-    console.log(`${this.server}/adoptions/?${queryParams}`)
     var res = await fetch(`${this.server}/adoptions/?${queryParams} `, createOptions('GET'));
     this.notifications = await res.json();
-    console.log(this.notifications);
   },
   watch: {
     loggedUser: function (user) {

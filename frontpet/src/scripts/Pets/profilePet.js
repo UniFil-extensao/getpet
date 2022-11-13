@@ -21,6 +21,7 @@ export default {
     this.owner = await this.owner.json();
     this.loggedUser = JSON.parse(localStorage.user ?? '{}');
     await this.getMyFavs();
+    this.isFav = this.myFavs.some(fav => fav.id === this.pet.id);
   },
   methods: {
     ownerProfile: function () {
@@ -79,8 +80,8 @@ export default {
 
       if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
       else {
-        this.$router.go();
         this.isFav = true;
+        this.$router.go();
       }
     },
     removeFav: async function () {
