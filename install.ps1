@@ -46,9 +46,10 @@ function setupEnvFile {
         }
 
         if ($line -match "(PASSWORD|PASSWD|SECRET)") {
-            $value = Read-Host -Prompt "$var (input oculto): " -AsSecureString
+            $value = Read-Host -Prompt "$($var) (input oculto): " -AsSecureString  
+            $value = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($value))
         } else {
-            $value = Read-Host -Prompt "> $var: "
+            $value = Read-Host -Prompt "> $($var): "
         }
 
         if($value -eq ""){
@@ -61,7 +62,7 @@ function setupEnvFile {
     if (-not (Test-Path $targetFile)) {
         New-Item -ItemType File -Path $targetFile
     }
-    $fileContent | Out-File $targetFile
+    $fileContent | Out-File $targetFile -Encoding utf8
 
     Write-Host "Arquivo $targetFile configurado"
 }
@@ -69,14 +70,15 @@ function setupEnvFile {
 function setupDB {
     Write-Host "Configurando banco de dados"
 
-    $dbRootPassword = Read-Host -Prompt "Senha do usuário root do MariaDB: " -AsSecureString
+    $dbRootPassword = Read-Host -Prompt "Senha do usuário root do MariaDB: " -AsSecureString 
+    $dbRootPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($dbRootPassword))
 
     if($mode -ne "production"){
         Write-Host "Criando banco de dados e usuários de desenvolvimento e teste"
 
         # run startdb.sql script in mariadb and echo if sucessful
         $startdb = Get-Content .\startdb.sql
-        $startdb | mysql -u root -p$dbRootPassword
+        $startdb | mariadb -u root --password="$dbRootPassword"
         if($LASTEXITCODE -ne 0){
             exit $LASTEXITCODE
         }
@@ -96,7 +98,8 @@ function setupDB {
         }
 
         Write-Host "Criando banco de dados e usuário de produção"
-        mariadb -u root -p $dbRootPassword -e "CREATE DATABASE IF NOT EXISTS $dbName;"
+        Write-Host "CREATE DATABASE IF NOT EXISTS $($dbName);"
+        mariadb -u root --password="$dbRootPassword" -e "CREATE DATABASE IF NOT EXISTS $($dbName);"
         if ($LASTEXITCODE -ne 0) {
             exit $LASTEXITCODE
         }
@@ -110,7 +113,7 @@ function setupDB {
             GRANT ALL PRIVILEGES ON $dbname.* TO '$dbuser'@'localhost';
             FLUSH PRIVILEGES;
         "
-        mariadb -u root -p $dbRootPassword -e $script
+        mariadb -u root --password="$dbRootPassword" -e $script
         if ($LASTEXITCODE -ne 0) {
             exit $LASTEXITCODE
         }
@@ -154,6 +157,7 @@ function putUsers {
     $password = ""
     while($password -eq ""){
         $password = Read-Host -Prompt "> Senha: " -AsSecureString
+        $password = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password))
         if ($password -eq "") {
             Write-Host "Senha não pode ser vazia"
         }
