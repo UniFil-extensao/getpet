@@ -6,9 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const app = createApp(App);
 
-app.provide(
-  'server',
-  `${import.meta.env.VITE_HOST}:${import.meta.env.VITE_PORT}`
-);
+app.provide('server', import.meta.env.VITE_SERVER);
 app.use(router);
 app.mount('#app');

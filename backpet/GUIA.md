@@ -1,4 +1,4 @@
-# API do GETPET
+# Guia de Instalação e Configuração
 
 ## Índice
 
@@ -11,7 +11,7 @@
 
 ### Necessário
 
-Se não for utilizar docker, esses devem ser instalados manualmente:
+Esses devem ser instalados manualmente:
 
 1. [Node.js](https://nodejs.org/)
 1. NPM (Vem junto com o Node.js)
@@ -27,37 +27,33 @@ Se não for utilizar docker, esses devem ser instalados manualmente:
 
    Esse aruivo **_NÃO DEVE_** ser commitado.
 
-1. Crie um arquivo `.env` na pasta `./frontpet` com o conteúdo do arquivo `./frontpet/.env.example`. Altere as variáveis de ambiente conforme necessário.
+1. Crie um arquivo `.env.local` na pasta `./frontpet` com o conteúdo do arquivo `./frontpet/.env`. Altere as variáveis de ambiente conforme necessário.
 
-#### Docker Composer
+1. Ao baixar o projeto pela primeira vez, será necessário criar o banco de dados para o projeto e instalar as dependências.
 
-#### Manual (sem docker composer)
+   1. Instale as dependências para o front-end:
 
-Ao baixar o projeto pela primeira vez, será necessário criar o banco de dados para o projeto e instalar as dependências.
+      ```bash
+      cd frontpet
+      npm install
+      cd ..
+      ```
 
-1. Instale as dependências para o front-end:
+   1. Instale as dependências para o back-end:
 
-   ```bash
-   cd frontpet
-   npm install
-   cd ..
-   ```
+      ```bash
+      cd backpet
+      npm install
+      cd ..
+      ```
 
-1. Instale as dependências para o back-end:
-
-   ```bash
-   cd backpet
-   npm install
-   cd ..
-   ```
-
-1. Certifique-se de estar na pasta `/backpet`.
+1. Antes de continuar, certifique-se de estar na pasta `/backpet`.
 
 ```bash
 cd backpet
 ```
 
-1. Certifique-se que o MariaDB está instalado e, caso estiver usando Windows, acessível no `%PATH%`.
+1. Certifique-se que o MariaDB está instalado e acessível como variável de ambiente.
 
 1. Prepare a infraestrutura:
 
@@ -137,10 +133,11 @@ cd backpet
 
          > Ajuste a senha no arquivo `.env` para que sejam a mesma.
 
-      1. Dê permissões ao usuário `getpet` para acessar o banco de dados `getpet`:
+      1. Dê permissões ao usuário `getpet` sobre o banco de dados `getpet`:
 
          ```sql
          GRANT ALL PRIVILEGES ON getpet.* TO 'getpet'@'localhost';
+         FLUSH PRIVILEGES;
          ```
 
       1. Saia do MariaDB:
@@ -155,7 +152,7 @@ cd backpet
          npm run migrate:run
          ```
 
-      1. Entre novamente no MariaDB e crie o usuário administrador para a aplicação:
+      1. Entre novamente no MariaDB, desta vez utilizando o usuário `getpet`, e crie o usuário administrador para a aplicação:
 
          ```bash
          mariadb -u getpet -p
@@ -173,37 +170,19 @@ cd backpet
 
 1. Agora o sistema está pronto para rodar. Para isso, utilize cada comando abaixo em um terminal separado (abrir cada terminal na pasta raiz do projeto):
 
-   1. Desenvolvimento
+   1. Front-end:
 
-      1. Front-end:
+      ```bash
+      cd frontpet
+      npm run dev
+      ```
 
-         ```bash
-         cd frontpet
-         npm run dev
-         ```
+   1. Back-end:
 
-      1. Back-end:
-
-         ```bash
-         cd backpet
-         npm run dev
-         ```
-
-   1. Produção
-
-      1. Front-end
-
-         ```bash
-         cd frontpet
-         npm start
-         ```
-
-      1. Back-end
-
-         ```bash
-         cd backpet
-         npm start
-         ```
+      ```bash
+      cd backpet
+      npm run dev
+      ```
 
 ## Scripts de Desenvolvimento<span id="scripts"></span>
 
@@ -217,7 +196,7 @@ npm run <script> [argumentos]
 
 ### Lista de Scripts
 
-Abaixo estão os scripts disponíveis e suas descrições:
+Abaixo estão os scripts disponíveis no backend e suas descrições:
 
 | Nome            | Argumentos | Descrição                                                                                                                               |
 | --------------- | :--------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
@@ -270,10 +249,6 @@ index.js
 | routes      | Contém apenas as rotas disponíveis na API.                                                                                                                               |
 | services    | Contém os serviços que são responsáveis por operações relacionadas a regra de negócio. <br>_Ex_: tratamento de dados das requisições, validações etc.                    |
 | utils       | Contém funções que auxiliam no desenvolvimento e não se encaixam em outros lugares.                                                                                      |
-
-## Testes<span id="tests"></span>
-
-**_TODO_**
 
 ## Socorro<span id="help"></span>
 
