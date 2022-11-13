@@ -21,31 +21,34 @@
 
         <!-- LADO DIREITO -->
         <div class="d-flex flex-row align-items-center justify-content-around">
-          <div v-if="loggedIn && favs.length" class="dropdown" >
+          <div v-if="loggedIn" class="dropdown" >
             <button class="btn btn-secondary dropdown-toggle" type="button" id="btnDrop" data-bs-toggle="dropdown" aria-expanded="false">
-              Favoritos
+              Favoritos ({{favs.length != null ? favs.length : 0}})
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li v-for="fav in favs">
+              <li v-if="favs.length" v-for="fav in favs">
                 <span v-if="fav.adoption" role="button" v-on:click="petProfile(fav)" class="dropdown-item" href="#">
                   <!-- REFAC: refazer utilizando os dados certos -->
                   {{ fav.adoption.pet_name }} - {{ fav.adoption.pet_species }} {{ fav.adoption.pet_breed }} 
                 </span>
               </li>
+              <li v-else>
+                <span class="dropdown-item">Nenhum favorito</span>
+              </li>
             </ul>
           </div>
-          <div class="dropdown" style="margin-left: ;">
+          <div v-if="loggedIn" class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="btnDrop" data-bs-toggle="dropdown" aria-expanded="false">
-              Notificações ({{ notifications.adoptions.length }})
+              Notificações ({{ notifications.adoptions.length != null ? notifications.adoptions.length : 0 }})
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-              <li>
-                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalNotif"></button>
-              </li>
-              <li v-for="notif in notifications.adoptions">
+              <li v-if="notifications.adoptions.length" v-for="notif in notifications.adoptions">
                 <button @click="openReview()" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalNotif">
                   {{ notif.pet_name }} - {{ notif.pet_species }} {{ notif.pet_breed }}
                 </button>
+              </li>
+              <li v-else>
+                <p class="dropdown-item">Nenhuma notificação</p>
               </li>
             </ul>
           </div>
