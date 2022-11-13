@@ -22,6 +22,9 @@ export default {
       await cookieStore.set('user', JSON.stringify(data));
       this.$router.push('/');
     },
+    home: function () {
+      this.$router.push('/');
+    }
   },
   data: function () {
     return {
