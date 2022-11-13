@@ -3,6 +3,26 @@
     @import "../../styles/Users/styles.css";
 </style>
 <template>
+    <header class="p-3 bg-success text-white">
+        <div class="container" id="cabecalho">
+            <div class="d-flex flex-row flex-wrap align-items-center justify-content-between">
+                <!-- LADO ESQUERDO -->
+                <div class="d-flex flex-row">
+                <button v-on:click="home()" class="btn btn-outline-light nav col-6 col-lg-auto mb-2 justify-content-center mb-md-0" id="btnIcones2">
+                    <img class="ms-2" src="../../assets/icons/svg/home.svg">
+                </button>
+                </div>
+
+                <!-- MEIO -->
+                <div>
+                <h1 v-on:click="home()" class="pointer" style="color: black">GetPet</h1>
+                </div>
+
+                <!-- LADO DIREITO -->
+                <div class="d-flex flex-row align-items-center justify-content-around"></div>
+            </div>
+        </div>
+    </header>
     <div class="container-fluid">
         <form @submit.prevent="login(user, pass)">
             <div class="row mt-5">

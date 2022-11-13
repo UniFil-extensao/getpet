@@ -19,8 +19,8 @@ export default {
       await fetch(`${this.server}/users/logout`, createOptions('POST'));
 
       /* TEMPORÁRIO */
-      this.loggedUser = null;
-      cookieStore.delete('user');
+      this.loggedUser = {};
+      localStorage.clear();
       //
 
       this.loggedIn = false;
@@ -57,7 +57,6 @@ export default {
         createOptions('POST', { donorScore: this.donorScore })
       );
       var data = await res.json();
-
       if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
     },
   },
@@ -92,29 +91,26 @@ export default {
       createOptions('GET')
     );
     this.notifications = await res.json();
+    console.log(this.notifications);
   },
   watch: {
-    loggedUser: async function (user) {
-      if (Object.keys(user).length)
-        await cookieStore.set('user', JSON.stringify(user));
+    loggedUser: function (user) {
+      // TODO: na próxima versão, usar cookieStore e remover isso
+      if (Object.keys(user).length) localStorage.user = JSON.stringify(user);
     },
   },
   data: function () {
     return {
+      server: `http://localhost:${import.meta.env.VITE_PORT}`,
       user: '',
       pass: '',
       favs: { adoption: { pet_name: '' } },
-      loggedUser: null,
+      loggedUser: {},
       loggedIn: false,
       notifications: { adoptions: [] },
       notif: {},
       oldOwner: {},
       donorScore: 5,
     };
-  },
-  inject: {
-    server: {
-      from: 'server',
-    },
   },
 };
