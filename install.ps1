@@ -46,7 +46,7 @@ function setupEnvFile {
         }
 
         if ($line -match "(PASSWORD|PASSWD|SECRET)") {
-            $value = Read-Host -Prompt "$($var) (input oculto): " -AsSecureString  
+            $value = Read-Host -Prompt "> $($var) (input oculto): " -AsSecureString
             $value = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($value))
         } else {
             $value = Read-Host -Prompt "> $($var): "
@@ -70,7 +70,7 @@ function setupEnvFile {
 function setupDB {
     Write-Host "Configurando banco de dados"
 
-    $dbRootPassword = Read-Host -Prompt "Senha do usuário root do MariaDB: " -AsSecureString 
+    $dbRootPassword = Read-Host -Prompt "Senha do usuário root do MariaDB: " -AsSecureString
     $dbRootPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($dbRootPassword))
 
     if($mode -ne "production"){
