@@ -21,7 +21,27 @@ Esses devem ser instalados manualmente:
 
 1. Clone o repositório
 
-1. Caso o sistema operacional seja Debian, execute o script `install.sh` na raiz do projeto. Caso contrário, siga os passos abaixo.
+#### Instalação automática: Windows
+
+1. Certifique-se de conseguir executar scripts do PowerShell
+
+1. Execute o script `install.ps1` na pasta raiz do projeto
+
+   Para instalar em modo de produção, execute `.\install.ps1 -p`
+
+   Para ver as opções do script, execute `.\install.ps1 -h`
+
+1. Siga as instruções do script
+
+#### Instalação automática: Linux
+
+1. Execute o script `install.sh` na pasta raiz do projeto
+
+   Para instalar em modo de produção, execute `./install.sh -p`
+
+   Para ver as opções do script, execute `./install.sh -h`
+
+1. Siga as instruções do script
 
 #### Manual: Básico
 
