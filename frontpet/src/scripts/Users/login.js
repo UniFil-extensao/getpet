@@ -29,7 +29,7 @@ export default {
     },
     petProfile: function (target) {
       this.$router
-        .push({ path: `/adoptions/${target.id}` })
+        .push({ path: `/adoptions/${target.adoption_id}` })
         .then(() => this.$router.go());
     },
     profile: function () {
@@ -52,12 +52,15 @@ export default {
       this.oldOwner = await res.json();
     },
     rate: async function () {
+      console.log(this.donorScore);
       var res = await fetch(
         `${this.server}/adoptions/${this.notif.id}/close`,
-        createOptions('POST', { donorScore: this.donorScore })
+        createOptions('PATCH', { donorScore: +this.donorScore })
       );
       var data = await res.json();
-      if (data.errors) alert(data.errors[Object.keys(data.errors)[0]]);
+      if (data.errors) return alert(data.errors[Object.keys(data.errors)[0]]);
+
+      this.$router.go();
     },
   },
   created: async function () {
@@ -69,29 +72,24 @@ export default {
     this.loggedUser = user;
     this.loggedIn = true;
 
-    this.favs = await await fetch(
+    this.favs = await fetch(
       `${this.server}/favorites/`,
       createOptions('GET')
     ).then(res => res.json());
-  },
-  mounted: async function () {
-    if (!this.loggedUser) return;
 
     const params = {
-        noLimit: 'true',
-        status: 'f',
-        orderBy: 'closed_at',
-        newOwnerId: this.loggedUser.id,
-        nullDonorScore: true,
-      },
-      queryParams = new URLSearchParams(params).toString();
-    console.log(`${this.server}/adoptions/?${queryParams}`);
+      noLimit: 'true',
+      status: 'f',
+      orderBy: 'closed_at',
+      newOwnerId: this.loggedUser.id,
+      nullDonorScore: true,
+    };
+    const queryParams = new URLSearchParams(params).toString();
     var res = await fetch(
       `${this.server}/adoptions/?${queryParams} `,
       createOptions('GET')
     );
     this.notifications = await res.json();
-    console.log(this.notifications);
   },
   watch: {
     loggedUser: async function (user) {
@@ -103,7 +101,7 @@ export default {
     return {
       user: '',
       pass: '',
-      favs: { adoption: { pet_name: '' } },
+      favs: [],
       loggedUser: null,
       loggedIn: false,
       notifications: { adoptions: [] },

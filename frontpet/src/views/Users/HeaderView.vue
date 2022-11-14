@@ -23,7 +23,7 @@
         <div class="d-flex flex-row align-items-center justify-content-around">
           <div v-if="loggedIn" class="dropdown" >
             <button class="btn btn-secondary dropdown-toggle" type="button" id="btnDrop" data-bs-toggle="dropdown" aria-expanded="false">
-              Favoritos ({{favs.length != null ? favs.length : 0}})
+              Favoritos ({{favs.length}})
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li v-if="favs.length" v-for="fav in favs">
@@ -42,7 +42,7 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
               <li v-if="notifications.adoptions.length" v-for="notif in notifications.adoptions">
-                <button @click="openReview()" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalNotif">
+                <button @click="openReview(notif)" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modalNotif">
                   {{ notif.pet_name }} - {{ notif.pet_species }} {{ notif.pet_breed }}
                 </button>
               </li>
@@ -76,17 +76,17 @@
             <div class="mb-5">
               <h3 class="ms-3">Pet:</h3><br>
               <img src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 80px; margin-left: 40px" alt="">
-              <label role="button" style ="margin-left: 30px !important; font-size: 25px !important; font-weight: bold !important;" class="profileFav">notif.pet_name</label>
+              <label role="button" style ="margin-left: 30px !important; font-size: 25px !important; font-weight: bold !important;" class="profileFav">{{notif.pet_name}}</label>
             </div>
 
             <div class="mb-5">
               <h3 class="ms-3">Antigo dono:</h3><br>
               <img src="https://www.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png" style="height: 80px; margin-left: 40px" alt="">
-              <label role="button" style ="margin-left: 30px !important; font-size: 25px !important; font-weight: bold !important;" class="profileFav">oldOwner.username</label>
+              <label role="button" style ="margin-left: 30px !important; font-size: 25px !important; font-weight: bold !important;" class="profileFav">{{oldOwner.username}}</label>
             </div>
 
             <input type="range" v-model="donorScore" class="form-range ms-3" style="max-width: 400px;" min="0" max="5">
-            <p class="ms-3">Nota para oldOwner.username: {{donorScore}}</p>
+            <p class="ms-3">Nota para {{oldOwner.username}}: {{donorScore}}</p>
           </div>
           <div class="modal-footer">
             <button type="button" v-on:click="donorScore = 5" class="btn btn-outline-danger" data-bs-dismiss="modal">Cancelar</button>

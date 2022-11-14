@@ -223,8 +223,13 @@ const close = async (author, data) => {
     }
 
     if (author.id === adoption.old_owner_id) delete data.donorScore;
-    if (author.id === adoption.new_owner_id)
-      data = { ...(data.donorScore && { donorScore: data.donorScore }) };
+    if (author.id === adoption.new_owner_id) {
+      data = {
+        ...(Number.isFinite(data.donorScore) && {
+          donorScore: data.donorScore,
+        }),
+      };
+    }
   }
 
   if (!Object.keys(data).length) {
