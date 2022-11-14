@@ -15,4 +15,3 @@
 .editorconfig export-ignore
 tests export-ignore
 *.md export-ignore
-*.example export-ignore

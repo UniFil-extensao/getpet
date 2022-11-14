@@ -50,13 +50,6 @@
           </div>
         </div>
       </div>
-      <div v-else>
-        <div class="col-md-6">
-          <div>
-            <button type="button" data-bs-toggle="modal" disabled data-bs-target="#modalReport" class="btn me-5 btn-outline-danger">Denunciar usuário</button>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="row mb-2 ms-5">
       <div  class="col-md-6 mb-4">
