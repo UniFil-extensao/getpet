@@ -8,7 +8,7 @@
                 <div class="row">
                     <div class="col-md-auto mt-5 mb-2">
                         <img v-if="pet.thumbnail_path" class="circular--square border border-3 border-success centered" v-bind:src="this.server + pet.thumbnail_path"/>
-                        <img v-else class="circular--square border border-3 border-success centered" src="../../assets/images/img-cat-test.jpg"/>
+                        <img v-else class="circular--square border border-3 border-success centered" src="../../assets/images/img-pet-perfil.jpg"/>
                     </div>
                     </div>
                     <div class="col-md-auto mt-3">

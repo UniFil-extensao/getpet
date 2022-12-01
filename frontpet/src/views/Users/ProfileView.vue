@@ -7,7 +7,7 @@
       <div class="col-md-4">
         <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
           <div class="col p-4 d-flex flex-column position-static">
-            <img v-bind:src="user.profile_pic_path ? this.server + user.profile_pic_path : '../../src/assets/images/img-mulher-test.jpg'" class="circular--square border border-3 border-success centered"/>
+            <img v-bind:src="user.profile_pic_path ? this.server + user.profile_pic_path : '../../src/assets/images/img-user.jpg'" class="circular--square border border-3 border-success centered"/>
             <h3 class="d-inline-block mb-3 text-success">{{ user.username }}
             <button v-if="loggedUser.id == user.id" type="button" class="btn btn-outline-success" style="border-color: transparent !important;" data-bs-toggle="modal" data-bs-target="#modalUser">
               <img src="../../assets/icons/svg/pencil.svg">
