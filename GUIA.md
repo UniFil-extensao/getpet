@@ -17,6 +17,44 @@ Esses devem ser instalados manualmente:
 1. NPM (Vem junto com o Node.js)
 1. [MariaDB](https://mariadb.org/download/?t=mariadb&p=mariadb&r=10.6.8&os=windows&cpu=x86_64&pkg=msi&m=fder)
 
+### Variáveis de ambiente
+
+> Atenção: Para rodar em produção, é necessário fornecer um certificado SSL válido. Caso contrário, algumas funcionalidades não funcionarão como esperado.
+> Informe o caminho para o certificado e a chave privada nos arquivos .env conforme descrito abaixo.
+
+#### Front-end
+
+Variáveis de ambiente para o front-end, localizadas no arquivo `.env.local` na pasta `./frontpet`.
+
+| Variável           | Descrição                                                                                                                                  | Valor padrão          |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------- |
+| VITE_SERVER        | Url para o servidor do backend, incluindo protocolo.                                                                                       | http://127.0.0.1:8000 |
+| VITE_PORT          | Porta para rodar o frontend.                                                                                                               | 3000                  |
+| VITE_SSL_CERT_PATH | Caminho para o certificado SSL. Para desenvolvimento é opcional. Para produção, deve ser fornecido um certificado válido.                  |                       |
+| VITE_SSL_KEY_PATH  | Caminho para a chave privada do certificado SSL. Para desenvolvimento é opcional. Para produção, deve ser fornecido um certificado válido. |                       |
+
+#### Back-end
+
+Variáveis de ambiente para o back-end, localizadas no arquivo `.env` na pasta `./backpet/config`.
+
+| Variável         | Descrição                                                                                                                                  | Valor padrão                  |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------- |
+| NODE_ENV         | Ambiente de execução.                                                                                                                      | development                   |
+| IP_ADDRESS       | Endereço IP do servidor do backend.                                                                                                        | 127.0.0.1                     |
+| APP_FRONTEND_URL | Url para o frontend, incluindo protocolo.                                                                                                  | http://localhost:3000         |
+| PORT             | Porta para rodar o backend.                                                                                                                | 8000                          |
+| JWT_SECRET       | Segredo para assinar os tokens JWT. **DEVE SER ALTERADO EM PRODUÇÃO**                                                                      | secret                        |
+| PASSWD_SALT      | Valor para fazer o salt de senhas ao salvar no banco de dados. **DEVE SER ALTERADO EM PRODUÇÃO**                                           | $2a$10$tVQDvyTBMZsZHl39.6zVOe |
+| SALT_ROUNDS      | Quantidade de rounds para o algoritmo de salt de senhas.                                                                                   | 10                            |
+| DB_DRIVER        | Driver do banco de dados.                                                                                                                  | mysql                         |
+| DB_NAME          | Nome do banco de dados.                                                                                                                    | getpet                        |
+| DB_HOST          | Endereço IP do servidor do banco de dados.                                                                                                 | 127.0.0.1                     |
+| DB_PORT          | Porta do servidor do banco de dados.                                                                                                       | 3306                          |
+| DB_USER          | Usuário do banco de dados.                                                                                                                 | getpet                        |
+| DB_PASSWORD      | Senha do usuário do banco de dados. **DEVE SER ALTERADO EM PRODUÇÃO**                                                                      | getpet                        |
+| SSL_KEY_PATH     | Caminho para a chave privada do certificado SSL. Para desenvolvimento é opcional. Para produção, deve ser fornecido um certificado válido. |                               |
+| SSL_CERT_PATH    | Caminho para o certificado SSL. Para desenvolvimento é opcional. Para produção, deve ser fornecido um certificado válido.                  |                               |
+
 ### Procedimento
 
 1. Clone o repositório
