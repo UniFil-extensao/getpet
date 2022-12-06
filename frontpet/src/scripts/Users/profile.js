@@ -10,8 +10,7 @@ export default {
     this.user = await this.user.json();
     this.updateUser.city = this.user.city;
     this.updateUser.uf = this.user.uf;
-    this.loggedUser = JSON.parse(localStorage.user ?? '{}');
-    // this.loggedUser = JSON.parse(cookieStore.get("loggedUser") ?? "{}");
+    this.loggedUser = JSON.parse((await cookieStore.get('user')).value ?? '{}');
   },
   beforeMount: async function () {
     await this.getPets();
