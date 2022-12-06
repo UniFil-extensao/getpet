@@ -1,3 +1,9 @@
+function exitOnError {
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
+}
+
 function help {
     Write-Host "Utilize: $0 [opções]"
     Write-Host "Opções:"
@@ -13,7 +19,6 @@ function help {
     exit 0
 }
 
-
 function setupEnvFile {
     param(
         [string]$sourceFile,
@@ -24,6 +29,7 @@ function setupEnvFile {
 
     if ($mode -ne "production" -and $setupenv -eq $false) {
         Copy-Item $sourceFile $targetFile
+        exitOnError
         Write-Host "Arquivo $targetFile configurado"
         return
     }
@@ -75,13 +81,9 @@ function setupDB {
 
     if($mode -ne "production"){
         Write-Host "Criando banco de dados e usuários de desenvolvimento e teste"
-
-        # run startdb.sql script in mariadb and echo if sucessful
         $startdb = Get-Content .\startdb.sql
         $startdb | mariadb -u root --password="$dbRootPassword"
-        if($LASTEXITCODE -ne 0){
-            exit $LASTEXITCODE
-        }
+        exitOnError
         Write-Host "Banco de dados e usuários criados com sucesso"
     } else {
         $envFile = Get-Content .\.env
@@ -100,9 +102,7 @@ function setupDB {
         Write-Host "Criando banco de dados e usuário de produção"
         Write-Host "CREATE DATABASE IF NOT EXISTS $($dbName);"
         mariadb -u root --password="$dbRootPassword" -e "CREATE DATABASE IF NOT EXISTS $($dbName);"
-        if ($LASTEXITCODE -ne 0) {
-            exit $LASTEXITCODE
-        }
+        exitOnError
         Write-Host "Banco de dados criado com sucesso"
 
         Write-Host ""
@@ -114,9 +114,7 @@ function setupDB {
             FLUSH PRIVILEGES;
         "
         mariadb -u root --password="$dbRootPassword" -e $script
-        if ($LASTEXITCODE -ne 0) {
-            exit $LASTEXITCODE
-        }
+        exitOnError
         Write-Host "Usuário criado com sucesso"
 
     }
@@ -124,9 +122,7 @@ function setupDB {
 
     Write-Host "Criando tabelas"
     npm run migrate:run 2>&1 | Write-Host
-    if ($LASTEXITCODE -ne 0) {
-        exit $LASTEXITCODE
-    }
+    exitOnError
     Write-Host "Tabelas criadas com sucesso"
     Write-Host ""
     Write-Host "Setup do banco de dados concluído"
@@ -135,10 +131,8 @@ function setupDB {
 function putUsers {
     if ($mode -ne "production"){
         Write-Host "Populando banco de dados com usuários de desenvolvimento e teste"
-        npm run seed:run 2>&1 | Write-Host
-        if ($LASTEXITCODE -ne 0) {
-            exit $LASTEXITCODE
-        }
+        npm run seed:run
+        exitOnError
         Write-Host "Usuários inseridos"
         return
     }
@@ -170,9 +164,7 @@ function putUsers {
     $email = Read-Host -Prompt "> E-mail: "
 
     npx env-cmd node .\newAdmin.js $username $password $city $uf $cpf $phone $email 2>&1 | Write-Host
-    if ($LASTEXITCODE -ne 0) {
-        exit $LASTEXITCODE
-    }
+    exitOnError
     Write-Host "Usuário de administrador ($username) inserido"
 }
 
@@ -211,15 +203,22 @@ if ($skipenv -eq $false) {
 }
 
 Write-Host "Instalando dependências do backend..."
-npm install 2>&1 | Write-Host
+npm install | Out-Null
+exitOnError
 Write-Host "Dependências do backend instaladas"
 
+if ($mode -eq "development"){
+    cd ../..
+    npx --yes husky install backpet/.husky 2>&1 | Out-Null
+    cd backpet/config
+}
+
 if ($skipsalt -eq $false){
-    # ask for confirmation, if Yes, generate new salt
     $response = Read-Host -Prompt "Deseja gerar um novo salt para criptografia de senhas? (s/N): "
     if ($response -match "^(s|S)") {
         Write-Host "Gerando novo salt..."
-        npm run salt:new 2>&1 | Write-Host
+        npm run salt:new | Out-Null
+        exitOnError
         Write-Host "Novo salt gerado"
     }
 }
@@ -254,7 +253,8 @@ Write-Host "Iniciando instalação e configuração do frontend"
 cd frontpet
 
 Write-Host "Instalando dependências do frontend..."
-npm install 2>&1 | Write-Host
+npm install | Out-Null
+exitOnError
 Write-Host "Dependências do frontend instaladas"
 
 if ($skipenv -eq $false) {
@@ -267,7 +267,7 @@ if ($skipenv -eq $false) {
 #     Write-Host "Build de produção gerado"
 # }
 
-Write-Host "Frontend instalado e configurado"
+Write-Host "Instalação e configuração do frontend concluída"
 Write-Host ""
 
 cd ..

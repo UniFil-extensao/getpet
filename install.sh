@@ -17,8 +17,7 @@ function help(){
 function setupEnvFile() {
     echo "Configurando arquivo $2";
     if [ "$mode" != "production" ] && [ "$setupenv" = false ]; then
-        cp $1 $2;
-        echo "Arquivo $2 criado";
+        cp $1 $2 && echo "Arquivo $2 criado";
         return;
     fi
 
@@ -73,7 +72,6 @@ function setupDB(){
         } || {
             su -c "mariadb -u root -p$dbrootpasswd < ./startdb.sql"
         }
-        # su -c "mariadb -u root -p$dbrootpasswd < ./startdb.sql" root;
         echo "Bancos de dados e usuários criados";
     else
         dbname=$(cat .env | grep DB_NAME | cut -d '=' -f 2);
@@ -152,9 +150,6 @@ skippop=false;
 while [[ $# -gt 0 ]]; do
     key="$1";
     case $key in
-        -h|--help)
-            help;
-            ;;
         -p|--production)
             mode="production";
             ;;
@@ -174,8 +169,7 @@ while [[ $# -gt 0 ]]; do
             skippop=true;
             ;;
         *)
-            echo "Opção inválida: $key";
-            exit 1;
+            help;
             ;;
     esac
     shift;
@@ -199,32 +193,36 @@ if [ "$skipenv" = false ]; then
 fi
 
 echo "Instalando dependências do backend";
-npm install > /dev/null 2>&1;
-echo "Dependências do backend instaladas";
+npm install > /dev/null && echo "Dependências do backend instaladas" || exit 1;
 echo
 
+if [ "$mode" == "development" ]; then
+    cd ../..;
+    npx --yes husky install backpet/.husky &>/dev/null;
+    cd -;
+fi
+
 if [ "$skipsalt" = false ]; then
-    read -p "Gerar novo salt para criptografia de senhas? (S/n): " -n 1 -r
+    read -p "Gerar novo salt para criptografia de senhas? (S/n): "
     echo
     if [[ $REPLY =~ ^[Ss]$ ]]; then
         echo "Gerando novo salt";
-        npm run salt:new > /dev/null 2>&1;
-        echo "Novo salt gerado";
+        npm run salt:new > /dev/null && echo "Novo salt gerado" || exit 1;
     fi
     echo
 fi
 
 if [[ "$skipdb" = false ]]; then
-    read -p "Criar banco de dados e usuário? (S/n): " -n 1 -r
+    read -p "Criar banco de dados e usuário? (S/n): "
     echo
     if [[ $REPLY =~ ^[Ss]$ ]]; then
         setupDB;
 
         if [[ "$skippop" = false ]]; then
             if [[ $mode == "production" ]]; then
-                read -p "Inserir usuário administrador? (S/n) " -n 1 -r
+                read -p "Inserir usuário administrador? (S/n) "
             else
-                read -p "Popular banco de dados? (S/n) " -n 1 -r
+                read -p "Popular banco de dados? (S/n) "
             fi
             echo
             if [[ $REPLY =~ ^[Ss]$ ]]; then
@@ -247,8 +245,7 @@ cd frontpet;
 
 echo
 echo "Instalando dependências do frontend";
-npm install > /dev/null 2>&1;
-echo "Dependências do frontend instaladas";
+npm install > /dev/null && echo "Dependências do frontend instaladas" || exit 1;
 echo
 
 if [[ "$skipenv" = false ]]; then
