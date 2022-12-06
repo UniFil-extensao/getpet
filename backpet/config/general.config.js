@@ -12,8 +12,8 @@ const env = (({
   DB_PORT,
   DB_USER,
   DB_PASSWORD,
-  SSL_KEY,
-  SSL_CERT,
+  SSL_KEY_PATH,
+  SSL_CERT_PATH,
 }) => ({
   NODE_ENV,
   APP_FRONTEND_URL,
@@ -27,8 +27,8 @@ const env = (({
   DB_PORT,
   DB_USER,
   DB_PASSWORD,
-  SSL_KEY,
-  SSL_CERT,
+  SSL_KEY_PATH,
+  SSL_CERT_PATH,
 }))(process.env);
 
 const PAGE_LIMIT = 10;

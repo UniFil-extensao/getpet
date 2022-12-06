@@ -8,11 +8,11 @@ const {
   USE_SSL,
   DISABLE_AUTH,
   IP_ADDRESS,
-  SSL_KEY,
-  SSL_CERT,
+  SSL_KEY_PATH,
+  SSL_CERT_PATH,
 } = require('./config/general.config');
 
-const isHttps = USE_SSL && SSL_KEY && SSL_CERT;
+const isHttps = USE_SSL && SSL_KEY_PATH && SSL_CERT_PATH;
 const onRunning = () => {
   // eslint-disable-next-line no-console
   console.log(
@@ -24,8 +24,8 @@ const onRunning = () => {
 
 if (isHttps) {
   const ssl = {
-    key: fs.readFileSync(SSL_KEY),
-    cert: fs.readFileSync(SSL_CERT),
+    key: fs.readFileSync(SSL_KEY_PATH),
+    cert: fs.readFileSync(SSL_CERT_PATH),
   };
 
   https.createServer(ssl, app).listen(PORT, IP_ADDRESS, onRunning);
