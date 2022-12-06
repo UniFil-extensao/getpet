@@ -2,6 +2,7 @@
 const env = (({
   NODE_ENV,
   APP_FRONTEND_URL,
+  IP_ADDRESS,
   JWT_SECRET,
   PASSWD_SALT,
   PORT,
@@ -11,9 +12,12 @@ const env = (({
   DB_PORT,
   DB_USER,
   DB_PASSWORD,
+  SSL_KEY,
+  SSL_CERT,
 }) => ({
   NODE_ENV,
   APP_FRONTEND_URL,
+  IP_ADDRESS,
   JWT_SECRET,
   PASSWD_SALT,
   PORT,
@@ -23,9 +27,11 @@ const env = (({
   DB_PORT,
   DB_USER,
   DB_PASSWORD,
+  SSL_KEY,
+  SSL_CERT,
 }))(process.env);
 
-const PAGE_LIMIT = 3;
+const PAGE_LIMIT = 10;
 const MAX_PET_PICS = 4;
 
 const DISABLE_AUTH = env.NODE_ENV !== 'production' && false;
